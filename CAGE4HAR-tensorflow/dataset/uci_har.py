@@ -4,7 +4,7 @@ from dataset.dataset_generator import HARDataGenerator
 class UCI_HAR(HARDataGenerator):
     def __init__(self):
         super(UCI_HAR, self).__init__()
-        self.datapath = "data/UCI HAR Dataset"
+        self.datapath = "data/UCI_HAR_Dataset"
         self.sampling_rate = 50
         self.WINDOW_LENGTH = 128
         self.STRIDE = self.WINDOW_LENGTH // 2

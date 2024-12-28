@@ -1,19 +1,17 @@
-# Implementation of "LSTM-CNN Architecture for Human Activity Recognition" by Kun Xia et al. (IEEE Access, 2020)
-
 import tensorflow as tf
 from tensorflow.keras import Model, layers
-import numpy as np
 
+# Implementation of "LSTM-CNN Architecture for Human Activity Recognition" by Kun Xia et al.
 class LSTMConvNet(Model):
     def __init__(self, n_feat, n_cls):
         super(LSTMConvNet, self).__init__()
         self.n_feat = n_feat
         
-        # LSTMs
-        self.lstm1 = layers.LSTM(32, return_sequences=True)
-        self.lstm2 = layers.LSTM(32, return_sequences=True)
+        # LSTM layers
+        self.lstm1 = layers.LSTM(units=32, return_sequences=True)
+        self.lstm2 = layers.LSTM(units=32, return_sequences=True)
         
-        # convs
+        # Convolutional layers
         self.conv1 = tf.keras.Sequential([
             layers.Conv1D(filters=64, kernel_size=5, strides=2),
             layers.ReLU()
@@ -27,43 +25,47 @@ class LSTMConvNet(Model):
         ])
         
         self.bn = layers.BatchNormalization()
-        self.fc = tf.keras.Sequential([
-            layers.Dropout(0.5),
-            layers.Dense(n_cls)
-        ])
         
+        # Final fully connected layer with dropout
+        self.dropout = layers.Dropout(0.5)
+        self.fc = layers.Dense(n_cls)
+    
     def call(self, x, training=False):
-        # [batch_size, features, time_steps] -> [batch_size, time_steps, features]
-        x = tf.transpose(x, [0, 2, 1])
+        # Input shape: [batch_size, n_features, window_size]
+        
+        # Reshape for LSTM [batch, time, features]
+        x = tf.transpose(x, perm=[0, 2, 1])
         
         # LSTM layers
         out = self.lstm1(x)
         out = self.lstm2(out)
         
-        # [batch_size, time_steps, features] -> [batch_size, features, time_steps]
-        out = tf.transpose(out, [0, 2, 1])
+        # Reshape for Conv1D [batch, time, features]
+        out = tf.transpose(out, perm=[0, 2, 1])
         
-        # convs
+        # Conv layers
         out = self.conv1(out)
         out = self.maxpool(out)
         out = self.conv2(out)
-        # global average pooling
+        
+        # Global average pooling
         out = tf.reduce_mean(out, axis=-1, keepdims=True)
-        # batch normalization
+        
+        # Batch normalization
         out = self.bn(out, training=training)
         
-        # flatten 
-        out = tf.reshape(out, [tf.shape(out)[0], -1]) # flatten
-        out = self.fc(out, training=training) # dense
+        # Flatten
+        out = tf.reshape(out, [tf.shape(out)[0], -1])
+        
+        # Final dense layer with dropout
+        out = self.dropout(out, training=training)
+        out = self.fc(out)
         
         return out
 
-if __name__ == "__main__" :
-    model = LSTMConvNet(n_feat=6, n_cls=6)
-    
-    sample_input = tf.random.normal([32, 6, 128])  # [batch_size, n_feat, time_steps]
+if __name__ == "__main__":
+    model = LSTMConvNet(6, 6)
+    # Build model with sample input
+    sample_input = tf.random.normal((1, 6, 128))  # [batch_size, n_features, window_size]
     _ = model(sample_input)
-    
-    total_params = np.sum([np.prod(v.shape) for v in model.trainable_variables])
-    print(f"Total trainable parameters: {total_params:,}")
-    
+    print("Total trainable parameters:", model.count_params())
