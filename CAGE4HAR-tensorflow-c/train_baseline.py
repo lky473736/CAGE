@@ -138,11 +138,11 @@ def train():
             best_f1 = val_f1
             best_acc = val_accuracy.result() * 100
             best_epoch = epoch
-            model.save_weights(os.path.join(args.save_folder, 'best'))
+            model.save_weights(os.path.join(args.save_folder, 'best.weights.h5'))
             c_mat = confusion_matrix(val_labels, val_predictions)
 
-        train_accuracy.reset_states()
-        val_accuracy.reset_states()
+        # train_accuracy.reset_states()
+        # val_accuracy.reset_states()
 
     model.save_weights(os.path.join(args.save_folder, 'final')) # saving model (final)
     
