@@ -10,6 +10,7 @@ from tensorflow.keras.optimizers.schedules import PiecewiseConstantDecay
 from tensorflow.keras.metrics import SparseCategoricalAccuracy
 from sklearn.metrics import confusion_matrix, f1_score
 from tensorflow.keras.callbacks import TensorBoard
+from tensorflow.keras.optimizers.schedules import ExponentialDecay
 import datetime
 
 from dataset.HAR_dataset import HARDataset
@@ -45,14 +46,17 @@ def get_model(n_feat, n_cls):
     if args.load_model != '':
         model.load_weights(args.load_model)
 
-    # Learning rate schedule
+
     initial_learning_rate = args.learning_rate
     decay_steps = 20
     decay_rate = 0.5
-    learning_rate_fn = PiecewiseConstantDecay(
-        boundaries=[decay_steps * i for i in range(1, args.epochs // decay_steps)],
-        values=[initial_learning_rate * (decay_rate ** i) for i in range(args.epochs // decay_steps + 1)]
+
+    learning_rate_fn = ExponentialDecay(
+        initial_learning_rate=initial_learning_rate,
+        decay_steps=decay_steps,
+        decay_rate=decay_rate
     )
+
 
     optimizer = Adam(learning_rate=learning_rate_fn, weight_decay=args.weight_decay)
     return model, optimizer
@@ -68,11 +72,11 @@ def train_step(model, x, y, optimizer, loss_fn):
 
 def train():
     train_dataset = tf.data.Dataset.from_tensor_slices(
-        (train_set.data, train_set.labels)
+        (train_set.data, train_set.label)
     ).shuffle(10000).batch(args.batch_size)
     
     val_dataset = tf.data.Dataset.from_tensor_slices(
-        (val_set.data, val_set.labels)
+        (val_set.data, val_set.label)
     ).batch(args.batch_size)
 
     model, optimizer = get_model(n_feat, n_cls)
@@ -120,7 +124,7 @@ def train():
 
         val_f1 = f1_score(val_labels, val_predictions, average='weighted')
 
-        # Logging
+        # logging (기존에는 pytorch에서 tensorboard로 썼는데 여기서는 scalar로 써야함)
         with summary_writer.as_default():
             tf.summary.scalar('train_accuracy', train_accuracy.result(), step=epoch)
             tf.summary.scalar('train_f1', train_f1, step=epoch)
@@ -129,7 +133,7 @@ def train():
             tf.summary.scalar('val_f1', val_f1, step=epoch)
             tf.summary.scalar('val_loss', val_loss, step=epoch)
 
-        # Save best model
+        # saving best model
         if val_f1 > best_f1:
             best_f1 = val_f1
             best_acc = val_accuracy.result() * 100
@@ -137,12 +141,10 @@ def train():
             model.save_weights(os.path.join(args.save_folder, 'best'))
             c_mat = confusion_matrix(val_labels, val_predictions)
 
-        # Reset metrics
         train_accuracy.reset_states()
         val_accuracy.reset_states()
 
-    # Save final model
-    model.save_weights(os.path.join(args.save_folder, 'final'))
+    model.save_weights(os.path.join(args.save_folder, 'final')) # saving model (final)
     
     print('Done')
     print(f'Best performance at epoch {best_epoch}, accuracy: {best_acc:.2f}%, F1: {best_f1:.4f}')
@@ -185,7 +187,6 @@ def evaluate(model, dataset, epoch, is_test=True, mode='best'):
 if __name__ == "__main__":
     print(dict_to_markdown(vars(args)))
 
-    # Dataset preparation
     train_set = HARDataset(dataset=args.dataset, split='train', 
                           window_width=args.window_width, clean=args.no_clean, 
                           include_null=args.no_null, use_portion=args.train_portion)
@@ -204,25 +205,23 @@ if __name__ == "__main__":
     n_feat = train_set.feat_dim
     n_cls = train_set.n_actions
 
-    # Create save directory
     args.save_folder = os.path.join(args.model_path, args.dataset, args.model, args.trial)
     if not os.path.isdir(args.save_folder):
         os.makedirs(args.save_folder)
 
-    # Initialize logger
-    log_dir = os.path.join(args.save_folder, 'train.log')
+    log_dir = os.path.join(args.save_folder, 'train.log') # logger 준비
     logger = initialize_logger(log_dir)
 
-    # Training
-    train()
+    # -------------------------
+    
+    train() 
 
-    # Testing
     test_dataset = tf.data.Dataset.from_tensor_slices(
-        (test_set.data, test_set.labels)
+        (test_set.data, test_set.label)
     ).batch(args.batch_size)
     
     val_dataset = tf.data.Dataset.from_tensor_slices(
-        (val_set.data, val_set.labels)
+        (val_set.data, val_set.label)
     ).batch(args.batch_size)
 
     model, _ = get_model(n_feat, n_cls)

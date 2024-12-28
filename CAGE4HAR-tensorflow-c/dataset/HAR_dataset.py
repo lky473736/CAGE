@@ -86,21 +86,21 @@ class HARDataset:
 
     def process_data(self, data, label):
         if self.zeroone:
-            # TensorFlow implementation of min-max normalization
+            # min-max normalization
+            # reduce_min, reduce_max로 일단은 구현하였으나, 이게 맞는지는 test해봐야겠음
             min_vals = tf.reduce_min(data, axis=1, keepdims=True)
             max_vals = tf.reduce_max(data, axis=1, keepdims=True)
             data = (data - min_vals) / (max_vals - min_vals)
         return data, label
 
     def create_tf_dataset(self):
-        # Convert numpy arrays to tensorflow tensors
+        # numpy array -> tensor
         data = tf.convert_to_tensor(self.data, dtype=tf.float32)
         labels = tf.convert_to_tensor(self.label, dtype=tf.int64)
         
-        # Create TensorFlow dataset
+        # tf dataset (원래는 models.to 형식을 씀)
         dataset = tf.data.Dataset.from_tensor_slices((data, labels))
         
-        # Apply data processing
         dataset = dataset.map(self.process_data)
         
         return dataset
@@ -109,7 +109,7 @@ class HARDataset:
         return self.dataset
 
 if __name__ == "__main__":
-    ds = 'PAMAP2'
+    ds = 'PAMAP2' # 기본으로 PAMAP2
     train = HARDataset(dataset=ds, split="train", include_null=True, clean=False)
     val = HARDataset(dataset=ds, split="val", include_null=True, clean=False)
     test = HARDataset(dataset=ds, split="test", include_null=True, clean=False)
