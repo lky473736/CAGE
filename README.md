@@ -103,6 +103,24 @@ python create_dataset.py
 
 **2. Train models**
 ```bash
+- models
+    - 'BaselineCNN'
+    - 'DeepConvLSTM'
+    - 'LSTMConvNet'
+    - 'EarlyFusion'
+    - 'CAE'
+    - 'CAGE'
+- datasets 
+    - 'UCI_HAR'
+    - 'WISDM'
+    - 'Opportunity'
+    - 'USC_HAD'
+    - 'PAMAP2'
+    - 'mHealth'
+    - 'MobiAct'
+```
+
+```bash
 # Train baseline models
 python train_baseline.py --model [BaselineCNN/DeepConvLSTM/LSTMConvNet] --dataset [Dataset]
 
@@ -127,3 +145,40 @@ Results will be saved in `save/{dataset}/{model}/{trial}/`.
 - **summary about paper used by reference during implementing**
     - https://astonishing-antlion-13b.notion.site/Contrastive-Accelerometer-Gyroscope-Embedding-Model-for-Human-Activity-Recognition-162e61796c4280b59b13d7978e33ad8c?pvs=4
     - https://astonishing-antlion-13b.notion.site/CLIP-Learning-Transferable-Visual-Models-From-Natural-Language-Supervision-163e61796c4280ff95e8cf08dc5c759e?pvs=4
+
+-------
+
+### Testing
+
+**1. Hardware Environment**
+```bash
+- CPU : 2.6 GHz 6 core Intel Core i7
+- GPU : no use 
+- RAM : 32GB 2400 MHz DDR4
+```
+
+**2. Testing log**
+```bash
+(1) 2024. 12. 29. ~ 2024. 12. 31. testing 1
+- ONLY PAMAP2 IS WORKING NOW (why other dataset not work?)
+- size unmatching?
+
+('BaselineCNN', 'UCIHAR') -> X (because of conv size matching error, maybe dimension unmatching's main issue)
+('BaselineCNN', 'PAMAP2') -> O 
+('BaselineCNN', 'MHEALTH') -> X
+('DeepConvLSTM', 'UCIHAR') -> X
+('DeepConvLSTM', 'PAMAP2') -> O
+('DeepConvLSTM', 'MHEALTH') -> 
+('LSTMConvNet', 'UCIHAR') -> X
+('LSTMConvNet', 'PAMAP2') 
+('LSTMConvNet', 'MHEALTH')
+('EarlyFusion', 'UCIHAR')
+('EarlyFusion', 'PAMAP2')
+('EarlyFusion', 'MHEALTH')
+('CAE', 'UCIHAR')
+('CAE', 'PAMAP2')
+('CAE', 'MHEALTH')
+('CAGE', 'UCIHAR')
+('CAGE', 'PAMAP2')
+('CAGE', 'MHEALTH')
+```

@@ -40,7 +40,7 @@ class HARDataset:
         
     def _select_dataset(self, dataset):
         if dataset == 'UCI_HAR':
-            self.ROOT_PATH = "data/UCI HAR Dataset"
+            self.ROOT_PATH = "data/UCI_HAR_Dataset"
             self.sampling_rate = 50
             self.n_actions = 6
             self.window_width = 128
