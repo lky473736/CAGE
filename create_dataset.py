@@ -1,7 +1,7 @@
 from dataset.uci_har import UCI_HAR
-# from dataset.usc_had import USC_HAD
+from dataset.usc_had import USC_HAD
 from dataset.pamap2 import PAMAP2
-# from dataset.opportunity import OPPORTUNITY
+from dataset.opportunity import OPPORTUNITY
 from dataset.mhealth import MHEALTH
 # from dataset.mobiact import MobiAct
 
@@ -22,10 +22,10 @@ if __name__ == "__main__":
     dataset.dataset_verbose()
     dataset.save_split('splits_Xclean')
 
-#    dataset = USC_HAD()
-#    dataset.dataset_verbose()
-#    dataset.save_split()
-#
+    dataset = USC_HAD()
+    dataset.dataset_verbose()
+    dataset.save_split()
+
 # clean = [True, False]
 # include_null = [True, False]
 # for c in clean:

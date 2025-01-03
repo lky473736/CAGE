@@ -205,12 +205,12 @@ def train():
             best_f1 = f1_test
             best_acc = acc_test
             best_epoch = epoch
-            model.save_weights(os.path.join(args.save_folder, 'model_best'))
-            classifier.save_weights(os.path.join(args.save_folder, 'classifier_best'))
+            model.save_weights(os.path.join(args.save_folder, 'model_best.weights.h5'))
+            classifier.save_weights(os.path.join(args.save_folder, 'classifier_best.weights.h5'))
             c_mat = confusion_matrix(all_labels, all_preds)
     
-    model.save_weights(os.path.join(args.save_folder, 'model_final'))
-    classifier.save_weights(os.path.join(args.save_folder, 'classifier_final'))
+    model.save_weights(os.path.join(args.save_folder, 'model_final.weights.h5'))
+    classifier.save_weights(os.path.join(args.save_folder, 'classifier_final.weights.h5'))
     print('training completed')
     print (f'Best performance at epoch {best_epoch}: '
           f'accuracy = {best_acc:.2f}%, F1 = {best_f1:.4f}')
@@ -222,8 +222,8 @@ def train():
 
 def evaluate(models, dataset, epoch, is_test=True, mode='best', writer=None) :
     if is_test :
-        models[0].load_weights(os.path.join(args.save_folder, f'model_{mode}'))
-        models[1].load_weights(os.path.join(args.save_folder, f'classifier_{mode}'))
+        models[0].load_weights(os.path.join(args.save_folder, f'model_{mode}.weights.h5'))
+        models[1].load_weights(os.path.join(args.save_folder, f'classifier_{mode}.weights.h5'))
     
     total_loss = 0
     all_labels = []

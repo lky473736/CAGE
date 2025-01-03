@@ -4,8 +4,6 @@ implementation of paper, CAGE4HAR using TensorFlow
 - **Gyuyeon Lim (lky473736)**
 - making period : 2024.12.01. ~ 2025.01.03.
 
-<br>
-
 > [!NOTE]
 > **This source code is a TensorFlow conversion of the implementation code from <Contrastive Accelerometer–Gyroscope Embedding Model for Human Activity Recognition (https://ieeexplore.ieee.org/document/9961198)>** and is not the official source code. The official source code is implemented in PyTorch and can be found here (https://github.com/quotation2520/CAGE4HAR).
 
@@ -168,17 +166,37 @@ Results will be saved in `save/{dataset}/{model}/{trial}/`.
 ('BaselineCNN', 'MHEALTH') -> X
 ('DeepConvLSTM', 'UCIHAR') -> X
 ('DeepConvLSTM', 'PAMAP2') -> O
-('DeepConvLSTM', 'MHEALTH') -> 
+('DeepConvLSTM', 'MHEALTH') -> X
 ('LSTMConvNet', 'UCIHAR') -> X
-('LSTMConvNet', 'PAMAP2') 
-('LSTMConvNet', 'MHEALTH')
-('EarlyFusion', 'UCIHAR')
-('EarlyFusion', 'PAMAP2')
-('EarlyFusion', 'MHEALTH')
-('CAE', 'UCIHAR')
-('CAE', 'PAMAP2')
-('CAE', 'MHEALTH')
-('CAGE', 'UCIHAR')
-('CAGE', 'PAMAP2')
-('CAGE', 'MHEALTH')
+```
+
+```bash
+(2) 2025. 01. 01. ~ 2025. 01. 03. testing 2
+- All working! (finally)
+- Improvements
+    - valid padding -> same padding (it seems pytorch and tensorflow handle padding differently)
+    - Convolution Autoencoder
+        - better calculation of feature map sizes based on "n_feat"
+        - replace the existing upsampling in the decoder with resize to restore the original size
+            - resize operation gives us more control over the output dimensions
+            - changed the old upsampling method to use resize operations
+
+('BaselineCNN', 'UCIHAR') -> O
+('BaselineCNN', 'PAMAP2') -> O 
+('BaselineCNN', 'MHEALTH') -> O
+('DeepConvLSTM', 'UCIHAR') -> O
+('DeepConvLSTM', 'PAMAP2') -> O
+('DeepConvLSTM', 'MHEALTH') -> O
+('LSTMConvNet', 'UCIHAR') -> O
+('LSTMConvNet', 'PAMAP2') -> O
+('LSTMConvNet', 'MHEALTH') -> O
+('EarlyFusion', 'UCIHAR') -> O
+('EarlyFusion', 'PAMAP2') -> O
+('EarlyFusion', 'MHEALTH') -> O
+('CAE', 'UCIHAR') -> O
+('CAE', 'PAMAP2') -> O
+('CAE', 'MHEALTH') -> O
+('CAGE', 'UCIHAR') -> O
+('CAGE', 'PAMAP2') -> O
+('CAGE', 'MHEALTH') -> O
 ```

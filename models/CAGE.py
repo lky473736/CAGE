@@ -11,9 +11,9 @@ class Encoder(Model):
             even a single activation like "relu" is treated as a separate layer. this was quite confusing at first
         '''
         self.conv1 = layers.Conv1D(filters=out_feat, kernel_size=3, padding='same', activation='relu') 
-        self.maxpool1 = layers.MaxPooling1D(pool_size=2)
+        self.maxpool1 = layers.MaxPooling1D(pool_size=2, padding='same')
         self.conv2 = layers.Conv1D(filters=out_feat, kernel_size=3, padding='same', activation='relu')
-        self.maxpool2 = layers.MaxPooling1D(pool_size=2)
+        self.maxpool2 = layers.MaxPooling1D(pool_size=2, padding='same')
         self.conv3 = layers.Conv1D(filters=out_feat, kernel_size=3, padding='same', activation='relu')
         
     def call(self, x, training=False) :

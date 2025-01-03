@@ -12,10 +12,14 @@ class Baseline_CNN(Model):
             conv1 -> conv2 -> conv3 -> conv4 -> dr1 -> dense -> dr2 -> dense -> dr3 -> dense
         '''
 
-        self.conv1 = layers.Conv1D(filters=64, kernel_size=5, activation='relu')
-        self.conv2 = layers.Conv1D(filters=64, kernel_size=5, activation='relu')
-        self.conv3 = layers.Conv1D(filters=64, kernel_size=5, activation='relu')
-        self.conv4 = layers.Conv1D(filters=64, kernel_size=5, activation='relu')
+        self.conv1 = layers.Conv1D(filters=64, kernel_size=5, activation='relu', padding='same') # add padding = 'same'
+        ''''    
+            difference by tensorflow and pytorch
+            -> padding is added at tensorflow because of size unmatching probs
+        '''
+        self.conv2 = layers.Conv1D(filters=64, kernel_size=5, activation='relu', padding='same')
+        self.conv3 = layers.Conv1D(filters=64, kernel_size=5, activation='relu', padding='same')
+        self.conv4 = layers.Conv1D(filters=64, kernel_size=5, activation='relu', padding='same')
         
         self.dropout1 = layers.Dropout(0.5) # why 0.5 == learning tightly
         self.fc1 = layers.Dense(128, activation='relu')

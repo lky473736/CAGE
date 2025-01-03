@@ -219,17 +219,17 @@ def train() :
         
         
         if args.pretrain and epoch % 50 == 0 :
-            model.save_weights(os.path.join(args.save_folder, f'epoch{epoch}'))
+            model.save_weights(os.path.join(args.save_folder, f'epoch{epoch}.weights.h5'))
             # save pretrained
         
         if val_f1 > best_f1 :  # save best model
             best_f1 = val_f1
             best_acc = val_acc
             best_epoch = epoch
-            model.save_weights(os.path.join(args.save_folder, 'best'))
+            model.save_weights(os.path.join(args.save_folder, 'best.weights.h5'))
             c_mat = confusion_matrix(cls_labels, cls_preds)
     
-    model.save_weights(os.path.join(args.save_folder, 'final')) # final model
+    model.save_weights(os.path.join(args.save_folder, 'final.weights.h5')) # final model
     
     print ('-------------- training completed --------------')
     print(f'best performance at epoch {best_epoch}: '
@@ -242,7 +242,7 @@ def train() :
 
 def evaluate(model, dataset, epoch, n_device, is_test=True, mode='best', writer=None):
     if is_test:
-        model.load_weights(os.path.join(args.save_folder, mode))
+        model.load_weights(os.path.join(args.save_folder, f'{mode}.weights.h5'))
     
     ssl_total_loss = 0
     cls_total_loss = 0
