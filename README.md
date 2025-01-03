@@ -9,6 +9,15 @@ implementation of paper, CAGE4HAR using TensorFlow
 
 -----
 
+### Current update and testing
+
+- https://github.com/lky473736/CAGE/blob/main/testing/testing_2_result_pdf.pdf
+- https://github.com/lky473736/CAGE/blob/main/testing/testing_2_result.txt
+
+<img src="./testing/testing_2.png">
+
+-----
+
 ### Basic structure
 
 ```bash
@@ -172,6 +181,7 @@ Results will be saved in `save/{dataset}/{model}/{trial}/`.
 
 ```bash
 (2) 2025. 01. 01. ~ 2025. 01. 03. testing 2
+- https://github.com/lky473736/CAGE/blob/main/testing/testing_2_result_pdf.pdf
 - All working! (finally)
 - Improvements
     - valid padding -> same padding (it seems pytorch and tensorflow handle padding differently)
