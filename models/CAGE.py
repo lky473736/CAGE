@@ -64,9 +64,8 @@ class CAGE(Model) :
         combined_features = tf.concat([f_accel, f_gyro], axis=1)
         cls_output = self.classifier(combined_features, training=training)
         
-        if return_feat :
-            return logits, cls_output, (e_accel, e_gyro)
-            # return logits, cls_output
+        if return_feat:
+            return logits, cls_output, (f_accel, f_gyro)
         
         return logits, cls_output
     

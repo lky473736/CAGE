@@ -17,7 +17,7 @@ def set_seed(seed) :
     np.random.seed(seed)
     tf.random.set_seed(seed)
 
-def get_model(n_feat, n_cls):
+def get_model(n_feat, n_cls, weights_path=None):
     if args.seed:
         set_seed(args.seed)
     
@@ -28,7 +28,10 @@ def get_model(n_feat, n_cls):
     
     model = CAGE(n_feat // 2, n_cls, proj_dim)
     
-    if args.load_model != '':
+    # 가중치 로드 부분 수정
+    if weights_path:
+        model.load_weights(weights_path)
+    elif args.load_model != '':
         pre_trained_model = tf.keras.models.load_model(args.load_model)
         for i, layer in enumerate(model.layers):
             if 'classifier' not in layer.name : # copy weight (definitly need)
@@ -62,11 +65,10 @@ def get_model(n_feat, n_cls):
         lr_schedule = lambda epoch: args.learning_rate * (0.5 ** (epoch // 20))
     
     return model, optimizer, lr_schedule
-
 @tf.function
 def train_step(model, optimizer, x_accel, x_gyro, labels):
     with tf.GradientTape() as tape:
-        ssl_output, cls_output = model(x_accel, x_gyro, training=True)
+        ssl_output, cls_output, (_, _) = model(x_accel, x_gyro, return_feat=True, training=True)
         
         # supervised-learning loss (contrastive loss) 
         '''
@@ -106,7 +108,7 @@ def train_step(model, optimizer, x_accel, x_gyro, labels):
 
 def evaluate_step(model, x_accel, x_gyro, labels):
     """Evaluation step"""
-    ssl_output, cls_output = model(x_accel, x_gyro, training=False)
+    ssl_output, cls_output, (f_accel, f_gyro) = model(x_accel, x_gyro, return_feat=True, training=False)
     
     # SSL loss
     ssl_labels = tf.range(tf.shape(ssl_output)[0])
@@ -128,119 +130,182 @@ def evaluate_step(model, x_accel, x_gyro, labels):
         )
     )
     
-    return ssl_loss, cls_loss, ssl_output, cls_output
+    return ssl_loss, cls_loss, ssl_output, cls_output, f_accel, f_gyro
+def train():
+   train_dataset = train_set.make_tf_dataset(
+       batch_size=args.batch_size,
+       shuffle=True
+   ).prefetch(tf.data.AUTOTUNE)  # 데이터셋 prefetch 추가
+   
+   val_dataset = val_set.make_tf_dataset(
+       batch_size=args.batch_size,
+       shuffle=False
+   ).prefetch(tf.data.AUTOTUNE)
+   
+   test_dataset = test_set.make_tf_dataset(
+       batch_size=args.batch_size,
+       shuffle=False
+   ).prefetch(tf.data.AUTOTUNE)
+   
+   model, optimizer, lr_schedule = get_model(n_feat, n_cls)
+   n_device = n_feat // 6  # (accel, gyro) * (x, y, z)
+   
+   best_f1 = 0.0
+   best_epoch = 0
+   
+   result = open(os.path.join(args.save_folder, 'result'), 'w+')
+   writer = create_tensorboard_writer(args.save_folder + '/run')
+   
+   print("==> training...")
+   for epoch in trange(args.epochs, desc='Training_epoch'):
+       if epoch == 1:  # Save model after first epoch
+           model.save_weights(os.path.join(args.save_folder, 'first.weights.h5'))
+           first_val_acc, first_val_f1, first_val_mat = evaluate(
+               model, val_dataset, epoch, n_device,
+               is_test=False, writer=writer, return_matrix=True
+           )
+           result.write(f"First model validation acc: {first_val_acc:.2f}%, F1: {first_val_f1:.4f} (epoch 1)\n")
+           result.write("First model validation confusion matrix:\n")
+           result.write(str(first_val_mat) + "\n\n")
+           
+       
+       total_loss = 0
+       ssl_labels_list = []
+       ssl_preds_list = []
+       cls_labels_list = []
+       cls_preds_list = []
+       
+       for data, labels in tqdm(train_dataset, desc='Training_batch'):
+           x_accel = data[:, :3 * n_device, :]
+           x_gyro = data[:, 3 * n_device:, :]
+           
+           loss, ssl_output, cls_output = train_step(
+               model, optimizer, x_accel, x_gyro, labels
+           )
+           
+           batch_size = tf.shape(data)[0]
+           total_loss += loss * tf.cast(batch_size, tf.float32)
+           
+           ssl_labels = tf.range(batch_size)
+           ssl_preds = tf.argmax(ssl_output, axis=1)
+           ssl_labels_list.append(ssl_labels)
+           ssl_preds_list.append(ssl_preds)
+           cls_preds = tf.argmax(cls_output, axis=1)
+           cls_labels_list.append(labels)
+           cls_preds_list.append(cls_preds)
+       
+       if not args.pretrain: # update lr
+           optimizer.learning_rate = lr_schedule(epoch)
+       
+       total_num = len(train_set)
+       total_loss = total_loss / tf.cast(total_num, tf.float32)
+       
+       # --------------------------------------------
+       
+       ssl_labels = tf.concat(ssl_labels_list, 0).numpy()
+       ssl_preds = tf.concat(ssl_preds_list, 0).numpy()
+       ssl_acc = np.mean(ssl_preds == ssl_labels) * 100
+       
+       cls_labels = tf.concat(cls_labels_list, 0).numpy()
+       cls_preds = tf.concat(cls_preds_list, 0).numpy()
+       cls_acc = np.mean(cls_preds == cls_labels) * 100
+       cls_f1 = f1_score(cls_labels, cls_preds, average='weighted')
+       train_matrix = confusion_matrix(cls_labels, cls_preds)
+       
+       # ---------------------------------------------
+       
+       logger.info(
+           f'Epoch: [{epoch}/{args.epochs}] - '
+           f'loss:{float(total_loss):.4f}, '
+           f'train acc: {cls_acc:.2f}%, '
+           f'train F1: {cls_f1:.4f}, '
+           f'ssl acc: {ssl_acc:.2f}%'
+       )
+       
+       write_scalar_summary(writer, 'Train/Accuracy_cls', cls_acc, epoch)
+       write_scalar_summary(writer, 'Train/F1_cls', cls_f1, epoch)
+       write_scalar_summary(writer, 'Train/Accuracy_ssl', ssl_acc, epoch)
+       write_scalar_summary(writer, 'Train/Loss', float(total_loss), epoch)
 
-def train() :
-    train_dataset = train_set.make_tf_dataset(
-        batch_size=args.batch_size,
-        shuffle=True
+       val_acc, val_f1, val_matrix = evaluate(
+           model, val_dataset, epoch, n_device,
+           is_test=False, writer=writer, return_matrix=True
+       )
+       
+       if args.pretrain and epoch % 50 == 0:
+           model.save_weights(os.path.join(args.save_folder, f'epoch{epoch}.weights.h5'))
+       
+    #    if val_f1 > best_f1:  # save best model
+    #        best_f1 = val_f1
+    #        best_acc = val_acc
+    #        best_epoch = epoch
+    #        best_val_matrix = val_matrix
+    #        model.save_weights(os.path.join(args.save_folder, 'best.weights.h5'))
+    #        best_train_matrix = train_matrix
+    
+       if val_f1 > best_f1:  # save best model
+        best_f1 = val_f1
+        best_acc = val_acc
+        best_epoch = epoch
+        best_val_matrix = val_matrix
+        model.save_weights(os.path.join(args.save_folder, 'best.weights.h5'))
+        best_train_matrix = train_matrix
+        logger.info(f"Best model updated at epoch {epoch}")
+
+   
+   # Save final model and its validation results
+   model.save_weights(os.path.join(args.save_folder, 'final.weights.h5'))
+   final_val_acc, final_val_f1, final_val_matrix = evaluate(
+       model, val_dataset, args.epochs, n_device,
+       is_test=False, writer=writer, return_matrix=True
+   )
+
+   model, _, _ = get_model(n_feat, n_cls)  # 새 모델 생성
+   best_weights_path = os.path.join(args.save_folder, 'best.weights.h5')
+   model.load_weights(best_weights_path)
+   best_test_acc, best_test_f1, best_test_matrix = evaluate(
+        model, test_dataset, best_epoch, n_device,
+        is_test=True, writer=writer, return_matrix=True
     )
-    val_dataset = val_set.make_tf_dataset(
-        batch_size=args.batch_size,
-        shuffle=False
+
+   model, _, _ = get_model(n_feat, n_cls)  # 새 모델 생성
+   final_weights_path = os.path.join(args.save_folder, 'final.weights.h5')
+   model.load_weights(final_weights_path)
+   final_test_acc, final_test_f1, final_test_matrix = evaluate(
+        model, test_dataset, args.epochs, n_device,
+        is_test=True, writer=writer, return_matrix=True
     )
-    
-    model, optimizer, lr_schedule = get_model(n_feat, n_cls)
-    n_device = n_feat // 6  # (accel, gyro) * (x, y, z)
-    
-    best_f1 = 0.0
-    best_epoch = 0
-    
-    result = open(os.path.join(args.save_folder, 'result'), 'w+')
-    writer = create_tensorboard_writer(args.save_folder + '/run')
-    
-    print("==> training...")
-    for epoch in trange(args.epochs, desc='Training_epoch'):
-        total_loss = 0
-        ssl_labels_list = []
-        ssl_preds_list = []
-        cls_labels_list = []
-        cls_preds_list = []
-        
-        for data, labels in tqdm(train_dataset, desc='Training_batch'):
-            x_accel = data[:, :3 * n_device, :]
-            x_gyro = data[:, 3 * n_device:, :]
-            
-            loss, ssl_output, cls_output = train_step(
-                model, optimizer, x_accel, x_gyro, labels
-            )
-            
-            batch_size = tf.shape(data)[0]
-            total_loss += loss * tf.cast(batch_size, tf.float32)
-            
-            ssl_labels = tf.range(batch_size)
-            ssl_preds = tf.argmax(ssl_output, axis=1)
-            ssl_labels_list.append(ssl_labels)
-            ssl_preds_list.append(ssl_preds)
-            cls_preds = tf.argmax(cls_output, axis=1)
-            cls_labels_list.append(labels)
-            cls_preds_list.append(cls_preds)
-        
-        if not args.pretrain : # update lr
-            optimizer.learning_rate = lr_schedule(epoch)
-        
-        total_num = len(train_set)
-        total_loss = total_loss / tf.cast(total_num, tf.float32)
-        
-        # --------------------------------------------
-        
-        ssl_labels = tf.concat(ssl_labels_list, 0).numpy()
-        ssl_preds = tf.concat(ssl_preds_list, 0).numpy()
-        ssl_acc = np.mean(ssl_preds == ssl_labels) * 100
-        
-        cls_labels = tf.concat(cls_labels_list, 0).numpy()
-        cls_preds = tf.concat(cls_preds_list, 0).numpy()
-        cls_acc = np.mean(cls_preds == cls_labels) * 100
-        cls_f1 = f1_score(cls_labels, cls_preds, average='weighted')
-        
-        # ---------------------------------------------
-        
-        logger.info(
-            f'Epoch: [{epoch}/{args.epochs}] - '
-            f'loss:{float(total_loss):.4f}, '
-            f'train acc: {cls_acc:.2f}%, '
-            f'train F1: {cls_f1:.4f}, '
-            f'ssl acc: {ssl_acc:.2f}%'
-        )
-        
-        write_scalar_summary(writer, 'Train/Accuracy_cls', cls_acc, epoch)
-        write_scalar_summary(writer, 'Train/F1_cls', cls_f1, epoch)
-        write_scalar_summary(writer, 'Train/Accuracy_ssl', ssl_acc, epoch)
-        write_scalar_summary(writer, 'Train/Loss', float(total_loss), epoch)
-#             
-# 
-# 
-# 
-
-        val_acc, val_f1 = evaluate(
-            model, val_dataset, epoch, n_device,
-            is_test=False, writer=writer
-        )
-        
-        
-        if args.pretrain and epoch % 50 == 0 :
-            model.save_weights(os.path.join(args.save_folder, f'epoch{epoch}.weights.h5'))
-            # save pretrained
-        
-        if val_f1 > best_f1 :  # save best model
-            best_f1 = val_f1
-            best_acc = val_acc
-            best_epoch = epoch
-            model.save_weights(os.path.join(args.save_folder, 'best.weights.h5'))
-            c_mat = confusion_matrix(cls_labels, cls_preds)
-    
-    model.save_weights(os.path.join(args.save_folder, 'final.weights.h5')) # final model
-    
-    print ('-------------- training completed --------------')
-    print(f'best performance at epoch {best_epoch}: '
-          f'accuracy = {best_acc:.2f}%, F1 = {best_f1:.4f}')
-    print('confusion Matrix:')
-    print(c_mat)
-    
-    record_result(result, best_epoch, best_acc, best_f1, c_mat)
-    writer.close()
-
-def evaluate(model, dataset, epoch, n_device, is_test=True, mode='best', writer=None):
+   
+   # Save all results
+   result.write(f"Best model validation acc: {best_acc:.2f}%, F1: {best_f1:.4f} (epoch {best_epoch})\n")
+   result.write("Best model validation confusion matrix:\n")
+   result.write(str(best_val_matrix) + "\n\n")
+   
+   result.write(f"Best model test acc: {best_test_acc:.2f}%, F1: {best_test_f1:.4f}\n")
+   result.write("Best model test confusion matrix:\n")
+   result.write(str(best_test_matrix) + "\n\n")
+   
+   result.write(f"Final model validation acc: {final_val_acc:.2f}%, F1: {final_val_f1:.4f} (epoch {args.epochs})\n")
+   result.write("Final model validation confusion matrix:\n")
+   result.write(str(final_val_matrix) + "\n\n")
+   
+   result.write(f"Final model test acc: {final_test_acc:.2f}%, F1: {final_test_f1:.4f}\n")
+   result.write("Final model test confusion matrix:\n")
+   result.write(str(final_test_matrix))
+   
+   print('-------------- training completed --------------')
+   print(f'Best model (epoch {best_epoch}):')
+   print(f'Validation - acc: {best_acc:.2f}%, F1: {best_f1:.4f}')
+   print(f'Test - acc: {best_test_acc:.2f}%, F1: {best_test_f1:.4f}')
+   print('\nFinal model:')
+   print(f'Validation - acc: {final_val_acc:.2f}%, F1: {final_val_f1:.4f}')
+   print(f'Test - acc: {final_test_acc:.2f}%, F1: {final_test_f1:.4f}')
+   
+   result.close()
+   writer.close()
+   
+def evaluate(model, dataset, epoch, n_device, is_test=True, mode='best', writer=None, return_matrix=False):
+    """Evaluation step"""
     if is_test:
         model.load_weights(os.path.join(args.save_folder, f'{mode}.weights.h5'))
     
@@ -250,18 +315,23 @@ def evaluate(model, dataset, epoch, n_device, is_test=True, mode='best', writer=
     ssl_preds_list = []
     cls_labels_list = []
     cls_preds_list = []
+    accel_embeddings = []
+    gyro_embeddings = []
     
-    for data, labels in dataset :
+    total_num = 0
+    
+    for data, labels in dataset:
         x_accel = data[:, :3 * n_device, :]
         x_gyro = data[:, 3 * n_device:, :]
         
-        ssl_loss, cls_loss, ssl_output, cls_output = evaluate_step(
+        ssl_loss, cls_loss, ssl_output, cls_output, f_accel, f_gyro = evaluate_step(
             model, x_accel, x_gyro, labels
         )
         
         batch_size = tf.shape(data)[0]
         ssl_total_loss += ssl_loss * tf.cast(batch_size, tf.float32)
         cls_total_loss += cls_loss * tf.cast(batch_size, tf.float32)
+        total_num += batch_size
         
         ssl_labels = tf.range(batch_size)
         ssl_preds = tf.argmax(ssl_output, axis=1)
@@ -271,8 +341,10 @@ def evaluate(model, dataset, epoch, n_device, is_test=True, mode='best', writer=
         cls_preds = tf.argmax(cls_output, axis=1)
         cls_labels_list.append(labels)
         cls_preds_list.append(cls_preds)
+        
+        accel_embeddings.append(f_accel.numpy())
+        gyro_embeddings.append(f_gyro.numpy())
     
-    total_num = sum(tf.shape(labels)[0].numpy() for _, labels in dataset)
     ssl_total_loss = ssl_total_loss / tf.cast(total_num, tf.float32)
     cls_total_loss = cls_total_loss / tf.cast(total_num, tf.float32)
     
@@ -285,25 +357,42 @@ def evaluate(model, dataset, epoch, n_device, is_test=True, mode='best', writer=
     cls_acc = np.mean(cls_preds == cls_labels) * 100
     cls_f1 = f1_score(cls_labels, cls_preds, average='weighted')
     
-    if is_test == True :
+    all_accel_embeddings = np.concatenate(accel_embeddings, axis=0)
+    all_gyro_embeddings = np.concatenate(gyro_embeddings, axis=0)
+    c_mat = confusion_matrix(cls_labels, cls_preds)
+    
+    if is_test:
         print(f'=> test acc: {cls_acc:.2f}%, test F1: {cls_f1:.4f} / '
               f'ssl acc: {ssl_acc:.2f}%')
         
         logger.info(f'=> test acc: {cls_acc:.2f}%, test F1: {cls_f1:.4f} / '
                    f'ssl acc: {ssl_acc:.2f}%')
         
-        c_mat = confusion_matrix(cls_labels, cls_preds)
-        result = open(os.path.join(args.save_folder, 'result'), 'a+')
-        record_result(result, epoch, cls_acc, cls_f1, c_mat)
-        
-    else :
+        result_filename = f'results_{mode}_model.txt'
+        with open(os.path.join(args.save_folder, result_filename), 'w') as f:
+            f.write(f"Classification Accuracy: {cls_acc:.2f}%\n")
+            f.write(f"Classification F1 Score: {cls_f1:.4f}\n")
+            
+            f.write("Confusion Matrix:\n")
+            f.write(str(c_mat))
+            f.write("\n\n")
+            
+            f.write("Per-sample Results:\n")
+            for i in range(len(cls_labels)):
+                f.write(f"[Sample {i+1}]\n")
+                f.write(f"Original Label: {cls_labels[i]}\n")
+                f.write(f"Predicted Label: {cls_preds[i]}\n")
+                f.write(f"Accelerometer Embedding: {all_accel_embeddings[i].tolist()}\n")
+                f.write(f"Gyroscope Embedding: {all_gyro_embeddings[i].tolist()}\n\n")
+            
+    else:
         logger.info(f'=> val acc (cls): {cls_acc:.2f}%, val F1 (cls): {cls_f1:.4f} / '
                    f'val acc (ssl): {ssl_acc:.2f}%')
         
         logger.info(f'=> cls_loss: {float(cls_total_loss):.4f} / '
                    f'ssl_loss: {float(ssl_total_loss):.4f}')
         
-        if writer is not None :
+        if writer is not None:
             write_scalar_summary(writer, 'Validation/Accuracy_cls', cls_acc, epoch)
             write_scalar_summary(writer, 'Validation/F1_cls', cls_f1, epoch)
             write_scalar_summary(writer, 'Validation/Accuracy_ssl', ssl_acc, epoch)
@@ -312,9 +401,11 @@ def evaluate(model, dataset, epoch, n_device, is_test=True, mode='best', writer=
             write_scalar_summary(writer, 'Validation/Loss_ssl',
                                float(ssl_total_loss), epoch)
     
+    if return_matrix:
+        return cls_acc, cls_f1, c_mat
     return cls_acc, cls_f1
 
-if __name__ == "__main__" :
+if __name__ == "__main__":
     print(dict_to_markdown(vars(args)))
 
     train_set = HARDataset(
@@ -372,6 +463,6 @@ if __name__ == "__main__" :
     model, _, _ = get_model(n_feat, n_cls)
     n_device = n_feat // 6  # (accel, gyro) * (x, y, z)
     
-    evaluate(model, test_dataset, -1, n_device, mode='best') 
-    evaluate(model, test_dataset, -2, n_device, mode='final')
-    evaluate(model, val_dataset, -3, n_device, mode='final')
+    evaluate(model, test_dataset, -1, n_device, mode='best')
+    evaluate(model, test_dataset, -2, n_device, mode='final') 
+    evaluate(model, test_dataset, -3, n_device, mode='first')
