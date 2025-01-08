@@ -1,7 +1,7 @@
 test acc : 15.58%
 test f1 : 0.0988
 
-each class performance :
+Per-class Performance:
 class 0.0:
   Precision: 0.2143
   Recall: 0.0060
@@ -27,7 +27,7 @@ class 5.0:
   Recall: 0.0074
   F1-Score: 0.0143
 
-Performance :
+Overall Performance:
 Macro Avg Precision: 0.1417
 Macro Avg Recall: 0.1550
 Macro Avg F1-Score: 0.0977

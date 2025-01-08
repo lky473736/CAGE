@@ -1,4 +1,5 @@
 import os
+from sklearn.manifold import TSNE
 import argparse
 import time
 import random
@@ -12,6 +13,9 @@ from utils.logger import initialize_logger, record_result, create_tensorboard_wr
 from configs import args, dict_to_markdown
 from sklearn.metrics import classification_report
 from models.CAGE import CAGE
+
+import matplotlib.pyplot as plt
+
 
 def set_seed(seed) : 
     random.seed(seed)
@@ -132,6 +136,7 @@ def evaluate_step(model, x_accel, x_gyro, labels):
     )
     
     return ssl_loss, cls_loss, ssl_output, cls_output, f_accel, f_gyro
+
 def train():
    train_dataset = train_set.make_tf_dataset(
        batch_size=args.batch_size,
@@ -244,7 +249,7 @@ def train():
     #        model.save_weights(os.path.join(args.save_folder, 'best.weights.h5'))
     #        best_train_matrix = train_matrix
     
-       if val_f1 > best_f1:  # save best model
+       if val_f1 > best_f1:  
         best_f1 = val_f1
         best_acc = val_acc
         best_epoch = epoch
@@ -254,14 +259,13 @@ def train():
         logger.info(f"Best model updated at epoch {epoch}")
 
    
-   # Save final model and its validation results
    model.save_weights(os.path.join(args.save_folder, 'final.weights.h5'))
    final_val_acc, final_val_f1, final_val_matrix = evaluate(
        model, val_dataset, args.epochs, n_device,
        is_test=False, writer=writer, return_matrix=True
    )
 
-   model, _, _ = get_model(n_feat, n_cls)  # 새 모델 생성
+   model, _, _ = get_model(n_feat, n_cls)  
    best_weights_path = os.path.join(args.save_folder, 'best.weights.h5')
    model.load_weights(best_weights_path)
    best_test_acc, best_test_f1, best_test_matrix = evaluate(
@@ -269,7 +273,7 @@ def train():
         is_test=True, writer=writer, return_matrix=True
     )
 
-   model, _, _ = get_model(n_feat, n_cls)  # 새 모델 생성
+   model, _, _ = get_model(n_feat, n_cls)  
    final_weights_path = os.path.join(args.save_folder, 'final.weights.h5')
    model.load_weights(final_weights_path)
    final_test_acc, final_test_f1, final_test_matrix = evaluate(
@@ -277,7 +281,6 @@ def train():
         is_test=True, writer=writer, return_matrix=True
     )
    
-   # Save all results
    result.write(f"Best model validation acc: {best_acc:.2f}%, F1: {best_f1:.4f} (epoch {best_epoch})\n")
    result.write("Best model validation confusion matrix:\n")
    result.write(str(best_val_matrix) + "\n\n")
@@ -305,8 +308,80 @@ def train():
    result.close()
    writer.close()
    
+def calculate_embedding_distances(accel_embeddings, gyro_embeddings, labels):
+    unique_labels = np.unique(labels)
+    n_labels = len(unique_labels)
+    
+    intra_distances = []  # distances within same label
+    inter_distances = []  # distances between different labels
+    label_stats = {}
+    
+    for label in unique_labels:
+        mask = labels == label
+        curr_accel = accel_embeddings[mask]
+        curr_gyro = gyro_embeddings[mask]
+        
+        intra_dist = np.mean(np.linalg.norm(curr_accel - curr_gyro, axis=1))
+        intra_distances.append(intra_dist)
+        
+        other_mask = labels != label
+        other_accel = accel_embeddings[other_mask]
+        other_gyro = gyro_embeddings[other_mask]
+        
+        inter_dist = np.mean(np.linalg.norm(curr_accel[:, None] - other_gyro, axis=2))
+        inter_distances.append(np.mean(inter_dist))
+        
+        label_stats[label] = {
+            'intra_dist': intra_dist,
+            'inter_dist': np.mean(inter_dist),
+            'ratio': intra_dist / np.mean(inter_dist)
+        }
+    
+    return np.array(intra_distances), np.array(inter_distances), label_stats
+
+def visualize_embeddings(accel_embeddings, gyro_embeddings, labels, save_path):
+    tsne = TSNE(n_components=2, random_state=42)
+    
+    accel_tsne = tsne.fit_transform(accel_embeddings)
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+    
+    scatter1 = ax1.scatter(accel_tsne[:, 0], accel_tsne[:, 1], 
+                          c=labels, cmap='tab10', alpha=0.6)
+    ax1.set_title('Accelerometer Embeddings')
+    fig.colorbar(scatter1, ax=ax1)
+    
+    gyro_tsne = tsne.fit_transform(gyro_embeddings)
+    scatter2 = ax2.scatter(gyro_tsne[:, 0], gyro_tsne[:, 1], 
+                          c=labels, cmap='tab10', alpha=0.6)
+    ax2.set_title('Gyroscope Embeddings')
+    fig.colorbar(scatter2, ax=ax2)
+    
+    plt.tight_layout()
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.close()
+
+def save_embedding_analysis(save_dir, intra_distances, inter_distances, label_stats, 
+                          cls_labels, cls_preds, all_accel_embeddings, all_gyro_embeddings):
+    """Save embedding analysis results"""
+    os.makedirs(save_dir, exist_ok=True)
+    
+    with open(os.path.join(save_dir, 'embedding_analysis.txt'), 'w') as f:
+        f.write("Embedding Analysis Results\n")
+        f.write("=" * 50 + "\n\n")
+        
+        f.write("Overall Statistics:\n")
+        f.write(f"Mean Intra-class Distance: {np.mean(intra_distances):.4f} (±{np.std(intra_distances):.4f})\n")
+        f.write(f"Mean Inter-class Distance: {np.mean(inter_distances):.4f} (±{np.std(inter_distances):.4f})\n")
+        f.write(f"Mean Ratio (Intra/Inter): {np.mean(intra_distances/inter_distances):.4f}\n\n")
+        
+        f.write("Per-label Statistics:\n")
+        for label, stats in label_stats.items():
+            f.write(f"\nLabel {label}:\n")
+            f.write(f"  Intra-class Distance: {stats['intra_dist']:.4f}\n")
+            f.write(f"  Inter-class Distance: {stats['inter_dist']:.4f}\n")
+            f.write(f"  Ratio: {stats['ratio']:.4f}\n")
+   
 def evaluate(model, dataset, epoch, n_device, is_test=True, mode='best', writer=None, return_matrix=False):
-    """Evaluation step"""
     if is_test:
         model.load_weights(os.path.join(args.save_folder, f'{mode}.weights.h5'))
     
@@ -369,40 +444,108 @@ def evaluate(model, dataset, epoch, n_device, is_test=True, mode='best', writer=
         logger.info(f'=> test acc: {cls_acc:.2f}%, test F1: {cls_f1:.4f} / '
                    f'ssl acc: {ssl_acc:.2f}%')
         
-        result_filename = f'results_{mode}_model.txt'
-        if is_test:
-    # 기존 코드 유지
-            with open(os.path.join(args.save_folder, result_filename), 'w') as f:
-                f.write(f"test acc : {cls_acc:.2f}%\n")
-                f.write(f"test f1 : {cls_f1:.4f}\n")
-                
-                # 추가: 클래스별 성능 계산
-                class_report = classification_report(cls_labels, cls_preds, output_dict=True)
-                
-                f.write("\neach class performance :\n")
-                for class_name, metrics in class_report.items():
-                    if class_name not in ['accuracy', 'macro avg', 'weighted avg']:
-                        f.write(f"class {class_name}:\n")
-                        f.write(f"  Precision: {metrics['precision']:.4f}\n")
-                        f.write(f"  Recall: {metrics['recall']:.4f}\n")
-                        f.write(f"  F1-Score: {metrics['f1-score']:.4f}\n")
-                
-                f.write("\nPerformance :\n")
-                f.write(f"Macro Avg Precision: {class_report['macro avg']['precision']:.4f}\n")
-                f.write(f"Macro Avg Recall: {class_report['macro avg']['recall']:.4f}\n")
-                f.write(f"Macro Avg F1-Score: {class_report['macro avg']['f1-score']:.4f}\n")
+        save_dir = os.path.join(args.save_folder, f'embedding_analysis_{mode}')
+        os.makedirs(save_dir, exist_ok=True)
+        
+        # --------------- 1. t-SNE visualization ---------------
+        tsne = TSNE(n_components=2, random_state=42)
+        plt.figure(figsize=(12, 5))
+        
+        accel_tsne = tsne.fit_transform(all_accel_embeddings)
+        plt.subplot(121)
+        scatter = plt.scatter(accel_tsne[:, 0], accel_tsne[:, 1], 
+                            c=cls_labels, cmap='tab10', alpha=0.6)
+        plt.title('Accelerometer Embeddings')
+        plt.colorbar(scatter)
+        
+        gyro_tsne = tsne.fit_transform(all_gyro_embeddings)
+        plt.subplot(122)
+        scatter = plt.scatter(gyro_tsne[:, 0], gyro_tsne[:, 1], 
+                            c=cls_labels, cmap='tab10', alpha=0.6)
+        plt.title('Gyroscope Embeddings')
+        plt.colorbar(scatter)
+        
+        plt.tight_layout()
+        plt.savefig(os.path.join(save_dir, 'tsne_visualization.jpg'), dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        # --------------- 2. Distance analysis ---------------
 
-                f.write("\nConfusion Matrix:\n")
-                f.write(str(c_mat))
-                f.write("\n\n")
+        unique_labels = np.unique(cls_labels)
+        intra_distances = []  # within same label
+        inter_distances = []  # between different labels
+        
+        with open(os.path.join(save_dir, 'embedding_distance_analysis.txt'), 'w') as f:
+            f.write("Embedding Distance Analysis\n")
+            f.write("=" * 50 + "\n\n")
+            
+            for label in unique_labels:
+                mask = cls_labels == label
+                curr_accel = all_accel_embeddings[mask]
+                curr_gyro = all_gyro_embeddings[mask]
                 
-                f.write("Per-sample Results:\n")
-                for i in range(len(cls_labels)):
-                    f.write(f"[Sample {i+1}]\n")
-                    f.write(f"Original Label: {cls_labels[i]}\n")
-                    f.write(f"Predicted Label: {cls_preds[i]}\n")
-                    f.write(f"Accelerometer Embedding: {all_accel_embeddings[i].tolist()[:10]}\n")
-                    f.write(f"Gyroscope Embedding: {all_gyro_embeddings[i].tolist()[:10]}\n\n")
+                intra_dist = np.mean(np.linalg.norm(curr_accel - curr_gyro, axis=1))
+                intra_distances.append(intra_dist)
+                
+                other_mask = cls_labels != label
+                other_accel = all_accel_embeddings[other_mask]
+                other_gyro = all_gyro_embeddings[other_mask]
+                inter_dist = np.mean(np.linalg.norm(curr_accel[:, None] - other_gyro, axis=2))
+                inter_distances.append(np.mean(inter_dist))
+                
+                f.write(f"Label {label}:\n")
+                f.write(f"- Intra-class mean distance: {intra_dist:.4f}\n")
+                f.write(f"- Inter-class mean distance: {inter_dist:.4f}\n")
+                f.write(f"- Ratio (intra/inter): {intra_dist/inter_dist:.4f}\n\n")
+            
+            intra_distances = np.array(intra_distances)
+            inter_distances = np.array(inter_distances)
+            f.write("\nOverall Statistics:\n")
+            f.write(f"Mean intra-class distance: {np.mean(intra_distances):.4f} (±{np.std(intra_distances):.4f})\n")
+            f.write(f"Mean inter-class distance: {np.mean(inter_distances):.4f} (±{np.std(inter_distances):.4f})\n")
+            f.write(f"Mean ratio (intra/inter): {np.mean(intra_distances/inter_distances):.4f}\n")
+        
+        plt.figure(figsize=(10, 6))
+        plt.hist(intra_distances, alpha=0.5, label='Same Label', bins=20)
+        plt.hist(inter_distances, alpha=0.5, label='Different Labels', bins=20)
+        plt.xlabel('Euclidean Distance')
+        plt.ylabel('Frequency')
+        plt.title('Distribution of Embedding Distances')
+        plt.legend()
+        plt.savefig(os.path.join(save_dir, 'distance_distribution.jpg'))
+        plt.close()
+        
+        result_filename = f'results_{mode}_model.txt'
+        with open(os.path.join(args.save_folder, result_filename), 'w') as f:
+            f.write(f"test acc : {cls_acc:.2f}%\n")
+            f.write(f"test f1 : {cls_f1:.4f}\n")
+            
+            class_report = classification_report(cls_labels, cls_preds, output_dict=True)
+            
+            f.write("\nPer-class Performance:\n")
+            for class_name, metrics in class_report.items():
+                if class_name not in ['accuracy', 'macro avg', 'weighted avg']:
+                    f.write(f"class {class_name}:\n")
+                    f.write(f"  Precision: {metrics['precision']:.4f}\n")
+                    f.write(f"  Recall: {metrics['recall']:.4f}\n")
+                    f.write(f"  F1-Score: {metrics['f1-score']:.4f}\n")
+            
+            f.write("\nOverall Performance:\n")
+            f.write(f"Macro Avg Precision: {class_report['macro avg']['precision']:.4f}\n")
+            f.write(f"Macro Avg Recall: {class_report['macro avg']['recall']:.4f}\n")
+            f.write(f"Macro Avg F1-Score: {class_report['macro avg']['f1-score']:.4f}\n")
+
+            f.write("\nConfusion Matrix:\n")
+            f.write(str(c_mat))
+            f.write("\n\n")
+            
+            f.write("Per-sample Results:\n")
+            for i in range(len(cls_labels)):
+                f.write(f"[Sample {i+1}]\n")
+                f.write(f"Original Label: {cls_labels[i]}\n")
+                f.write(f"Predicted Label: {cls_preds[i]}\n")
+                f.write(f"Accelerometer Embedding: {all_accel_embeddings[i].tolist()[:10]}\n")
+                f.write(f"Gyroscope Embedding: {all_gyro_embeddings[i].tolist()[:10]}\n\n")
                 
     else:
         logger.info(f'=> val acc (cls): {cls_acc:.2f}%, val F1 (cls): {cls_f1:.4f} / '
