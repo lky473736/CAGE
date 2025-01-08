@@ -1,0 +1,617 @@
+2025-01-08 17:47:32 - Epoch: [0/200] - loss:5.3444, train acc: 51.18%, train F1: 0.5090, ssl acc: 9.91%
+2025-01-08 17:47:33 - => val acc (cls): 68.08%, val F1 (cls): 0.6634 / val acc (ssl): 5.81%
+2025-01-08 17:47:33 - => cls_loss: 1.0630 / ssl_loss: 3.9085
+2025-01-08 17:47:33 - Best model updated at epoch 0
+2025-01-08 17:47:34 - => val acc (cls): 68.08%, val F1 (cls): 0.6634 / val acc (ssl): 5.81%
+2025-01-08 17:47:34 - => cls_loss: 1.0630 / ssl_loss: 3.9085
+2025-01-08 17:47:38 - Epoch: [1/200] - loss:4.4999, train acc: 67.80%, train F1: 0.6756, ssl acc: 17.20%
+2025-01-08 17:47:39 - => val acc (cls): 67.60%, val F1 (cls): 0.6782 / val acc (ssl): 6.15%
+2025-01-08 17:47:39 - => cls_loss: 0.9854 / ssl_loss: 3.8608
+2025-01-08 17:47:39 - Best model updated at epoch 1
+2025-01-08 17:47:43 - Epoch: [2/200] - loss:4.2701, train acc: 73.22%, train F1: 0.7316, ssl acc: 22.17%
+2025-01-08 17:47:44 - => val acc (cls): 70.33%, val F1 (cls): 0.7024 / val acc (ssl): 6.63%
+2025-01-08 17:47:44 - => cls_loss: 0.9679 / ssl_loss: 3.8333
+2025-01-08 17:47:44 - Best model updated at epoch 2
+2025-01-08 17:47:49 - Epoch: [3/200] - loss:4.1464, train acc: 76.94%, train F1: 0.7694, ssl acc: 26.31%
+2025-01-08 17:47:50 - => val acc (cls): 71.50%, val F1 (cls): 0.7057 / val acc (ssl): 7.59%
+2025-01-08 17:47:50 - => cls_loss: 0.9210 / ssl_loss: 3.8265
+2025-01-08 17:47:50 - Best model updated at epoch 3
+2025-01-08 17:47:54 - Epoch: [4/200] - loss:4.0758, train acc: 78.34%, train F1: 0.7837, ssl acc: 30.12%
+2025-01-08 17:47:55 - => val acc (cls): 72.25%, val F1 (cls): 0.7203 / val acc (ssl): 9.77%
+2025-01-08 17:47:55 - => cls_loss: 0.9663 / ssl_loss: 3.8095
+2025-01-08 17:47:55 - Best model updated at epoch 4
+2025-01-08 17:48:00 - Epoch: [5/200] - loss:3.9952, train acc: 80.21%, train F1: 0.8025, ssl acc: 33.85%
+2025-01-08 17:48:00 - => val acc (cls): 71.57%, val F1 (cls): 0.7084 / val acc (ssl): 10.05%
+2025-01-08 17:48:00 - => cls_loss: 0.9551 / ssl_loss: 3.8065
+2025-01-08 17:48:05 - Epoch: [6/200] - loss:3.9503, train acc: 81.37%, train F1: 0.8141, ssl acc: 35.93%
+2025-01-08 17:48:05 - => val acc (cls): 72.39%, val F1 (cls): 0.7139 / val acc (ssl): 9.36%
+2025-01-08 17:48:05 - => cls_loss: 0.9529 / ssl_loss: 3.7881
+2025-01-08 17:48:10 - Epoch: [7/200] - loss:3.9072, train acc: 82.59%, train F1: 0.8266, ssl acc: 37.98%
+2025-01-08 17:48:11 - => val acc (cls): 74.50%, val F1 (cls): 0.7346 / val acc (ssl): 9.36%
+2025-01-08 17:48:11 - => cls_loss: 0.9284 / ssl_loss: 3.7902
+2025-01-08 17:48:11 - Best model updated at epoch 7
+2025-01-08 17:48:16 - Epoch: [8/200] - loss:3.8703, train acc: 83.81%, train F1: 0.8386, ssl acc: 39.49%
+2025-01-08 17:48:17 - => val acc (cls): 72.93%, val F1 (cls): 0.7283 / val acc (ssl): 11.14%
+2025-01-08 17:48:17 - => cls_loss: 0.9846 / ssl_loss: 3.7825
+2025-01-08 17:48:22 - Epoch: [9/200] - loss:3.8376, train acc: 84.64%, train F1: 0.8469, ssl acc: 40.10%
+2025-01-08 17:48:22 - => val acc (cls): 73.21%, val F1 (cls): 0.7216 / val acc (ssl): 10.80%
+2025-01-08 17:48:22 - => cls_loss: 0.9439 / ssl_loss: 3.7819
+2025-01-08 17:48:27 - Epoch: [10/200] - loss:3.8109, train acc: 85.37%, train F1: 0.8542, ssl acc: 41.56%
+2025-01-08 17:48:28 - => val acc (cls): 71.16%, val F1 (cls): 0.7082 / val acc (ssl): 10.66%
+2025-01-08 17:48:28 - => cls_loss: 1.0672 / ssl_loss: 3.7875
+2025-01-08 17:48:33 - Epoch: [11/200] - loss:3.7945, train acc: 85.88%, train F1: 0.8595, ssl acc: 42.51%
+2025-01-08 17:48:34 - => val acc (cls): 73.07%, val F1 (cls): 0.7243 / val acc (ssl): 10.12%
+2025-01-08 17:48:34 - => cls_loss: 0.9844 / ssl_loss: 3.7833
+2025-01-08 17:48:38 - Epoch: [12/200] - loss:3.7645, train acc: 86.89%, train F1: 0.8694, ssl acc: 43.96%
+2025-01-08 17:48:39 - => val acc (cls): 71.98%, val F1 (cls): 0.7130 / val acc (ssl): 10.87%
+2025-01-08 17:48:39 - => cls_loss: 0.9738 / ssl_loss: 3.7905
+2025-01-08 17:48:44 - Epoch: [13/200] - loss:3.7349, train acc: 87.38%, train F1: 0.8743, ssl acc: 43.97%
+2025-01-08 17:48:45 - => val acc (cls): 72.11%, val F1 (cls): 0.7149 / val acc (ssl): 9.71%
+2025-01-08 17:48:45 - => cls_loss: 1.0929 / ssl_loss: 3.7838
+2025-01-08 17:48:50 - Epoch: [14/200] - loss:3.7338, train acc: 87.54%, train F1: 0.8760, ssl acc: 44.10%
+2025-01-08 17:48:51 - => val acc (cls): 72.18%, val F1 (cls): 0.7198 / val acc (ssl): 9.30%
+2025-01-08 17:48:51 - => cls_loss: 1.0537 / ssl_loss: 3.7788
+2025-01-08 17:48:56 - Epoch: [15/200] - loss:3.7167, train acc: 88.07%, train F1: 0.8813, ssl acc: 44.48%
+2025-01-08 17:48:56 - => val acc (cls): 74.85%, val F1 (cls): 0.7419 / val acc (ssl): 9.30%
+2025-01-08 17:48:56 - => cls_loss: 1.0695 / ssl_loss: 3.7777
+2025-01-08 17:48:57 - Best model updated at epoch 15
+2025-01-08 17:49:01 - Epoch: [16/200] - loss:3.7003, train acc: 88.49%, train F1: 0.8856, ssl acc: 45.19%
+2025-01-08 17:49:02 - => val acc (cls): 73.27%, val F1 (cls): 0.7279 / val acc (ssl): 11.14%
+2025-01-08 17:49:02 - => cls_loss: 1.0386 / ssl_loss: 3.7911
+2025-01-08 17:49:07 - Epoch: [17/200] - loss:3.6830, train acc: 89.12%, train F1: 0.8917, ssl acc: 46.17%
+2025-01-08 17:49:07 - => val acc (cls): 73.82%, val F1 (cls): 0.7346 / val acc (ssl): 10.80%
+2025-01-08 17:49:07 - => cls_loss: 1.0751 / ssl_loss: 3.7706
+2025-01-08 17:49:13 - Epoch: [18/200] - loss:3.6665, train acc: 89.41%, train F1: 0.8947, ssl acc: 46.69%
+2025-01-08 17:49:13 - => val acc (cls): 69.17%, val F1 (cls): 0.6906 / val acc (ssl): 10.05%
+2025-01-08 17:49:13 - => cls_loss: 1.2293 / ssl_loss: 3.7899
+2025-01-08 17:49:19 - Epoch: [19/200] - loss:3.6554, train acc: 89.93%, train F1: 0.8997, ssl acc: 45.83%
+2025-01-08 17:49:19 - => val acc (cls): 72.45%, val F1 (cls): 0.7277 / val acc (ssl): 10.80%
+2025-01-08 17:49:19 - => cls_loss: 1.1759 / ssl_loss: 3.7901
+2025-01-08 17:49:25 - Epoch: [20/200] - loss:3.6496, train acc: 89.75%, train F1: 0.8980, ssl acc: 45.75%
+2025-01-08 17:49:25 - => val acc (cls): 74.78%, val F1 (cls): 0.7434 / val acc (ssl): 10.46%
+2025-01-08 17:49:25 - => cls_loss: 1.0157 / ssl_loss: 3.7752
+2025-01-08 17:49:25 - Best model updated at epoch 20
+2025-01-08 17:49:31 - Epoch: [21/200] - loss:3.5945, train acc: 91.30%, train F1: 0.9134, ssl acc: 50.94%
+2025-01-08 17:49:31 - => val acc (cls): 72.80%, val F1 (cls): 0.7224 / val acc (ssl): 9.77%
+2025-01-08 17:49:31 - => cls_loss: 1.1456 / ssl_loss: 3.7790
+2025-01-08 17:49:36 - Epoch: [22/200] - loss:3.5691, train acc: 92.18%, train F1: 0.9222, ssl acc: 52.55%
+2025-01-08 17:49:37 - => val acc (cls): 72.59%, val F1 (cls): 0.7234 / val acc (ssl): 11.00%
+2025-01-08 17:49:37 - => cls_loss: 1.2794 / ssl_loss: 3.7713
+2025-01-08 17:49:42 - Epoch: [23/200] - loss:3.5555, train acc: 92.68%, train F1: 0.9271, ssl acc: 52.71%
+2025-01-08 17:49:43 - => val acc (cls): 73.62%, val F1 (cls): 0.7319 / val acc (ssl): 11.28%
+2025-01-08 17:49:43 - => cls_loss: 1.1729 / ssl_loss: 3.7665
+2025-01-08 17:49:49 - Epoch: [24/200] - loss:3.5482, train acc: 92.62%, train F1: 0.9266, ssl acc: 52.88%
+2025-01-08 17:49:50 - => val acc (cls): 73.00%, val F1 (cls): 0.7275 / val acc (ssl): 10.59%
+2025-01-08 17:49:50 - => cls_loss: 1.2376 / ssl_loss: 3.7751
+2025-01-08 17:49:55 - Epoch: [25/200] - loss:3.5469, train acc: 92.61%, train F1: 0.9265, ssl acc: 53.00%
+2025-01-08 17:49:56 - => val acc (cls): 72.18%, val F1 (cls): 0.7136 / val acc (ssl): 11.21%
+2025-01-08 17:49:56 - => cls_loss: 1.2848 / ssl_loss: 3.7659
+2025-01-08 17:50:01 - Epoch: [26/200] - loss:3.5384, train acc: 92.86%, train F1: 0.9290, ssl acc: 53.30%
+2025-01-08 17:50:02 - => val acc (cls): 73.14%, val F1 (cls): 0.7244 / val acc (ssl): 11.76%
+2025-01-08 17:50:02 - => cls_loss: 1.2956 / ssl_loss: 3.7738
+2025-01-08 17:50:07 - Epoch: [27/200] - loss:3.5307, train acc: 93.12%, train F1: 0.9315, ssl acc: 53.05%
+2025-01-08 17:50:08 - => val acc (cls): 74.30%, val F1 (cls): 0.7379 / val acc (ssl): 10.80%
+2025-01-08 17:50:08 - => cls_loss: 1.2181 / ssl_loss: 3.7687
+2025-01-08 17:50:14 - Epoch: [28/200] - loss:3.5304, train acc: 93.05%, train F1: 0.9308, ssl acc: 53.74%
+2025-01-08 17:50:14 - => val acc (cls): 72.86%, val F1 (cls): 0.7275 / val acc (ssl): 10.12%
+2025-01-08 17:50:14 - => cls_loss: 1.2447 / ssl_loss: 3.7717
+2025-01-08 17:50:20 - Epoch: [29/200] - loss:3.5185, train acc: 93.40%, train F1: 0.9343, ssl acc: 53.84%
+2025-01-08 17:50:21 - => val acc (cls): 73.27%, val F1 (cls): 0.7301 / val acc (ssl): 10.80%
+2025-01-08 17:50:21 - => cls_loss: 1.3374 / ssl_loss: 3.7750
+2025-01-08 17:50:26 - Epoch: [30/200] - loss:3.5115, train acc: 93.58%, train F1: 0.9361, ssl acc: 54.31%
+2025-01-08 17:50:27 - => val acc (cls): 71.02%, val F1 (cls): 0.7031 / val acc (ssl): 10.32%
+2025-01-08 17:50:27 - => cls_loss: 1.4279 / ssl_loss: 3.7811
+2025-01-08 17:50:32 - Epoch: [31/200] - loss:3.5180, train acc: 93.26%, train F1: 0.9329, ssl acc: 54.28%
+2025-01-08 17:50:33 - => val acc (cls): 74.23%, val F1 (cls): 0.7383 / val acc (ssl): 10.59%
+2025-01-08 17:50:33 - => cls_loss: 1.3382 / ssl_loss: 3.7590
+2025-01-08 17:50:39 - Epoch: [32/200] - loss:3.5117, train acc: 93.27%, train F1: 0.9330, ssl acc: 54.26%
+2025-01-08 17:50:40 - => val acc (cls): 73.14%, val F1 (cls): 0.7308 / val acc (ssl): 11.14%
+2025-01-08 17:50:40 - => cls_loss: 1.4537 / ssl_loss: 3.7749
+2025-01-08 17:50:44 - Epoch: [33/200] - loss:3.5025, train acc: 93.96%, train F1: 0.9398, ssl acc: 54.59%
+2025-01-08 17:50:45 - => val acc (cls): 73.27%, val F1 (cls): 0.7313 / val acc (ssl): 11.48%
+2025-01-08 17:50:45 - => cls_loss: 1.4177 / ssl_loss: 3.7611
+2025-01-08 17:50:51 - Epoch: [34/200] - loss:3.4989, train acc: 93.87%, train F1: 0.9389, ssl acc: 54.92%
+2025-01-08 17:50:52 - => val acc (cls): 72.93%, val F1 (cls): 0.7322 / val acc (ssl): 10.94%
+2025-01-08 17:50:52 - => cls_loss: 1.4435 / ssl_loss: 3.7571
+2025-01-08 17:50:57 - Epoch: [35/200] - loss:3.5008, train acc: 93.72%, train F1: 0.9374, ssl acc: 54.53%
+2025-01-08 17:50:58 - => val acc (cls): 71.63%, val F1 (cls): 0.7117 / val acc (ssl): 11.00%
+2025-01-08 17:50:58 - => cls_loss: 1.4368 / ssl_loss: 3.7607
+2025-01-08 17:51:03 - Epoch: [36/200] - loss:3.4997, train acc: 93.66%, train F1: 0.9369, ssl acc: 55.16%
+2025-01-08 17:51:04 - => val acc (cls): 71.70%, val F1 (cls): 0.7121 / val acc (ssl): 11.14%
+2025-01-08 17:51:04 - => cls_loss: 1.4223 / ssl_loss: 3.7702
+2025-01-08 17:51:09 - Epoch: [37/200] - loss:3.4846, train acc: 94.16%, train F1: 0.9418, ssl acc: 55.61%
+2025-01-08 17:51:10 - => val acc (cls): 72.80%, val F1 (cls): 0.7246 / val acc (ssl): 11.41%
+2025-01-08 17:51:10 - => cls_loss: 1.3927 / ssl_loss: 3.7591
+2025-01-08 17:51:16 - Epoch: [38/200] - loss:3.4909, train acc: 94.02%, train F1: 0.9403, ssl acc: 55.98%
+2025-01-08 17:51:17 - => val acc (cls): 71.36%, val F1 (cls): 0.7113 / val acc (ssl): 10.66%
+2025-01-08 17:51:17 - => cls_loss: 1.4877 / ssl_loss: 3.7638
+2025-01-08 17:51:22 - Epoch: [39/200] - loss:3.4853, train acc: 94.11%, train F1: 0.9413, ssl acc: 56.32%
+2025-01-08 17:51:23 - => val acc (cls): 72.32%, val F1 (cls): 0.7199 / val acc (ssl): 11.35%
+2025-01-08 17:51:23 - => cls_loss: 1.3950 / ssl_loss: 3.7643
+2025-01-08 17:51:28 - Epoch: [40/200] - loss:3.4834, train acc: 94.09%, train F1: 0.9411, ssl acc: 56.37%
+2025-01-08 17:51:29 - => val acc (cls): 73.62%, val F1 (cls): 0.7365 / val acc (ssl): 10.87%
+2025-01-08 17:51:29 - => cls_loss: 1.3187 / ssl_loss: 3.7688
+2025-01-08 17:51:35 - Epoch: [41/200] - loss:3.4593, train acc: 94.87%, train F1: 0.9489, ssl acc: 58.86%
+2025-01-08 17:51:36 - => val acc (cls): 72.45%, val F1 (cls): 0.7186 / val acc (ssl): 11.55%
+2025-01-08 17:51:36 - => cls_loss: 1.4633 / ssl_loss: 3.7610
+2025-01-08 17:51:41 - Epoch: [42/200] - loss:3.4434, train acc: 95.05%, train F1: 0.9507, ssl acc: 60.38%
+2025-01-08 17:51:42 - => val acc (cls): 72.45%, val F1 (cls): 0.7206 / val acc (ssl): 11.41%
+2025-01-08 17:51:42 - => cls_loss: 1.4709 / ssl_loss: 3.7618
+2025-01-08 17:51:47 - Epoch: [43/200] - loss:3.4402, train acc: 95.34%, train F1: 0.9535, ssl acc: 60.48%
+2025-01-08 17:51:48 - => val acc (cls): 72.52%, val F1 (cls): 0.7229 / val acc (ssl): 10.94%
+2025-01-08 17:51:48 - => cls_loss: 1.4839 / ssl_loss: 3.7626
+2025-01-08 17:51:53 - Epoch: [44/200] - loss:3.4405, train acc: 95.20%, train F1: 0.9521, ssl acc: 60.04%
+2025-01-08 17:51:54 - => val acc (cls): 72.32%, val F1 (cls): 0.7197 / val acc (ssl): 11.55%
+2025-01-08 17:51:54 - => cls_loss: 1.5060 / ssl_loss: 3.7659
+2025-01-08 17:52:00 - Epoch: [45/200] - loss:3.4371, train acc: 95.41%, train F1: 0.9542, ssl acc: 61.59%
+2025-01-08 17:52:00 - => val acc (cls): 72.11%, val F1 (cls): 0.7180 / val acc (ssl): 11.35%
+2025-01-08 17:52:00 - => cls_loss: 1.5025 / ssl_loss: 3.7614
+2025-01-08 17:52:06 - Epoch: [46/200] - loss:3.4314, train acc: 95.40%, train F1: 0.9541, ssl acc: 61.50%
+2025-01-08 17:52:07 - => val acc (cls): 72.32%, val F1 (cls): 0.7180 / val acc (ssl): 11.62%
+2025-01-08 17:52:07 - => cls_loss: 1.5428 / ssl_loss: 3.7644
+2025-01-08 17:52:12 - Epoch: [47/200] - loss:3.4278, train acc: 95.54%, train F1: 0.9555, ssl acc: 61.58%
+2025-01-08 17:52:13 - => val acc (cls): 71.70%, val F1 (cls): 0.7129 / val acc (ssl): 11.14%
+2025-01-08 17:52:13 - => cls_loss: 1.5682 / ssl_loss: 3.7653
+2025-01-08 17:52:18 - Epoch: [48/200] - loss:3.4321, train acc: 95.46%, train F1: 0.9547, ssl acc: 61.62%
+2025-01-08 17:52:19 - => val acc (cls): 71.50%, val F1 (cls): 0.7111 / val acc (ssl): 12.03%
+2025-01-08 17:52:19 - => cls_loss: 1.5831 / ssl_loss: 3.7598
+2025-01-08 17:52:25 - Epoch: [49/200] - loss:3.4271, train acc: 95.59%, train F1: 0.9561, ssl acc: 61.29%
+2025-01-08 17:52:25 - => val acc (cls): 73.07%, val F1 (cls): 0.7265 / val acc (ssl): 12.10%
+2025-01-08 17:52:25 - => cls_loss: 1.5020 / ssl_loss: 3.7669
+2025-01-08 17:52:31 - Epoch: [50/200] - loss:3.4251, train acc: 95.55%, train F1: 0.9556, ssl acc: 61.46%
+2025-01-08 17:52:31 - => val acc (cls): 73.21%, val F1 (cls): 0.7254 / val acc (ssl): 12.65%
+2025-01-08 17:52:31 - => cls_loss: 1.6619 / ssl_loss: 3.7676
+2025-01-08 17:52:37 - Epoch: [51/200] - loss:3.4176, train acc: 95.72%, train F1: 0.9573, ssl acc: 61.52%
+2025-01-08 17:52:37 - => val acc (cls): 71.22%, val F1 (cls): 0.7102 / val acc (ssl): 11.96%
+2025-01-08 17:52:37 - => cls_loss: 1.6252 / ssl_loss: 3.7646
+2025-01-08 17:52:43 - Epoch: [52/200] - loss:3.4161, train acc: 95.78%, train F1: 0.9579, ssl acc: 62.05%
+2025-01-08 17:52:43 - => val acc (cls): 73.68%, val F1 (cls): 0.7333 / val acc (ssl): 11.62%
+2025-01-08 17:52:43 - => cls_loss: 1.5711 / ssl_loss: 3.7665
+2025-01-08 17:52:49 - Epoch: [53/200] - loss:3.4175, train acc: 95.77%, train F1: 0.9578, ssl acc: 62.41%
+2025-01-08 17:52:50 - => val acc (cls): 71.02%, val F1 (cls): 0.7081 / val acc (ssl): 12.58%
+2025-01-08 17:52:50 - => cls_loss: 1.7228 / ssl_loss: 3.7643
+2025-01-08 17:52:55 - Epoch: [54/200] - loss:3.4146, train acc: 95.71%, train F1: 0.9572, ssl acc: 62.45%
+2025-01-08 17:52:56 - => val acc (cls): 70.40%, val F1 (cls): 0.7037 / val acc (ssl): 12.03%
+2025-01-08 17:52:56 - => cls_loss: 1.7029 / ssl_loss: 3.7611
+2025-01-08 17:53:01 - Epoch: [55/200] - loss:3.4127, train acc: 95.85%, train F1: 0.9586, ssl acc: 61.89%
+2025-01-08 17:53:02 - => val acc (cls): 72.25%, val F1 (cls): 0.7172 / val acc (ssl): 11.28%
+2025-01-08 17:53:02 - => cls_loss: 1.6375 / ssl_loss: 3.7584
+2025-01-08 17:53:08 - Epoch: [56/200] - loss:3.4098, train acc: 95.85%, train F1: 0.9586, ssl acc: 61.79%
+2025-01-08 17:53:08 - => val acc (cls): 71.22%, val F1 (cls): 0.7092 / val acc (ssl): 11.14%
+2025-01-08 17:53:08 - => cls_loss: 1.6733 / ssl_loss: 3.7566
+2025-01-08 17:53:14 - Epoch: [57/200] - loss:3.4059, train acc: 95.90%, train F1: 0.9591, ssl acc: 61.63%
+2025-01-08 17:53:15 - => val acc (cls): 72.59%, val F1 (cls): 0.7189 / val acc (ssl): 11.07%
+2025-01-08 17:53:15 - => cls_loss: 1.6856 / ssl_loss: 3.7578
+2025-01-08 17:53:21 - Epoch: [58/200] - loss:3.4099, train acc: 95.95%, train F1: 0.9596, ssl acc: 61.44%
+2025-01-08 17:53:22 - => val acc (cls): 71.22%, val F1 (cls): 0.7086 / val acc (ssl): 11.96%
+2025-01-08 17:53:22 - => cls_loss: 1.7395 / ssl_loss: 3.7611
+2025-01-08 17:53:27 - Epoch: [59/200] - loss:3.3998, train acc: 96.08%, train F1: 0.9609, ssl acc: 61.72%
+2025-01-08 17:53:28 - => val acc (cls): 71.57%, val F1 (cls): 0.7129 / val acc (ssl): 11.48%
+2025-01-08 17:53:28 - => cls_loss: 1.7528 / ssl_loss: 3.7613
+2025-01-08 17:53:33 - Epoch: [60/200] - loss:3.4009, train acc: 95.98%, train F1: 0.9599, ssl acc: 61.20%
+2025-01-08 17:53:34 - => val acc (cls): 71.77%, val F1 (cls): 0.7161 / val acc (ssl): 11.07%
+2025-01-08 17:53:34 - => cls_loss: 1.6839 / ssl_loss: 3.7652
+2025-01-08 17:53:39 - Epoch: [61/200] - loss:3.3890, train acc: 96.13%, train F1: 0.9613, ssl acc: 63.20%
+2025-01-08 17:53:40 - => val acc (cls): 71.02%, val F1 (cls): 0.7074 / val acc (ssl): 11.14%
+2025-01-08 17:53:40 - => cls_loss: 1.7254 / ssl_loss: 3.7623
+2025-01-08 17:53:45 - Epoch: [62/200] - loss:3.3841, train acc: 96.29%, train F1: 0.9630, ssl acc: 63.55%
+2025-01-08 17:53:46 - => val acc (cls): 72.52%, val F1 (cls): 0.7241 / val acc (ssl): 11.28%
+2025-01-08 17:53:46 - => cls_loss: 1.7418 / ssl_loss: 3.7603
+2025-01-08 17:53:51 - Epoch: [63/200] - loss:3.3793, train acc: 96.70%, train F1: 0.9670, ssl acc: 64.07%
+2025-01-08 17:53:51 - => val acc (cls): 71.43%, val F1 (cls): 0.7124 / val acc (ssl): 12.10%
+2025-01-08 17:53:51 - => cls_loss: 1.7491 / ssl_loss: 3.7595
+2025-01-08 17:53:56 - Epoch: [64/200] - loss:3.3778, train acc: 96.40%, train F1: 0.9641, ssl acc: 63.91%
+2025-01-08 17:53:57 - => val acc (cls): 71.43%, val F1 (cls): 0.7117 / val acc (ssl): 11.48%
+2025-01-08 17:53:57 - => cls_loss: 1.7508 / ssl_loss: 3.7569
+2025-01-08 17:54:02 - Epoch: [65/200] - loss:3.3764, train acc: 96.59%, train F1: 0.9660, ssl acc: 64.33%
+2025-01-08 17:54:03 - => val acc (cls): 72.32%, val F1 (cls): 0.7199 / val acc (ssl): 11.96%
+2025-01-08 17:54:03 - => cls_loss: 1.7214 / ssl_loss: 3.7585
+2025-01-08 17:54:07 - Epoch: [66/200] - loss:3.3796, train acc: 96.37%, train F1: 0.9638, ssl acc: 64.24%
+2025-01-08 17:54:08 - => val acc (cls): 71.98%, val F1 (cls): 0.7175 / val acc (ssl): 12.44%
+2025-01-08 17:54:08 - => cls_loss: 1.7849 / ssl_loss: 3.7605
+2025-01-08 17:54:13 - Epoch: [67/200] - loss:3.3748, train acc: 96.52%, train F1: 0.9653, ssl acc: 64.71%
+2025-01-08 17:54:14 - => val acc (cls): 72.73%, val F1 (cls): 0.7251 / val acc (ssl): 12.03%
+2025-01-08 17:54:14 - => cls_loss: 1.7709 / ssl_loss: 3.7601
+2025-01-08 17:54:19 - Epoch: [68/200] - loss:3.3776, train acc: 96.49%, train F1: 0.9650, ssl acc: 64.82%
+2025-01-08 17:54:20 - => val acc (cls): 71.22%, val F1 (cls): 0.7105 / val acc (ssl): 11.76%
+2025-01-08 17:54:20 - => cls_loss: 1.7899 / ssl_loss: 3.7568
+2025-01-08 17:54:25 - Epoch: [69/200] - loss:3.3727, train acc: 96.77%, train F1: 0.9677, ssl acc: 65.25%
+2025-01-08 17:54:26 - => val acc (cls): 71.63%, val F1 (cls): 0.7131 / val acc (ssl): 12.03%
+2025-01-08 17:54:26 - => cls_loss: 1.7780 / ssl_loss: 3.7580
+2025-01-08 17:54:31 - Epoch: [70/200] - loss:3.3704, train acc: 96.73%, train F1: 0.9673, ssl acc: 64.07%
+2025-01-08 17:54:32 - => val acc (cls): 71.57%, val F1 (cls): 0.7142 / val acc (ssl): 12.03%
+2025-01-08 17:54:32 - => cls_loss: 1.7849 / ssl_loss: 3.7595
+2025-01-08 17:54:37 - Epoch: [71/200] - loss:3.3710, train acc: 96.57%, train F1: 0.9657, ssl acc: 65.18%
+2025-01-08 17:54:38 - => val acc (cls): 71.63%, val F1 (cls): 0.7138 / val acc (ssl): 12.10%
+2025-01-08 17:54:38 - => cls_loss: 1.8459 / ssl_loss: 3.7561
+2025-01-08 17:54:43 - Epoch: [72/200] - loss:3.3677, train acc: 96.65%, train F1: 0.9666, ssl acc: 65.53%
+2025-01-08 17:54:44 - => val acc (cls): 71.43%, val F1 (cls): 0.7107 / val acc (ssl): 12.44%
+2025-01-08 17:54:44 - => cls_loss: 1.8031 / ssl_loss: 3.7565
+2025-01-08 17:54:49 - Epoch: [73/200] - loss:3.3682, train acc: 96.60%, train F1: 0.9660, ssl acc: 64.63%
+2025-01-08 17:54:50 - => val acc (cls): 71.50%, val F1 (cls): 0.7132 / val acc (ssl): 12.44%
+2025-01-08 17:54:50 - => cls_loss: 1.8130 / ssl_loss: 3.7566
+2025-01-08 17:54:55 - Epoch: [74/200] - loss:3.3662, train acc: 96.68%, train F1: 0.9669, ssl acc: 65.30%
+2025-01-08 17:54:56 - => val acc (cls): 71.36%, val F1 (cls): 0.7109 / val acc (ssl): 12.30%
+2025-01-08 17:54:56 - => cls_loss: 1.8068 / ssl_loss: 3.7568
+2025-01-08 17:55:01 - Epoch: [75/200] - loss:3.3716, train acc: 96.53%, train F1: 0.9654, ssl acc: 65.14%
+2025-01-08 17:55:02 - => val acc (cls): 71.09%, val F1 (cls): 0.7067 / val acc (ssl): 12.17%
+2025-01-08 17:55:02 - => cls_loss: 1.8513 / ssl_loss: 3.7581
+2025-01-08 17:55:07 - Epoch: [76/200] - loss:3.3661, train acc: 96.68%, train F1: 0.9668, ssl acc: 65.08%
+2025-01-08 17:55:08 - => val acc (cls): 71.36%, val F1 (cls): 0.7116 / val acc (ssl): 12.03%
+2025-01-08 17:55:08 - => cls_loss: 1.8473 / ssl_loss: 3.7549
+2025-01-08 17:55:13 - Epoch: [77/200] - loss:3.3616, train acc: 96.80%, train F1: 0.9681, ssl acc: 65.35%
+2025-01-08 17:55:14 - => val acc (cls): 71.29%, val F1 (cls): 0.7098 / val acc (ssl): 12.37%
+2025-01-08 17:55:14 - => cls_loss: 1.8251 / ssl_loss: 3.7557
+2025-01-08 17:55:19 - Epoch: [78/200] - loss:3.3640, train acc: 96.80%, train F1: 0.9680, ssl acc: 65.50%
+2025-01-08 17:55:20 - => val acc (cls): 71.63%, val F1 (cls): 0.7150 / val acc (ssl): 11.96%
+2025-01-08 17:55:20 - => cls_loss: 1.8402 / ssl_loss: 3.7547
+2025-01-08 17:55:25 - Epoch: [79/200] - loss:3.3641, train acc: 96.77%, train F1: 0.9677, ssl acc: 65.00%
+2025-01-08 17:55:26 - => val acc (cls): 72.18%, val F1 (cls): 0.7193 / val acc (ssl): 12.44%
+2025-01-08 17:55:26 - => cls_loss: 1.8075 / ssl_loss: 3.7569
+2025-01-08 17:55:31 - Epoch: [80/200] - loss:3.3596, train acc: 96.97%, train F1: 0.9698, ssl acc: 65.23%
+2025-01-08 17:55:32 - => val acc (cls): 72.04%, val F1 (cls): 0.7179 / val acc (ssl): 12.10%
+2025-01-08 17:55:32 - => cls_loss: 1.8635 / ssl_loss: 3.7558
+2025-01-08 17:55:37 - Epoch: [81/200] - loss:3.3554, train acc: 96.92%, train F1: 0.9692, ssl acc: 66.25%
+2025-01-08 17:55:38 - => val acc (cls): 71.77%, val F1 (cls): 0.7155 / val acc (ssl): 12.78%
+2025-01-08 17:55:38 - => cls_loss: 1.8225 / ssl_loss: 3.7587
+2025-01-08 17:55:43 - Epoch: [82/200] - loss:3.3488, train acc: 97.14%, train F1: 0.9714, ssl acc: 66.35%
+2025-01-08 17:55:44 - => val acc (cls): 71.98%, val F1 (cls): 0.7179 / val acc (ssl): 12.37%
+2025-01-08 17:55:44 - => cls_loss: 1.8185 / ssl_loss: 3.7568
+2025-01-08 17:55:48 - Epoch: [83/200] - loss:3.3535, train acc: 97.11%, train F1: 0.9711, ssl acc: 67.22%
+2025-01-08 17:55:49 - => val acc (cls): 72.11%, val F1 (cls): 0.7183 / val acc (ssl): 12.03%
+2025-01-08 17:55:49 - => cls_loss: 1.8504 / ssl_loss: 3.7546
+2025-01-08 17:55:54 - Epoch: [84/200] - loss:3.3552, train acc: 96.97%, train F1: 0.9697, ssl acc: 66.95%
+2025-01-08 17:55:55 - => val acc (cls): 71.63%, val F1 (cls): 0.7146 / val acc (ssl): 12.51%
+2025-01-08 17:55:55 - => cls_loss: 1.8674 / ssl_loss: 3.7532
+2025-01-08 17:56:00 - Epoch: [85/200] - loss:3.3510, train acc: 97.15%, train F1: 0.9715, ssl acc: 66.69%
+2025-01-08 17:56:01 - => val acc (cls): 71.43%, val F1 (cls): 0.7119 / val acc (ssl): 12.17%
+2025-01-08 17:56:01 - => cls_loss: 1.8648 / ssl_loss: 3.7539
+2025-01-08 17:56:06 - Epoch: [86/200] - loss:3.3467, train acc: 97.27%, train F1: 0.9727, ssl acc: 66.84%
+2025-01-08 17:56:07 - => val acc (cls): 71.70%, val F1 (cls): 0.7148 / val acc (ssl): 12.10%
+2025-01-08 17:56:07 - => cls_loss: 1.8938 / ssl_loss: 3.7566
+2025-01-08 17:56:13 - Epoch: [87/200] - loss:3.3495, train acc: 97.16%, train F1: 0.9717, ssl acc: 67.03%
+2025-01-08 17:56:13 - => val acc (cls): 71.84%, val F1 (cls): 0.7157 / val acc (ssl): 12.44%
+2025-01-08 17:56:13 - => cls_loss: 1.8815 / ssl_loss: 3.7584
+2025-01-08 17:56:18 - Epoch: [88/200] - loss:3.3471, train acc: 97.12%, train F1: 0.9712, ssl acc: 67.14%
+2025-01-08 17:56:19 - => val acc (cls): 71.50%, val F1 (cls): 0.7123 / val acc (ssl): 12.30%
+2025-01-08 17:56:19 - => cls_loss: 1.9133 / ssl_loss: 3.7566
+2025-01-08 17:56:24 - Epoch: [89/200] - loss:3.3526, train acc: 97.01%, train F1: 0.9702, ssl acc: 66.90%
+2025-01-08 17:56:25 - => val acc (cls): 71.22%, val F1 (cls): 0.7097 / val acc (ssl): 12.17%
+2025-01-08 17:56:25 - => cls_loss: 1.9392 / ssl_loss: 3.7603
+2025-01-08 17:56:30 - Epoch: [90/200] - loss:3.3472, train acc: 97.25%, train F1: 0.9725, ssl acc: 67.65%
+2025-01-08 17:56:30 - => val acc (cls): 70.95%, val F1 (cls): 0.7075 / val acc (ssl): 12.71%
+2025-01-08 17:56:30 - => cls_loss: 1.9316 / ssl_loss: 3.7581
+2025-01-08 17:56:35 - Epoch: [91/200] - loss:3.3423, train acc: 97.26%, train F1: 0.9726, ssl acc: 67.20%
+2025-01-08 17:56:36 - => val acc (cls): 71.02%, val F1 (cls): 0.7081 / val acc (ssl): 12.44%
+2025-01-08 17:56:36 - => cls_loss: 1.8986 / ssl_loss: 3.7578
+2025-01-08 17:56:41 - Epoch: [92/200] - loss:3.3486, train acc: 97.20%, train F1: 0.9720, ssl acc: 67.31%
+2025-01-08 17:56:42 - => val acc (cls): 71.50%, val F1 (cls): 0.7113 / val acc (ssl): 12.10%
+2025-01-08 17:56:42 - => cls_loss: 1.8981 / ssl_loss: 3.7546
+2025-01-08 17:56:47 - Epoch: [93/200] - loss:3.3496, train acc: 97.11%, train F1: 0.9711, ssl acc: 67.13%
+2025-01-08 17:56:47 - => val acc (cls): 71.09%, val F1 (cls): 0.7081 / val acc (ssl): 12.03%
+2025-01-08 17:56:47 - => cls_loss: 1.9195 / ssl_loss: 3.7559
+2025-01-08 17:56:53 - Epoch: [94/200] - loss:3.3474, train acc: 97.12%, train F1: 0.9712, ssl acc: 67.47%
+2025-01-08 17:56:54 - => val acc (cls): 71.09%, val F1 (cls): 0.7083 / val acc (ssl): 12.51%
+2025-01-08 17:56:54 - => cls_loss: 1.9158 / ssl_loss: 3.7559
+2025-01-08 17:56:59 - Epoch: [95/200] - loss:3.3452, train acc: 97.29%, train F1: 0.9729, ssl acc: 67.02%
+2025-01-08 17:57:00 - => val acc (cls): 71.29%, val F1 (cls): 0.7094 / val acc (ssl): 12.44%
+2025-01-08 17:57:00 - => cls_loss: 1.9583 / ssl_loss: 3.7529
+2025-01-08 17:57:05 - Epoch: [96/200] - loss:3.3407, train acc: 97.45%, train F1: 0.9745, ssl acc: 67.28%
+2025-01-08 17:57:05 - => val acc (cls): 71.09%, val F1 (cls): 0.7095 / val acc (ssl): 12.85%
+2025-01-08 17:57:05 - => cls_loss: 1.8829 / ssl_loss: 3.7534
+2025-01-08 17:57:10 - Epoch: [97/200] - loss:3.3416, train acc: 97.40%, train F1: 0.9740, ssl acc: 67.82%
+2025-01-08 17:57:11 - => val acc (cls): 71.29%, val F1 (cls): 0.7088 / val acc (ssl): 12.24%
+2025-01-08 17:57:11 - => cls_loss: 1.9702 / ssl_loss: 3.7567
+2025-01-08 17:57:16 - Epoch: [98/200] - loss:3.3422, train acc: 97.39%, train F1: 0.9739, ssl acc: 68.04%
+2025-01-08 17:57:17 - => val acc (cls): 71.22%, val F1 (cls): 0.7092 / val acc (ssl): 12.65%
+2025-01-08 17:57:17 - => cls_loss: 1.9146 / ssl_loss: 3.7561
+2025-01-08 17:57:22 - Epoch: [99/200] - loss:3.3441, train acc: 97.19%, train F1: 0.9719, ssl acc: 67.62%
+2025-01-08 17:57:23 - => val acc (cls): 71.09%, val F1 (cls): 0.7090 / val acc (ssl): 12.92%
+2025-01-08 17:57:23 - => cls_loss: 1.9333 / ssl_loss: 3.7542
+2025-01-08 17:57:29 - Epoch: [100/200] - loss:3.3401, train acc: 97.46%, train F1: 0.9747, ssl acc: 67.63%
+2025-01-08 17:57:30 - => val acc (cls): 71.63%, val F1 (cls): 0.7137 / val acc (ssl): 11.62%
+2025-01-08 17:57:30 - => cls_loss: 1.9225 / ssl_loss: 3.7550
+2025-01-08 17:57:35 - Epoch: [101/200] - loss:3.3408, train acc: 97.35%, train F1: 0.9735, ssl acc: 68.23%
+2025-01-08 17:57:35 - => val acc (cls): 72.04%, val F1 (cls): 0.7180 / val acc (ssl): 11.83%
+2025-01-08 17:57:35 - => cls_loss: 1.9375 / ssl_loss: 3.7546
+2025-01-08 17:57:41 - Epoch: [102/200] - loss:3.3350, train acc: 97.42%, train F1: 0.9742, ssl acc: 68.12%
+2025-01-08 17:57:41 - => val acc (cls): 71.50%, val F1 (cls): 0.7109 / val acc (ssl): 11.96%
+2025-01-08 17:57:41 - => cls_loss: 1.9593 / ssl_loss: 3.7531
+2025-01-08 17:57:47 - Epoch: [103/200] - loss:3.3366, train acc: 97.45%, train F1: 0.9745, ssl acc: 67.98%
+2025-01-08 17:57:47 - => val acc (cls): 70.75%, val F1 (cls): 0.7054 / val acc (ssl): 12.10%
+2025-01-08 17:57:47 - => cls_loss: 1.9557 / ssl_loss: 3.7538
+2025-01-08 17:57:53 - Epoch: [104/200] - loss:3.3378, train acc: 97.48%, train F1: 0.9748, ssl acc: 68.15%
+2025-01-08 17:57:53 - => val acc (cls): 70.88%, val F1 (cls): 0.7050 / val acc (ssl): 12.71%
+2025-01-08 17:57:53 - => cls_loss: 1.9739 / ssl_loss: 3.7543
+2025-01-08 17:57:58 - Epoch: [105/200] - loss:3.3404, train acc: 97.28%, train F1: 0.9729, ssl acc: 68.78%
+2025-01-08 17:57:59 - => val acc (cls): 70.13%, val F1 (cls): 0.6992 / val acc (ssl): 12.37%
+2025-01-08 17:57:59 - => cls_loss: 1.9973 / ssl_loss: 3.7535
+2025-01-08 17:58:04 - Epoch: [106/200] - loss:3.3364, train acc: 97.45%, train F1: 0.9745, ssl acc: 68.06%
+2025-01-08 17:58:05 - => val acc (cls): 71.77%, val F1 (cls): 0.7151 / val acc (ssl): 12.24%
+2025-01-08 17:58:05 - => cls_loss: 1.9628 / ssl_loss: 3.7537
+2025-01-08 17:58:11 - Epoch: [107/200] - loss:3.3391, train acc: 97.42%, train F1: 0.9742, ssl acc: 68.29%
+2025-01-08 17:58:11 - => val acc (cls): 71.09%, val F1 (cls): 0.7078 / val acc (ssl): 12.37%
+2025-01-08 17:58:11 - => cls_loss: 1.9779 / ssl_loss: 3.7538
+2025-01-08 17:58:16 - Epoch: [108/200] - loss:3.3378, train acc: 97.30%, train F1: 0.9730, ssl acc: 69.05%
+2025-01-08 17:58:17 - => val acc (cls): 71.36%, val F1 (cls): 0.7117 / val acc (ssl): 12.44%
+2025-01-08 17:58:17 - => cls_loss: 1.9799 / ssl_loss: 3.7533
+2025-01-08 17:58:23 - Epoch: [109/200] - loss:3.3377, train acc: 97.38%, train F1: 0.9738, ssl acc: 68.55%
+2025-01-08 17:58:23 - => val acc (cls): 71.57%, val F1 (cls): 0.7128 / val acc (ssl): 12.37%
+2025-01-08 17:58:23 - => cls_loss: 1.9772 / ssl_loss: 3.7567
+2025-01-08 17:58:29 - Epoch: [110/200] - loss:3.3356, train acc: 97.42%, train F1: 0.9742, ssl acc: 68.36%
+2025-01-08 17:58:30 - => val acc (cls): 71.02%, val F1 (cls): 0.7081 / val acc (ssl): 11.96%
+2025-01-08 17:58:30 - => cls_loss: 1.9692 / ssl_loss: 3.7571
+2025-01-08 17:58:35 - Epoch: [111/200] - loss:3.3382, train acc: 97.41%, train F1: 0.9741, ssl acc: 68.32%
+2025-01-08 17:58:36 - => val acc (cls): 71.29%, val F1 (cls): 0.7097 / val acc (ssl): 12.44%
+2025-01-08 17:58:36 - => cls_loss: 1.9700 / ssl_loss: 3.7547
+2025-01-08 17:58:41 - Epoch: [112/200] - loss:3.3319, train acc: 97.61%, train F1: 0.9761, ssl acc: 68.45%
+2025-01-08 17:58:42 - => val acc (cls): 71.29%, val F1 (cls): 0.7112 / val acc (ssl): 12.10%
+2025-01-08 17:58:42 - => cls_loss: 1.9880 / ssl_loss: 3.7555
+2025-01-08 17:58:47 - Epoch: [113/200] - loss:3.3341, train acc: 97.54%, train F1: 0.9754, ssl acc: 69.00%
+2025-01-08 17:58:48 - => val acc (cls): 70.81%, val F1 (cls): 0.7049 / val acc (ssl): 12.24%
+2025-01-08 17:58:48 - => cls_loss: 1.9856 / ssl_loss: 3.7560
+2025-01-08 17:58:53 - Epoch: [114/200] - loss:3.3372, train acc: 97.37%, train F1: 0.9737, ssl acc: 68.96%
+2025-01-08 17:58:54 - => val acc (cls): 70.61%, val F1 (cls): 0.7035 / val acc (ssl): 11.69%
+2025-01-08 17:58:54 - => cls_loss: 2.0060 / ssl_loss: 3.7554
+2025-01-08 17:59:00 - Epoch: [115/200] - loss:3.3326, train acc: 97.63%, train F1: 0.9763, ssl acc: 69.13%
+2025-01-08 17:59:00 - => val acc (cls): 70.95%, val F1 (cls): 0.7076 / val acc (ssl): 12.10%
+2025-01-08 17:59:00 - => cls_loss: 1.9853 / ssl_loss: 3.7553
+2025-01-08 17:59:06 - Epoch: [116/200] - loss:3.3362, train acc: 97.37%, train F1: 0.9737, ssl acc: 68.60%
+2025-01-08 17:59:07 - => val acc (cls): 71.63%, val F1 (cls): 0.7134 / val acc (ssl): 11.96%
+2025-01-08 17:59:07 - => cls_loss: 1.9681 / ssl_loss: 3.7555
+2025-01-08 17:59:12 - Epoch: [117/200] - loss:3.3358, train acc: 97.50%, train F1: 0.9750, ssl acc: 68.47%
+2025-01-08 17:59:13 - => val acc (cls): 70.75%, val F1 (cls): 0.7053 / val acc (ssl): 12.17%
+2025-01-08 17:59:13 - => cls_loss: 2.0223 / ssl_loss: 3.7559
+2025-01-08 17:59:18 - Epoch: [118/200] - loss:3.3377, train acc: 97.40%, train F1: 0.9740, ssl acc: 68.46%
+2025-01-08 17:59:19 - => val acc (cls): 71.57%, val F1 (cls): 0.7127 / val acc (ssl): 12.24%
+2025-01-08 17:59:19 - => cls_loss: 2.0074 / ssl_loss: 3.7563
+2025-01-08 17:59:25 - Epoch: [119/200] - loss:3.3375, train acc: 97.34%, train F1: 0.9734, ssl acc: 68.31%
+2025-01-08 17:59:25 - => val acc (cls): 71.57%, val F1 (cls): 0.7127 / val acc (ssl): 12.58%
+2025-01-08 17:59:25 - => cls_loss: 1.9923 / ssl_loss: 3.7536
+2025-01-08 17:59:30 - Epoch: [120/200] - loss:3.3332, train acc: 97.52%, train F1: 0.9752, ssl acc: 69.23%
+2025-01-08 17:59:31 - => val acc (cls): 71.50%, val F1 (cls): 0.7116 / val acc (ssl): 12.17%
+2025-01-08 17:59:31 - => cls_loss: 2.0034 / ssl_loss: 3.7554
+2025-01-08 17:59:36 - Epoch: [121/200] - loss:3.3311, train acc: 97.58%, train F1: 0.9758, ssl acc: 68.70%
+2025-01-08 17:59:37 - => val acc (cls): 70.75%, val F1 (cls): 0.7044 / val acc (ssl): 12.24%
+2025-01-08 17:59:37 - => cls_loss: 2.0071 / ssl_loss: 3.7536
+2025-01-08 17:59:42 - Epoch: [122/200] - loss:3.3336, train acc: 97.49%, train F1: 0.9749, ssl acc: 68.46%
+2025-01-08 17:59:43 - => val acc (cls): 70.54%, val F1 (cls): 0.7031 / val acc (ssl): 12.30%
+2025-01-08 17:59:43 - => cls_loss: 2.0053 / ssl_loss: 3.7546
+2025-01-08 17:59:49 - Epoch: [123/200] - loss:3.3351, train acc: 97.46%, train F1: 0.9746, ssl acc: 69.19%
+2025-01-08 17:59:49 - => val acc (cls): 71.29%, val F1 (cls): 0.7106 / val acc (ssl): 12.44%
+2025-01-08 17:59:49 - => cls_loss: 1.9952 / ssl_loss: 3.7544
+2025-01-08 17:59:55 - Epoch: [124/200] - loss:3.3320, train acc: 97.37%, train F1: 0.9737, ssl acc: 69.26%
+2025-01-08 17:59:56 - => val acc (cls): 70.95%, val F1 (cls): 0.7075 / val acc (ssl): 12.10%
+2025-01-08 17:59:56 - => cls_loss: 2.0049 / ssl_loss: 3.7539
+2025-01-08 18:00:01 - Epoch: [125/200] - loss:3.3326, train acc: 97.48%, train F1: 0.9748, ssl acc: 68.76%
+2025-01-08 18:00:02 - => val acc (cls): 70.81%, val F1 (cls): 0.7061 / val acc (ssl): 12.30%
+2025-01-08 18:00:02 - => cls_loss: 2.0137 / ssl_loss: 3.7545
+2025-01-08 18:00:07 - Epoch: [126/200] - loss:3.3340, train acc: 97.39%, train F1: 0.9739, ssl acc: 68.85%
+2025-01-08 18:00:08 - => val acc (cls): 70.81%, val F1 (cls): 0.7062 / val acc (ssl): 12.03%
+2025-01-08 18:00:08 - => cls_loss: 2.0365 / ssl_loss: 3.7547
+2025-01-08 18:00:13 - Epoch: [127/200] - loss:3.3324, train acc: 97.60%, train F1: 0.9760, ssl acc: 69.08%
+2025-01-08 18:00:14 - => val acc (cls): 70.95%, val F1 (cls): 0.7074 / val acc (ssl): 12.24%
+2025-01-08 18:00:14 - => cls_loss: 2.0141 / ssl_loss: 3.7546
+2025-01-08 18:00:19 - Epoch: [128/200] - loss:3.3289, train acc: 97.62%, train F1: 0.9762, ssl acc: 68.97%
+2025-01-08 18:00:20 - => val acc (cls): 70.61%, val F1 (cls): 0.7037 / val acc (ssl): 12.30%
+2025-01-08 18:00:20 - => cls_loss: 2.0375 / ssl_loss: 3.7547
+2025-01-08 18:00:25 - Epoch: [129/200] - loss:3.3281, train acc: 97.66%, train F1: 0.9766, ssl acc: 69.30%
+2025-01-08 18:00:26 - => val acc (cls): 70.47%, val F1 (cls): 0.7018 / val acc (ssl): 12.51%
+2025-01-08 18:00:26 - => cls_loss: 2.0236 / ssl_loss: 3.7549
+2025-01-08 18:00:31 - Epoch: [130/200] - loss:3.3306, train acc: 97.67%, train F1: 0.9767, ssl acc: 69.72%
+2025-01-08 18:00:32 - => val acc (cls): 71.36%, val F1 (cls): 0.7112 / val acc (ssl): 12.44%
+2025-01-08 18:00:32 - => cls_loss: 2.0138 / ssl_loss: 3.7547
+2025-01-08 18:00:36 - Epoch: [131/200] - loss:3.3326, train acc: 97.57%, train F1: 0.9757, ssl acc: 69.45%
+2025-01-08 18:00:37 - => val acc (cls): 70.95%, val F1 (cls): 0.7064 / val acc (ssl): 12.85%
+2025-01-08 18:00:37 - => cls_loss: 2.0149 / ssl_loss: 3.7548
+2025-01-08 18:00:43 - Epoch: [132/200] - loss:3.3306, train acc: 97.54%, train F1: 0.9754, ssl acc: 69.48%
+2025-01-08 18:00:43 - => val acc (cls): 71.02%, val F1 (cls): 0.7083 / val acc (ssl): 12.44%
+2025-01-08 18:00:43 - => cls_loss: 2.0181 / ssl_loss: 3.7533
+2025-01-08 18:00:48 - Epoch: [133/200] - loss:3.3328, train acc: 97.51%, train F1: 0.9751, ssl acc: 69.93%
+2025-01-08 18:00:49 - => val acc (cls): 71.16%, val F1 (cls): 0.7092 / val acc (ssl): 12.78%
+2025-01-08 18:00:49 - => cls_loss: 2.0358 / ssl_loss: 3.7536
+2025-01-08 18:00:54 - Epoch: [134/200] - loss:3.3261, train acc: 97.78%, train F1: 0.9778, ssl acc: 69.87%
+2025-01-08 18:00:55 - => val acc (cls): 71.63%, val F1 (cls): 0.7140 / val acc (ssl): 12.71%
+2025-01-08 18:00:55 - => cls_loss: 1.9983 / ssl_loss: 3.7545
+2025-01-08 18:01:01 - Epoch: [135/200] - loss:3.3271, train acc: 97.69%, train F1: 0.9769, ssl acc: 69.81%
+2025-01-08 18:01:01 - => val acc (cls): 71.43%, val F1 (cls): 0.7127 / val acc (ssl): 12.24%
+2025-01-08 18:01:01 - => cls_loss: 2.0191 / ssl_loss: 3.7539
+2025-01-08 18:01:07 - Epoch: [136/200] - loss:3.3305, train acc: 97.51%, train F1: 0.9751, ssl acc: 69.45%
+2025-01-08 18:01:08 - => val acc (cls): 71.02%, val F1 (cls): 0.7077 / val acc (ssl): 12.58%
+2025-01-08 18:01:08 - => cls_loss: 2.0279 / ssl_loss: 3.7550
+2025-01-08 18:01:13 - Epoch: [137/200] - loss:3.3331, train acc: 97.58%, train F1: 0.9758, ssl acc: 69.38%
+2025-01-08 18:01:13 - => val acc (cls): 70.81%, val F1 (cls): 0.7059 / val acc (ssl): 12.30%
+2025-01-08 18:01:13 - => cls_loss: 2.0293 / ssl_loss: 3.7550
+2025-01-08 18:01:18 - Epoch: [138/200] - loss:3.3306, train acc: 97.66%, train F1: 0.9766, ssl acc: 69.59%
+2025-01-08 18:01:19 - => val acc (cls): 71.02%, val F1 (cls): 0.7078 / val acc (ssl): 12.58%
+2025-01-08 18:01:19 - => cls_loss: 2.0342 / ssl_loss: 3.7552
+2025-01-08 18:01:24 - Epoch: [139/200] - loss:3.3294, train acc: 97.61%, train F1: 0.9761, ssl acc: 70.15%
+2025-01-08 18:01:25 - => val acc (cls): 71.09%, val F1 (cls): 0.7084 / val acc (ssl): 12.44%
+2025-01-08 18:01:25 - => cls_loss: 2.0273 / ssl_loss: 3.7538
+2025-01-08 18:01:30 - Epoch: [140/200] - loss:3.3278, train acc: 97.61%, train F1: 0.9761, ssl acc: 69.07%
+2025-01-08 18:01:31 - => val acc (cls): 71.43%, val F1 (cls): 0.7119 / val acc (ssl): 12.30%
+2025-01-08 18:01:31 - => cls_loss: 2.0279 / ssl_loss: 3.7545
+2025-01-08 18:01:36 - Epoch: [141/200] - loss:3.3300, train acc: 97.64%, train F1: 0.9764, ssl acc: 69.77%
+2025-01-08 18:01:37 - => val acc (cls): 71.43%, val F1 (cls): 0.7119 / val acc (ssl): 12.51%
+2025-01-08 18:01:37 - => cls_loss: 2.0185 / ssl_loss: 3.7540
+2025-01-08 18:01:43 - Epoch: [142/200] - loss:3.3281, train acc: 97.65%, train F1: 0.9765, ssl acc: 70.01%
+2025-01-08 18:01:44 - => val acc (cls): 71.29%, val F1 (cls): 0.7108 / val acc (ssl): 12.51%
+2025-01-08 18:01:44 - => cls_loss: 2.0276 / ssl_loss: 3.7542
+2025-01-08 18:01:49 - Epoch: [143/200] - loss:3.3243, train acc: 97.85%, train F1: 0.9785, ssl acc: 69.55%
+2025-01-08 18:01:50 - => val acc (cls): 71.09%, val F1 (cls): 0.7087 / val acc (ssl): 12.30%
+2025-01-08 18:01:50 - => cls_loss: 2.0211 / ssl_loss: 3.7545
+2025-01-08 18:01:56 - Epoch: [144/200] - loss:3.3280, train acc: 97.67%, train F1: 0.9767, ssl acc: 69.64%
+2025-01-08 18:01:57 - => val acc (cls): 71.57%, val F1 (cls): 0.7135 / val acc (ssl): 12.51%
+2025-01-08 18:01:57 - => cls_loss: 2.0237 / ssl_loss: 3.7542
+2025-01-08 18:02:02 - Epoch: [145/200] - loss:3.3276, train acc: 97.64%, train F1: 0.9764, ssl acc: 69.82%
+2025-01-08 18:02:03 - => val acc (cls): 71.50%, val F1 (cls): 0.7124 / val acc (ssl): 12.58%
+2025-01-08 18:02:03 - => cls_loss: 2.0306 / ssl_loss: 3.7542
+2025-01-08 18:02:09 - Epoch: [146/200] - loss:3.3270, train acc: 97.72%, train F1: 0.9772, ssl acc: 70.16%
+2025-01-08 18:02:09 - => val acc (cls): 71.36%, val F1 (cls): 0.7112 / val acc (ssl): 12.58%
+2025-01-08 18:02:09 - => cls_loss: 2.0306 / ssl_loss: 3.7544
+2025-01-08 18:02:15 - Epoch: [147/200] - loss:3.3300, train acc: 97.58%, train F1: 0.9758, ssl acc: 69.67%
+2025-01-08 18:02:15 - => val acc (cls): 71.22%, val F1 (cls): 0.7098 / val acc (ssl): 12.44%
+2025-01-08 18:02:15 - => cls_loss: 2.0258 / ssl_loss: 3.7543
+2025-01-08 18:02:21 - Epoch: [148/200] - loss:3.3284, train acc: 97.60%, train F1: 0.9760, ssl acc: 69.56%
+2025-01-08 18:02:22 - => val acc (cls): 71.02%, val F1 (cls): 0.7082 / val acc (ssl): 12.51%
+2025-01-08 18:02:22 - => cls_loss: 2.0291 / ssl_loss: 3.7543
+2025-01-08 18:02:27 - Epoch: [149/200] - loss:3.3314, train acc: 97.38%, train F1: 0.9738, ssl acc: 69.61%
+2025-01-08 18:02:28 - => val acc (cls): 71.16%, val F1 (cls): 0.7092 / val acc (ssl): 12.44%
+2025-01-08 18:02:28 - => cls_loss: 2.0435 / ssl_loss: 3.7541
+2025-01-08 18:02:33 - Epoch: [150/200] - loss:3.3321, train acc: 97.58%, train F1: 0.9758, ssl acc: 69.70%
+2025-01-08 18:02:34 - => val acc (cls): 71.22%, val F1 (cls): 0.7100 / val acc (ssl): 12.51%
+2025-01-08 18:02:34 - => cls_loss: 2.0397 / ssl_loss: 3.7539
+2025-01-08 18:02:39 - Epoch: [151/200] - loss:3.3236, train acc: 97.82%, train F1: 0.9782, ssl acc: 69.97%
+2025-01-08 18:02:40 - => val acc (cls): 71.29%, val F1 (cls): 0.7101 / val acc (ssl): 12.37%
+2025-01-08 18:02:40 - => cls_loss: 2.0488 / ssl_loss: 3.7545
+2025-01-08 18:02:45 - Epoch: [152/200] - loss:3.3296, train acc: 97.61%, train F1: 0.9761, ssl acc: 69.72%
+2025-01-08 18:02:46 - => val acc (cls): 70.95%, val F1 (cls): 0.7066 / val acc (ssl): 12.17%
+2025-01-08 18:02:46 - => cls_loss: 2.0448 / ssl_loss: 3.7541
+2025-01-08 18:02:52 - Epoch: [153/200] - loss:3.3270, train acc: 97.67%, train F1: 0.9767, ssl acc: 69.65%
+2025-01-08 18:02:53 - => val acc (cls): 71.22%, val F1 (cls): 0.7096 / val acc (ssl): 12.37%
+2025-01-08 18:02:53 - => cls_loss: 2.0354 / ssl_loss: 3.7537
+2025-01-08 18:02:58 - Epoch: [154/200] - loss:3.3267, train acc: 97.76%, train F1: 0.9776, ssl acc: 69.93%
+2025-01-08 18:02:59 - => val acc (cls): 71.50%, val F1 (cls): 0.7125 / val acc (ssl): 12.37%
+2025-01-08 18:02:59 - => cls_loss: 2.0382 / ssl_loss: 3.7539
+2025-01-08 18:03:04 - Epoch: [155/200] - loss:3.3215, train acc: 97.81%, train F1: 0.9781, ssl acc: 69.92%
+2025-01-08 18:03:05 - => val acc (cls): 71.29%, val F1 (cls): 0.7103 / val acc (ssl): 12.51%
+2025-01-08 18:03:05 - => cls_loss: 2.0281 / ssl_loss: 3.7551
+2025-01-08 18:03:10 - Epoch: [156/200] - loss:3.3277, train acc: 97.61%, train F1: 0.9761, ssl acc: 69.57%
+2025-01-08 18:03:10 - => val acc (cls): 71.16%, val F1 (cls): 0.7091 / val acc (ssl): 12.30%
+2025-01-08 18:03:10 - => cls_loss: 2.0430 / ssl_loss: 3.7544
+2025-01-08 18:03:16 - Epoch: [157/200] - loss:3.3293, train acc: 97.61%, train F1: 0.9761, ssl acc: 69.62%
+2025-01-08 18:03:16 - => val acc (cls): 71.50%, val F1 (cls): 0.7125 / val acc (ssl): 12.24%
+2025-01-08 18:03:16 - => cls_loss: 2.0308 / ssl_loss: 3.7548
+2025-01-08 18:03:22 - Epoch: [158/200] - loss:3.3245, train acc: 97.78%, train F1: 0.9777, ssl acc: 69.93%
+2025-01-08 18:03:23 - => val acc (cls): 71.36%, val F1 (cls): 0.7106 / val acc (ssl): 12.37%
+2025-01-08 18:03:23 - => cls_loss: 2.0355 / ssl_loss: 3.7546
+2025-01-08 18:03:28 - Epoch: [159/200] - loss:3.3314, train acc: 97.55%, train F1: 0.9755, ssl acc: 69.51%
+2025-01-08 18:03:29 - => val acc (cls): 70.61%, val F1 (cls): 0.7038 / val acc (ssl): 12.10%
+2025-01-08 18:03:29 - => cls_loss: 2.0539 / ssl_loss: 3.7540
+2025-01-08 18:03:34 - Epoch: [160/200] - loss:3.3268, train acc: 97.71%, train F1: 0.9771, ssl acc: 69.56%
+2025-01-08 18:03:35 - => val acc (cls): 71.22%, val F1 (cls): 0.7093 / val acc (ssl): 12.44%
+2025-01-08 18:03:35 - => cls_loss: 2.0388 / ssl_loss: 3.7534
+2025-01-08 18:03:40 - Epoch: [161/200] - loss:3.3311, train acc: 97.50%, train F1: 0.9750, ssl acc: 70.17%
+2025-01-08 18:03:41 - => val acc (cls): 71.22%, val F1 (cls): 0.7095 / val acc (ssl): 12.37%
+2025-01-08 18:03:41 - => cls_loss: 2.0383 / ssl_loss: 3.7541
+2025-01-08 18:03:46 - Epoch: [162/200] - loss:3.3263, train acc: 97.64%, train F1: 0.9764, ssl acc: 70.21%
+2025-01-08 18:03:47 - => val acc (cls): 71.09%, val F1 (cls): 0.7082 / val acc (ssl): 12.37%
+2025-01-08 18:03:47 - => cls_loss: 2.0448 / ssl_loss: 3.7538
+2025-01-08 18:03:52 - Epoch: [163/200] - loss:3.3278, train acc: 97.61%, train F1: 0.9761, ssl acc: 69.70%
+2025-01-08 18:03:53 - => val acc (cls): 71.16%, val F1 (cls): 0.7088 / val acc (ssl): 12.44%
+2025-01-08 18:03:53 - => cls_loss: 2.0491 / ssl_loss: 3.7539
+2025-01-08 18:03:58 - Epoch: [164/200] - loss:3.3240, train acc: 97.69%, train F1: 0.9769, ssl acc: 70.16%
+2025-01-08 18:03:59 - => val acc (cls): 71.22%, val F1 (cls): 0.7097 / val acc (ssl): 12.65%
+2025-01-08 18:03:59 - => cls_loss: 2.0422 / ssl_loss: 3.7540
+2025-01-08 18:04:05 - Epoch: [165/200] - loss:3.3291, train acc: 97.64%, train F1: 0.9764, ssl acc: 69.33%
+2025-01-08 18:04:05 - => val acc (cls): 70.95%, val F1 (cls): 0.7066 / val acc (ssl): 12.51%
+2025-01-08 18:04:05 - => cls_loss: 2.0457 / ssl_loss: 3.7542
+2025-01-08 18:04:11 - Epoch: [166/200] - loss:3.3260, train acc: 97.64%, train F1: 0.9764, ssl acc: 69.65%
+2025-01-08 18:04:12 - => val acc (cls): 71.16%, val F1 (cls): 0.7091 / val acc (ssl): 12.44%
+2025-01-08 18:04:12 - => cls_loss: 2.0467 / ssl_loss: 3.7543
+2025-01-08 18:04:17 - Epoch: [167/200] - loss:3.3273, train acc: 97.65%, train F1: 0.9765, ssl acc: 69.52%
+2025-01-08 18:04:18 - => val acc (cls): 71.22%, val F1 (cls): 0.7097 / val acc (ssl): 12.51%
+2025-01-08 18:04:18 - => cls_loss: 2.0461 / ssl_loss: 3.7542
+2025-01-08 18:04:23 - Epoch: [168/200] - loss:3.3276, train acc: 97.54%, train F1: 0.9754, ssl acc: 69.59%
+2025-01-08 18:04:24 - => val acc (cls): 71.09%, val F1 (cls): 0.7086 / val acc (ssl): 12.65%
+2025-01-08 18:04:24 - => cls_loss: 2.0380 / ssl_loss: 3.7542
+2025-01-08 18:04:29 - Epoch: [169/200] - loss:3.3242, train acc: 97.65%, train F1: 0.9765, ssl acc: 70.37%
+2025-01-08 18:04:30 - => val acc (cls): 71.36%, val F1 (cls): 0.7109 / val acc (ssl): 12.58%
+2025-01-08 18:04:30 - => cls_loss: 2.0446 / ssl_loss: 3.7542
+2025-01-08 18:04:35 - Epoch: [170/200] - loss:3.3304, train acc: 97.52%, train F1: 0.9752, ssl acc: 69.84%
+2025-01-08 18:04:36 - => val acc (cls): 71.16%, val F1 (cls): 0.7091 / val acc (ssl): 12.58%
+2025-01-08 18:04:36 - => cls_loss: 2.0348 / ssl_loss: 3.7541
+2025-01-08 18:04:41 - Epoch: [171/200] - loss:3.3279, train acc: 97.63%, train F1: 0.9763, ssl acc: 69.86%
+2025-01-08 18:04:42 - => val acc (cls): 71.50%, val F1 (cls): 0.7125 / val acc (ssl): 12.51%
+2025-01-08 18:04:42 - => cls_loss: 2.0454 / ssl_loss: 3.7543
+2025-01-08 18:04:47 - Epoch: [172/200] - loss:3.3239, train acc: 97.79%, train F1: 0.9779, ssl acc: 69.63%
+2025-01-08 18:04:48 - => val acc (cls): 71.22%, val F1 (cls): 0.7097 / val acc (ssl): 12.44%
+2025-01-08 18:04:48 - => cls_loss: 2.0512 / ssl_loss: 3.7545
+2025-01-08 18:04:53 - Epoch: [173/200] - loss:3.3255, train acc: 97.65%, train F1: 0.9765, ssl acc: 70.36%
+2025-01-08 18:04:54 - => val acc (cls): 71.16%, val F1 (cls): 0.7094 / val acc (ssl): 12.30%
+2025-01-08 18:04:54 - => cls_loss: 2.0366 / ssl_loss: 3.7545
+2025-01-08 18:05:00 - Epoch: [174/200] - loss:3.3273, train acc: 97.64%, train F1: 0.9764, ssl acc: 70.08%
+2025-01-08 18:05:00 - => val acc (cls): 71.43%, val F1 (cls): 0.7120 / val acc (ssl): 12.44%
+2025-01-08 18:05:00 - => cls_loss: 2.0381 / ssl_loss: 3.7543
+2025-01-08 18:05:06 - Epoch: [175/200] - loss:3.3233, train acc: 97.79%, train F1: 0.9779, ssl acc: 70.06%
+2025-01-08 18:05:07 - => val acc (cls): 70.95%, val F1 (cls): 0.7070 / val acc (ssl): 12.24%
+2025-01-08 18:05:07 - => cls_loss: 2.0452 / ssl_loss: 3.7544
+2025-01-08 18:05:12 - Epoch: [176/200] - loss:3.3271, train acc: 97.82%, train F1: 0.9782, ssl acc: 69.88%
+2025-01-08 18:05:13 - => val acc (cls): 71.09%, val F1 (cls): 0.7083 / val acc (ssl): 12.03%
+2025-01-08 18:05:13 - => cls_loss: 2.0408 / ssl_loss: 3.7545
+2025-01-08 18:05:18 - Epoch: [177/200] - loss:3.3265, train acc: 97.67%, train F1: 0.9767, ssl acc: 70.38%
+2025-01-08 18:05:19 - => val acc (cls): 71.50%, val F1 (cls): 0.7122 / val acc (ssl): 11.89%
+2025-01-08 18:05:19 - => cls_loss: 2.0454 / ssl_loss: 3.7544
+2025-01-08 18:05:24 - Epoch: [178/200] - loss:3.3234, train acc: 97.85%, train F1: 0.9785, ssl acc: 70.20%
+2025-01-08 18:05:24 - => val acc (cls): 71.22%, val F1 (cls): 0.7096 / val acc (ssl): 12.10%
+2025-01-08 18:05:24 - => cls_loss: 2.0510 / ssl_loss: 3.7542
+2025-01-08 18:05:30 - Epoch: [179/200] - loss:3.3296, train acc: 97.74%, train F1: 0.9774, ssl acc: 70.44%
+2025-01-08 18:05:31 - => val acc (cls): 71.29%, val F1 (cls): 0.7105 / val acc (ssl): 12.10%
+2025-01-08 18:05:31 - => cls_loss: 2.0488 / ssl_loss: 3.7543
+2025-01-08 18:05:36 - Epoch: [180/200] - loss:3.3283, train acc: 97.54%, train F1: 0.9754, ssl acc: 70.06%
+2025-01-08 18:05:36 - => val acc (cls): 71.16%, val F1 (cls): 0.7090 / val acc (ssl): 12.10%
+2025-01-08 18:05:36 - => cls_loss: 2.0535 / ssl_loss: 3.7543
+2025-01-08 18:05:42 - Epoch: [181/200] - loss:3.3242, train acc: 97.70%, train F1: 0.9770, ssl acc: 70.30%
+2025-01-08 18:05:42 - => val acc (cls): 71.02%, val F1 (cls): 0.7076 / val acc (ssl): 12.17%
+2025-01-08 18:05:42 - => cls_loss: 2.0460 / ssl_loss: 3.7543
+2025-01-08 18:05:48 - Epoch: [182/200] - loss:3.3254, train acc: 97.70%, train F1: 0.9770, ssl acc: 69.93%
+2025-01-08 18:05:49 - => val acc (cls): 71.29%, val F1 (cls): 0.7107 / val acc (ssl): 12.17%
+2025-01-08 18:05:49 - => cls_loss: 2.0362 / ssl_loss: 3.7543
+2025-01-08 18:05:54 - Epoch: [183/200] - loss:3.3270, train acc: 97.58%, train F1: 0.9758, ssl acc: 69.73%
+2025-01-08 18:05:55 - => val acc (cls): 71.29%, val F1 (cls): 0.7102 / val acc (ssl): 12.10%
+2025-01-08 18:05:55 - => cls_loss: 2.0447 / ssl_loss: 3.7544
+2025-01-08 18:06:00 - Epoch: [184/200] - loss:3.3210, train acc: 97.75%, train F1: 0.9775, ssl acc: 70.00%
+2025-01-08 18:06:00 - => val acc (cls): 71.36%, val F1 (cls): 0.7114 / val acc (ssl): 12.24%
+2025-01-08 18:06:00 - => cls_loss: 2.0447 / ssl_loss: 3.7543
+2025-01-08 18:06:06 - Epoch: [185/200] - loss:3.3254, train acc: 97.75%, train F1: 0.9775, ssl acc: 69.89%
+2025-01-08 18:06:07 - => val acc (cls): 71.22%, val F1 (cls): 0.7097 / val acc (ssl): 12.17%
+2025-01-08 18:06:07 - => cls_loss: 2.0430 / ssl_loss: 3.7543
+2025-01-08 18:06:12 - Epoch: [186/200] - loss:3.3264, train acc: 97.62%, train F1: 0.9762, ssl acc: 70.10%
+2025-01-08 18:06:13 - => val acc (cls): 71.22%, val F1 (cls): 0.7099 / val acc (ssl): 12.24%
+2025-01-08 18:06:13 - => cls_loss: 2.0436 / ssl_loss: 3.7543
+2025-01-08 18:06:18 - Epoch: [187/200] - loss:3.3258, train acc: 97.82%, train F1: 0.9782, ssl acc: 70.40%
+2025-01-08 18:06:19 - => val acc (cls): 71.02%, val F1 (cls): 0.7078 / val acc (ssl): 12.03%
+2025-01-08 18:06:19 - => cls_loss: 2.0398 / ssl_loss: 3.7543
+2025-01-08 18:06:24 - Epoch: [188/200] - loss:3.3231, train acc: 97.67%, train F1: 0.9767, ssl acc: 69.69%
+2025-01-08 18:06:24 - => val acc (cls): 71.22%, val F1 (cls): 0.7097 / val acc (ssl): 12.24%
+2025-01-08 18:06:24 - => cls_loss: 2.0455 / ssl_loss: 3.7544
+2025-01-08 18:06:30 - Epoch: [189/200] - loss:3.3271, train acc: 97.73%, train F1: 0.9773, ssl acc: 70.01%
+2025-01-08 18:06:30 - => val acc (cls): 71.22%, val F1 (cls): 0.7098 / val acc (ssl): 12.24%
+2025-01-08 18:06:30 - => cls_loss: 2.0464 / ssl_loss: 3.7543
+2025-01-08 18:06:36 - Epoch: [190/200] - loss:3.3280, train acc: 97.70%, train F1: 0.9770, ssl acc: 69.97%
+2025-01-08 18:06:37 - => val acc (cls): 71.16%, val F1 (cls): 0.7094 / val acc (ssl): 12.17%
+2025-01-08 18:06:37 - => cls_loss: 2.0462 / ssl_loss: 3.7544
+2025-01-08 18:06:42 - Epoch: [191/200] - loss:3.3264, train acc: 97.60%, train F1: 0.9760, ssl acc: 70.01%
+2025-01-08 18:06:43 - => val acc (cls): 71.22%, val F1 (cls): 0.7098 / val acc (ssl): 12.24%
+2025-01-08 18:06:43 - => cls_loss: 2.0436 / ssl_loss: 3.7545
+2025-01-08 18:06:49 - Epoch: [192/200] - loss:3.3223, train acc: 97.79%, train F1: 0.9779, ssl acc: 70.51%
+2025-01-08 18:06:49 - => val acc (cls): 71.50%, val F1 (cls): 0.7125 / val acc (ssl): 12.44%
+2025-01-08 18:06:49 - => cls_loss: 2.0477 / ssl_loss: 3.7544
+2025-01-08 18:06:54 - Epoch: [193/200] - loss:3.3285, train acc: 97.54%, train F1: 0.9754, ssl acc: 69.71%
+2025-01-08 18:06:55 - => val acc (cls): 71.29%, val F1 (cls): 0.7104 / val acc (ssl): 12.17%
+2025-01-08 18:06:55 - => cls_loss: 2.0458 / ssl_loss: 3.7544
+2025-01-08 18:07:01 - Epoch: [194/200] - loss:3.3238, train acc: 97.70%, train F1: 0.9770, ssl acc: 69.69%
+2025-01-08 18:07:02 - => val acc (cls): 71.29%, val F1 (cls): 0.7103 / val acc (ssl): 12.17%
+2025-01-08 18:07:02 - => cls_loss: 2.0453 / ssl_loss: 3.7544
+2025-01-08 18:07:07 - Epoch: [195/200] - loss:3.3286, train acc: 97.61%, train F1: 0.9761, ssl acc: 70.02%
+2025-01-08 18:07:08 - => val acc (cls): 71.36%, val F1 (cls): 0.7113 / val acc (ssl): 12.24%
+2025-01-08 18:07:08 - => cls_loss: 2.0397 / ssl_loss: 3.7544
+2025-01-08 18:07:13 - Epoch: [196/200] - loss:3.3279, train acc: 97.60%, train F1: 0.9760, ssl acc: 69.91%
+2025-01-08 18:07:14 - => val acc (cls): 71.29%, val F1 (cls): 0.7105 / val acc (ssl): 12.30%
+2025-01-08 18:07:14 - => cls_loss: 2.0415 / ssl_loss: 3.7543
+2025-01-08 18:07:19 - Epoch: [197/200] - loss:3.3252, train acc: 97.73%, train F1: 0.9773, ssl acc: 69.78%
+2025-01-08 18:07:20 - => val acc (cls): 71.22%, val F1 (cls): 0.7099 / val acc (ssl): 12.30%
+2025-01-08 18:07:20 - => cls_loss: 2.0378 / ssl_loss: 3.7543
+2025-01-08 18:07:26 - Epoch: [198/200] - loss:3.3228, train acc: 97.78%, train F1: 0.9778, ssl acc: 70.10%
+2025-01-08 18:07:26 - => val acc (cls): 71.22%, val F1 (cls): 0.7098 / val acc (ssl): 12.37%
+2025-01-08 18:07:26 - => cls_loss: 2.0436 / ssl_loss: 3.7543
+2025-01-08 18:07:32 - Epoch: [199/200] - loss:3.3231, train acc: 97.70%, train F1: 0.9770, ssl acc: 70.04%
+2025-01-08 18:07:33 - => val acc (cls): 71.36%, val F1 (cls): 0.7112 / val acc (ssl): 12.37%
+2025-01-08 18:07:33 - => cls_loss: 2.0474 / ssl_loss: 3.7544
+2025-01-08 18:07:34 - => val acc (cls): 71.36%, val F1 (cls): 0.7112 / val acc (ssl): 12.37%
+2025-01-08 18:07:34 - => cls_loss: 2.0474 / ssl_loss: 3.7544
+2025-01-08 18:07:35 - => test acc: 0.14%, test F1: 0.0014 / ssl acc: 1.77%
+2025-01-08 18:07:36 - => test acc: 0.14%, test F1: 0.0014 / ssl acc: 1.77%
+2025-01-08 18:07:38 - => test acc: 0.14%, test F1: 0.0014 / ssl acc: 1.77%
+2025-01-08 18:07:38 - => test acc: 60.16%, test F1: 0.5999 / ssl acc: 13.38%
+2025-01-08 18:07:39 - => test acc: 60.44%, test F1: 0.5901 / ssl acc: 5.66%

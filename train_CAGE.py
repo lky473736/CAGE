@@ -10,6 +10,7 @@ from tqdm import tqdm, trange
 from dataset.HAR_dataset import HARDataset
 from utils.logger import initialize_logger, record_result, create_tensorboard_writer, write_scalar_summary
 from configs import args, dict_to_markdown
+from sklearn.metrics import classification_report
 from models.CAGE import CAGE
 
 def set_seed(seed) : 
@@ -369,22 +370,40 @@ def evaluate(model, dataset, epoch, n_device, is_test=True, mode='best', writer=
                    f'ssl acc: {ssl_acc:.2f}%')
         
         result_filename = f'results_{mode}_model.txt'
-        with open(os.path.join(args.save_folder, result_filename), 'w') as f:
-            f.write(f"Classification Accuracy: {cls_acc:.2f}%\n")
-            f.write(f"Classification F1 Score: {cls_f1:.4f}\n")
-            
-            f.write("Confusion Matrix:\n")
-            f.write(str(c_mat))
-            f.write("\n\n")
-            
-            f.write("Per-sample Results:\n")
-            for i in range(len(cls_labels)):
-                f.write(f"[Sample {i+1}]\n")
-                f.write(f"Original Label: {cls_labels[i]}\n")
-                f.write(f"Predicted Label: {cls_preds[i]}\n")
-                f.write(f"Accelerometer Embedding: {all_accel_embeddings[i].tolist()}\n")
-                f.write(f"Gyroscope Embedding: {all_gyro_embeddings[i].tolist()}\n\n")
-            
+        if is_test:
+    # 기존 코드 유지
+            with open(os.path.join(args.save_folder, result_filename), 'w') as f:
+                f.write(f"test acc : {cls_acc:.2f}%\n")
+                f.write(f"test f1 : {cls_f1:.4f}\n")
+                
+                # 추가: 클래스별 성능 계산
+                class_report = classification_report(cls_labels, cls_preds, output_dict=True)
+                
+                f.write("\neach class performance :\n")
+                for class_name, metrics in class_report.items():
+                    if class_name not in ['accuracy', 'macro avg', 'weighted avg']:
+                        f.write(f"class {class_name}:\n")
+                        f.write(f"  Precision: {metrics['precision']:.4f}\n")
+                        f.write(f"  Recall: {metrics['recall']:.4f}\n")
+                        f.write(f"  F1-Score: {metrics['f1-score']:.4f}\n")
+                
+                f.write("\nPerformance :\n")
+                f.write(f"Macro Avg Precision: {class_report['macro avg']['precision']:.4f}\n")
+                f.write(f"Macro Avg Recall: {class_report['macro avg']['recall']:.4f}\n")
+                f.write(f"Macro Avg F1-Score: {class_report['macro avg']['f1-score']:.4f}\n")
+
+                f.write("\nConfusion Matrix:\n")
+                f.write(str(c_mat))
+                f.write("\n\n")
+                
+                f.write("Per-sample Results:\n")
+                for i in range(len(cls_labels)):
+                    f.write(f"[Sample {i+1}]\n")
+                    f.write(f"Original Label: {cls_labels[i]}\n")
+                    f.write(f"Predicted Label: {cls_preds[i]}\n")
+                    f.write(f"Accelerometer Embedding: {all_accel_embeddings[i].tolist()[:10]}\n")
+                    f.write(f"Gyroscope Embedding: {all_gyro_embeddings[i].tolist()[:10]}\n\n")
+                
     else:
         logger.info(f'=> val acc (cls): {cls_acc:.2f}%, val F1 (cls): {cls_f1:.4f} / '
                    f'val acc (ssl): {ssl_acc:.2f}%')
