@@ -70,6 +70,7 @@ def get_model(n_feat, n_cls, weights_path=None):
         lr_schedule = lambda epoch: args.learning_rate * (0.5 ** (epoch // 20))
     
     return model, optimizer, lr_schedule
+
 @tf.function
 def train_step(model, optimizer, x_accel, x_gyro, labels):
     with tf.GradientTape() as tape:
