@@ -2,7 +2,6 @@ import os
 import argparse
 import pandas as pd
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument('--seed', type=int, default=42, metavar='S',
                     help='random seed (default: 42). if seed=0, seed is not fixed.')
@@ -31,18 +30,29 @@ parser.add_argument('--lambda_cls', type=float, default=1.0, help='loss weight f
 parser.add_argument('--lambda_ssl', type=float, default=1.0, help='loss weight for reconstruction loss')
 parser.add_argument('--proj_dim', type=int, default=64)
 
+# contrastive learning arguments
+parser.add_argument('--loss_type', type=str, default='nt_xent',
+                    choices=['nt_xent', 'triplet'],
+                    help='Type of contrastive loss to use')
+parser.add_argument('--temperature', type=float, default=0.07,
+                    help='Temperature parameter for NT-Xent loss')
+parser.add_argument('--margin', type=float, default=1.0,
+                    help='Margin for triplet loss')
+
 args = parser.parse_args()
+
+# 기존 로직 유지
 if args.pretrain:
     args.lambda_cls = 0.0
     args.lambda_ssl = 1.0
-        
+
+# contrastive learning을 위한 설정
+if args.loss_type in ['nt_xent', 'triplet']:
+    args.lambda_cls = 0.0
+    args.lambda_ssl = 1.0
+
 def dict_to_markdown(d, max_str_len=120):
-    # convert list into its str representation
     d = {k: v.__repr__() if isinstance(v, list) else v for k, v in d.items()}
-    # truncate string that is longer than max_str_len
     if max_str_len is not None:
         d = {k: v[-max_str_len:] if isinstance(v, str) else v for k, v in d.items()}
     return pd.DataFrame(d, index=[0]).transpose().to_markdown()
-
-#Display settings
-#print(dict_to_markdown(vars(args), max_str_len=120))
