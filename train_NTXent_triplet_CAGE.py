@@ -1,5 +1,5 @@
 '''
-    classifier delete version
+    classifier delete version + NT_Xent_loss + triplet loss 
     embedding -> KNN clustering
 '''
 
@@ -18,7 +18,7 @@ from dataset.HAR_dataset import HARDataset
 from utils.logger import initialize_logger, record_result, create_tensorboard_writer, write_scalar_summary
 from configs import args, dict_to_markdown
 from sklearn.metrics import classification_report
-from models.NTXent_triplet_CAGE import CAGE
+from models.NTXent_triplet_CAGE import CAGE, nt_xent_loss, triplet_loss
 
 import matplotlib.pyplot as plt
 
@@ -154,45 +154,40 @@ def get_model(n_feat, n_cls, weights_path=None) :
     
 #     return model, optimizer, lr_schedule
 
+'''
+    all changes -> because of triplet loss
+    solve that
+'''
 @tf.function
 def train_step(model, optimizer, x_accel, x_gyro):
     '''
         NO CLASSIFIER. SO THERE IS NOT CLS_LOSS HERE
     '''
     with tf.GradientTape() as tape:
-        if model.loss_type == 'nt_xent': # nt_xent loss
+        if model.loss_type == 'nt_xent': # nt_xent
             f_accel, f_gyro = model.encode(x_accel, x_gyro, training=True)
+            total_loss = nt_xent_loss(f_accel, f_gyro, temperature=args.temperature)
+            ssl_output = tf.matmul(tf.math.l2_normalize(f_accel, axis=1), 
+                                 tf.math.l2_normalize(f_gyro, axis=1), 
+                                 transpose_b=True) / model.temperature
             
-            total_loss = model.nt_xent_loss(f_accel, f_gyro, temperature=args.temperature)
+            '''
+                temperature
+            '''
             
-            e_accel = tf.math.l2_normalize(f_accel, axis=1)
-            e_gyro = tf.math.l2_normalize(f_gyro, axis=1)
-            ssl_output = tf.matmul(e_accel, e_gyro, transpose_b=True) / model.temperature
-            
-        else :  # triplet loss
+        else:  # triplet
             batch_size = tf.shape(x_accel)[0]
             
-            f_anchor_a, f_anchor_g = model.encode(x_accel, x_gyro, training=True)
-            
-            roll_idx = tf.random.shuffle(tf.range(batch_size))
-            f_pos_a, f_pos_g = model.encode(
-                tf.gather(x_accel, roll_idx),
-                tf.gather(x_gyro, roll_idx),
-                training=True
-            )
+            f_anchor_a, _ = model.call(x_accel, x_accel, training=True)
+            f_pos_a, _ = model.call(x_accel, x_gyro, training=True)
             
             neg_idx = tf.random.shuffle(tf.range(batch_size))
-            f_neg_a, f_neg_g = model.encode(
-                tf.gather(x_accel, neg_idx),
-                tf.gather(x_gyro, neg_idx),
-                training=True
-            )
+            f_neg_a, _ = model.call(tf.gather(x_accel, neg_idx), 
+                                  tf.gather(x_gyro, neg_idx), 
+                                  training=True)
             
-            loss_a = model.triplet_loss(f_anchor_a, f_pos_a, f_neg_a, margin=args.margin)
-            loss_g = model.triplet_loss(f_anchor_g, f_pos_g, f_neg_g, margin=args.margin)
-            total_loss = (loss_a + loss_g) / 2
-    
-            ssl_output = tf.eye(batch_size)
+            total_loss = triplet_loss(f_anchor_a, f_pos_a, f_neg_a, margin=args.margin)
+            ssl_output = tf.eye(batch_size)  # dummy output for accuracy calculation
     
     gradients = tape.gradient(total_loss, model.trainable_variables)
     optimizer.apply_gradients(zip(gradients, model.trainable_variables))
