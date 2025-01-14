@@ -58,20 +58,6 @@ from tensorflow.keras import layers, Model
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 
-'''
-    at testing 5
-    IDEA! (1/14)
-    - 지금 unsupervised에서는 임베딩값으로만 분류하게끔 하여 cosine distance로 KNN
-        - 근데 encoder를 많이 두면 성능이 더 좋아지지 않을까 (더 정보 압축을 하니깐 마지막엔 유용한 정보로 임베딩 구성)
-        - encoder를 직렬적으로 많이 두면 당연히 정보 손실이 발생되니깐, skip connection block을 두기
-            - 그래서 argument에 --no_skip, --use_skip 둘거임. skip conection을 쓰지 않으면 정보손실로 결과가 안좋게 나오지 않을까 싶음 (아마도)
-        - argument에 --num_encoders 두어서 encoder 갯수 사용자에게 받기
-    - 실험
-        - (1) encoder 수 : 1개(원본), 2개, 3개
-        - (2) skip : no_skip, use_skip
-        - 그러면 순서쌍은 총 6개 -> 경우의수는 6가지 나옴
-'''
-
 class Encoder(Model):
     def __init__(self, in_feat, out_feat, num_encoders=1, use_skip=True):
         super(Encoder, self).__init__()

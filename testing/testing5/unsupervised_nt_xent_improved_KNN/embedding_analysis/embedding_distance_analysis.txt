@@ -1,0 +1,73 @@
+Embedding Distance Analysis
+==================================================
+
+Label 0 :
+- Intra-class mean distance : 0.9920
+- Inter-class mean distance : 1.0043
+- Ratio (intra/inter) : 0.9878
+
+Label 1 :
+- Intra-class mean distance : 0.9376
+- Inter-class mean distance : 1.0030
+- Ratio (intra/inter) : 0.9348
+
+Label 2 :
+- Intra-class mean distance : 0.9392
+- Inter-class mean distance : 1.0013
+- Ratio (intra/inter) : 0.9379
+
+Label 3 :
+- Intra-class mean distance : 0.9791
+- Inter-class mean distance : 1.0006
+- Ratio (intra/inter) : 0.9784
+
+Label 4 :
+- Intra-class mean distance : 0.9368
+- Inter-class mean distance : 1.0044
+- Ratio (intra/inter) : 0.9327
+
+Label 5 :
+- Intra-class mean distance : 0.8064
+- Inter-class mean distance : 1.0020
+- Ratio (intra/inter) : 0.8048
+
+Label 6 :
+- Intra-class mean distance : 0.8600
+- Inter-class mean distance : 1.0079
+- Ratio (intra/inter) : 0.8533
+
+Label 7 :
+- Intra-class mean distance : 0.9500
+- Inter-class mean distance : 1.0026
+- Ratio (intra/inter) : 0.9475
+
+Label 8 :
+- Intra-class mean distance : 0.9270
+- Inter-class mean distance : 1.0019
+- Ratio (intra/inter) : 0.9253
+
+Label 9 :
+- Intra-class mean distance : 0.8928
+- Inter-class mean distance : 1.0029
+- Ratio (intra/inter) : 0.8902
+
+Label 10 :
+- Intra-class mean distance : 0.9002
+- Inter-class mean distance : 1.0076
+- Ratio (intra/inter) : 0.8935
+
+Label 11 :
+- Intra-class mean distance : 0.9109
+- Inter-class mean distance : 1.0078
+- Ratio (intra/inter) : 0.9039
+
+Label 12 :
+- Intra-class mean distance : 0.7934
+- Inter-class mean distance : 1.0029
+- Ratio (intra/inter) : 0.7912
+
+
+Overall Statistics :
+Mean intra-class distance : 0.9096 (±0.0575)
+Mean inter-class distance : 1.0038 (±0.0024)
+Mean ratio (intra/inter) : 0.9063

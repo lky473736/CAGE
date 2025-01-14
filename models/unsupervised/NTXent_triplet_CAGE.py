@@ -106,15 +106,28 @@ class Encoder(Model):
        x = self.conv3(x)
        return tf.reduce_mean(x, axis=1)
 
-def nt_xent_loss(z_i, z_j, temperature=0.07):
-   batch_size = tf.shape(z_i)[0]
-   z_i = tf.math.l2_normalize(z_i, axis=1)
-   z_j = tf.math.l2_normalize(z_j, axis=1)
-   logits = tf.matmul(z_i, z_j, transpose_b=True) / temperature
-   labels = tf.range(batch_size)
-   loss = tf.keras.losses.sparse_categorical_crossentropy(labels,
-       logits, from_logits=True)
-   return tf.reduce_mean(loss)
+# def nt_xent_loss(z_i, z_j, temperature=0.07):
+#    batch_size = tf.shape(z_i)[0]
+#    z_i = tf.math.l2_normalize(z_i, axis=1)
+#    z_j = tf.math.l2_normalize(z_j, axis=1)
+#    logits = tf.matmul(z_i, z_j, transpose_b=True) / temperature
+#    labels = tf.range(batch_size)
+#    loss = tf.keras.losses.sparse_categorical_crossentropy(labels,
+#        logits, from_logits=True)
+#    return tf.reduce_mean(loss)
+
+def nt_xent_loss(z_i, z_j, temperature):
+    batch_size = tf.shape(z_i)[0]
+    z_i = tf.math.l2_normalize(z_i, axis=1)
+    z_j = tf.math.l2_normalize(z_j, axis=1)
+    
+    sim_matrix = tf.matmul(z_i, z_j, transpose_b=True) / temperature
+    pos_sim = tf.linalg.diag_part(sim_matrix)
+    
+    loss = -tf.reduce_mean(
+        pos_sim - tf.reduce_logsumexp(sim_matrix, axis=1))
+    
+    return loss
 
 def triplet_loss(anchor, positive, negative, margin=1.0):
    pos_dist = tf.reduce_sum(tf.square(anchor - positive), axis=-1)
@@ -134,7 +147,9 @@ class CAGE(Model):
            self.proj_A = layers.Dense(proj_dim, use_bias=False)
            self.proj_G = layers.Dense(proj_dim, use_bias=False)
            
-       self.temperature = tf.Variable(0.07, trainable=True)
+    #    self.temperature = tf.Variable(0.07, trainable=True)
+       self.temperature = tf.Variable(0.07, trainable=True,
+                                     constraint=lambda x: tf.clip_by_value(x, 0.01, 0.5))
        
    def encode(self, x_accel, x_gyro, training=False):
        f_accel = self.enc_A(x_accel, training=training)

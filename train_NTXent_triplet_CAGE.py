@@ -119,7 +119,16 @@ def get_model(n_feat, n_cls, weights_path=None) :
     except :
         optimizer = tf.keras.optimizers.Adam(learning_rate=args.learning_rate)
     
-    lr_schedule = lambda epoch : args.learning_rate * (0.5 ** (epoch // 20))
+    initial_learning_rate = args.learning_rate
+    decay_steps = args.epochs
+    
+    lr_schedule = tf.keras.optimizers.schedules.CosineDecayRestarts(
+        initial_learning_rate,
+        decay_steps,
+        t_mul=2.0,  
+        m_mul=0.9, 
+        alpha=0.01  
+    )
     
     return model, optimizer, lr_schedule
 
@@ -158,6 +167,14 @@ def get_model(n_feat, n_cls, weights_path=None) :
     all changes -> because of triplet loss
     solve that
 '''
+
+# -------- hard negative triplet loss ---------
+def get_hard_negatives(anchor_features, all_features, k=10) : 
+    distances = tf.reduce_sum(tf.square(
+        anchor_features[:, tf.newaxis] - all_features), axis=2)
+    _, hard_negative_indices = tf.nn.top_k(-distances, k=k)
+    return hard_negative_indices
+
 @tf.function
 def train_step(model, optimizer, x_accel, x_gyro):
     '''
@@ -175,19 +192,18 @@ def train_step(model, optimizer, x_accel, x_gyro):
                 temperature
             '''
             
-        else:  # triplet
+        else:  # triplet (hard version)
             batch_size = tf.shape(x_accel)[0]
             
-            f_anchor_a, _ = model.call(x_accel, x_accel, training=True)
-            f_pos_a, _ = model.call(x_accel, x_gyro, training=True)
+            f_anchor, _ = model.call(x_accel, x_accel, training=True)
+            f_positive, _ = model.call(x_accel, x_gyro, training=True)
             
-            neg_idx = tf.random.shuffle(tf.range(batch_size))
-            f_neg_a, _ = model.call(tf.gather(x_accel, neg_idx), 
-                                  tf.gather(x_gyro, neg_idx), 
-                                  training=True)
+            all_features, _ = model.call(x_accel, x_gyro, training=True)
+            hard_neg_idx = get_hard_negatives(f_anchor, all_features)
+            f_negative = tf.gather(all_features, hard_neg_idx[:, 0])  # most hardest!
             
-            total_loss = triplet_loss(f_anchor_a, f_pos_a, f_neg_a, margin=args.margin)
-            ssl_output = tf.eye(batch_size)  # dummy output for accuracy calculation
+            total_loss = triplet_loss(f_anchor, f_positive, f_negative, margin=args.margin)
+            ssl_output = tf.eye(batch_size)
     
     gradients = tape.gradient(total_loss, model.trainable_variables)
     optimizer.apply_gradients(zip(gradients, model.trainable_variables))
