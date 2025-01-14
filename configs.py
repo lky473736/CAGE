@@ -31,13 +31,23 @@ parser.add_argument('--lambda_ssl', type=float, default=1.0, help='loss weight f
 parser.add_argument('--proj_dim', type=int, default=64)
 
 # contrastive learning arguments
-parser.add_argument('--loss_type', type=str, default='nt_xent',
-                    choices=['nt_xent', 'triplet'],
+parser.add_argument('--loss_type', type=str, default='default',
+                    choices=['default', 'nt_xent', 'triplet'],
                     help='Type of contrastive loss to use')
-parser.add_argument('--temperature', type=float, default=0.07,
+parser.add_argument('--temperature', type=float, default=0.00,
                     help='Temperature parameter for NT-Xent loss')
-parser.add_argument('--margin', type=float, default=1.0,
+parser.add_argument('--margin', type=float, default=0.00,
                     help='Margin for triplet loss')
+
+# -----------------------------------------------------
+
+# IDEA at testing 5 : encoder adding with skip-connection
+parser.add_argument('--num_encoders', type=int, default=1, 
+                    help='number of stacked encoders (default: 1)')
+parser.add_argument('--use_skip', action='store_true', default=False,
+                    help='use skip connections between encoders')
+
+# -----------------------------------------------------
 
 args = parser.parse_args()
 

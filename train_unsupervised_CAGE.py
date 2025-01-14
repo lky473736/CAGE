@@ -18,7 +18,7 @@ from dataset.HAR_dataset import HARDataset
 from utils.logger import initialize_logger, record_result, create_tensorboard_writer, write_scalar_summary
 from configs import args, dict_to_markdown
 from sklearn.metrics import classification_report
-from models.unsupervised_CAGE import CAGE
+from models.unsupervised.unsupervised_CAGE import CAGE
 
 import matplotlib.pyplot as plt
 
@@ -87,7 +87,8 @@ def calculate_metrics(predictions, labels) :
     from sklearn.metrics import classification_report, confusion_matrix
     
     report = classification_report(labels, predictions, 
-                                   output_dict=True)
+                                   output_dict=True,
+                                   zero_division=1)
     conf_matrix = confusion_matrix(labels, predictions)
     
     return report, conf_matrix
@@ -106,7 +107,7 @@ def get_model(n_feat, n_cls, weights_path=None) :
     else:
         proj_dim = 0
     
-    model = CAGE(n_feat // 2, n_cls, proj_dim)
+    model = CAGE(n_feat // 2, n_cls, proj_dim, args.num_encoders, args.use_skip)
     
     if weights_path:
         model.load_weights(weights_path)
@@ -330,7 +331,8 @@ def train() :
     result.write(str(test_matrix) + "\n\n")
     
     result.write("Classification Report:\n")
-    result.write(classification_report(test_labels, test_predictions))
+    result.write(classification_report(test_labels, test_predictions,
+                                   zero_division=1))
     
     result.close()
     writer.close()

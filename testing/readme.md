@@ -1,0 +1,5 @@
+- testing 2 : running only one encoder(EarlyFusion) CAGE with each dataset
+- testing 3 : real CAGE (contrastive learning)
+- testing 4 : no classifier, just using embedding value -> KNN, SVM
+- testing 5 : introduce nt_xent_loss and triplet_loss at model
+- testing 6 : will increasing the number of encoders and skip connections lead to better compression of embeddings and improved performance?

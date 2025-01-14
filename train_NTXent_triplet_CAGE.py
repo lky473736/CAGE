@@ -18,7 +18,7 @@ from dataset.HAR_dataset import HARDataset
 from utils.logger import initialize_logger, record_result, create_tensorboard_writer, write_scalar_summary
 from configs import args, dict_to_markdown
 from sklearn.metrics import classification_report
-from models.NTXent_triplet_CAGE import CAGE, nt_xent_loss, triplet_loss
+from models.unsupervised.NTXent_triplet_CAGE import CAGE, nt_xent_loss, triplet_loss
 
 import matplotlib.pyplot as plt
 

@@ -3,18 +3,11 @@ implementation of paper, CAGE4HAR using TensorFlow
 
 - **Gyuyeon Lim (lky473736)**
 - making period : 2024.12.01. ~ 2025.01.03.
+- testing : 2025.01.01. ~ current
 
 > [!NOTE]
 > **This source code is a TensorFlow conversion of the implementation code from <Contrastive Accelerometer–Gyroscope Embedding Model for Human Activity Recognition (https://ieeexplore.ieee.org/document/9961198)>** and is not the official source code. The official source code is implemented in PyTorch and can be found here (https://github.com/quotation2520/CAGE4HAR).
 
------
-
-### Current update and testing
-
-- https://github.com/lky473736/CAGE/blob/main/testing/testing_2_result_pdf.pdf
-- https://github.com/lky473736/CAGE/blob/main/testing/testing_2_result.txt
-
-<img src="./testing/testing_2.png">
 
 -----
 
@@ -152,61 +145,3 @@ Results will be saved in `save/{dataset}/{model}/{trial}/`.
 - **summary about paper used by reference during implementing**
     - https://astonishing-antlion-13b.notion.site/Contrastive-Accelerometer-Gyroscope-Embedding-Model-for-Human-Activity-Recognition-162e61796c4280b59b13d7978e33ad8c?pvs=4
     - https://astonishing-antlion-13b.notion.site/CLIP-Learning-Transferable-Visual-Models-From-Natural-Language-Supervision-163e61796c4280ff95e8cf08dc5c759e?pvs=4
-
--------
-
-### Testing
-
-**1. Hardware Environment**
-```bash
-- CPU : 2.6 GHz 6 core Intel Core i7
-- GPU : no use 
-- RAM : 32GB 2400 MHz DDR4
-```
-
-**2. Testing log**
-```bash
-(1) 2024. 12. 29. ~ 2024. 12. 31. testing 1
-- ONLY PAMAP2 IS WORKING NOW (why other dataset not work?)
-- size unmatching?
-
-('BaselineCNN', 'UCIHAR') -> X (because of conv size matching error, maybe dimension unmatching's main issue)
-('BaselineCNN', 'PAMAP2') -> O 
-('BaselineCNN', 'MHEALTH') -> X
-('DeepConvLSTM', 'UCIHAR') -> X
-('DeepConvLSTM', 'PAMAP2') -> O
-('DeepConvLSTM', 'MHEALTH') -> X
-('LSTMConvNet', 'UCIHAR') -> X
-```
-
-```bash
-(2) 2025. 01. 01. ~ 2025. 01. 03. testing 2
-- https://github.com/lky473736/CAGE/blob/main/testing/testing_2_result_pdf.pdf
-- All working! (finally)
-- Improvements
-    - valid padding -> same padding (it seems pytorch and tensorflow handle padding differently)
-    - Convolution Autoencoder
-        - better calculation of feature map sizes based on "n_feat"
-        - replace the existing upsampling in the decoder with resize to restore the original size
-            - resize operation gives us more control over the output dimensions
-            - changed the old upsampling method to use resize operations
-
-('BaselineCNN', 'UCIHAR') -> O
-('BaselineCNN', 'PAMAP2') -> O 
-('BaselineCNN', 'MHEALTH') -> O
-('DeepConvLSTM', 'UCIHAR') -> O
-('DeepConvLSTM', 'PAMAP2') -> O
-('DeepConvLSTM', 'MHEALTH') -> O
-('LSTMConvNet', 'UCIHAR') -> O
-('LSTMConvNet', 'PAMAP2') -> O
-('LSTMConvNet', 'MHEALTH') -> O
-('EarlyFusion', 'UCIHAR') -> O
-('EarlyFusion', 'PAMAP2') -> O
-('EarlyFusion', 'MHEALTH') -> O
-('CAE', 'UCIHAR') -> O
-('CAE', 'PAMAP2') -> O
-('CAE', 'MHEALTH') -> O
-('CAGE', 'UCIHAR') -> O
-('CAGE', 'PAMAP2') -> O
-('CAGE', 'MHEALTH') -> O
-```
