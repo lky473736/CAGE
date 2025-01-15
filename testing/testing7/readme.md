@@ -1,6 +1,6 @@
 ### binary classifying (standing/jumping)
 - <b>acc is very high, BUT...</b>
-    - There was only one sample of "jumping" in the validation set, and all loss functions failed to predict it during testing
+    - There was only one sample of "jumping" in the test set, and all loss functions failed to predict it during testing
     - So i tried standing/running binary classifying
 
 
