@@ -22,25 +22,25 @@ class PAMAP2(HARDataGenerator):
             'test': ['subject106.dat']
         }
         self.label_map = [
-            (0, 'other'),
-            (1, 'lying'),
-            (2, 'sitting'),
-            (3, 'standing'),
-            (4, 'walking'),
-            (5, 'running'),
-            (6, 'cycling'),
-            (7, 'Nordic walking'),
+                # (0, 'other'),
+                # (1, 'lying'),
+                # (2, 'sitting'),
+                (3, 'standing'),
+                # (4, 'walking'),
+                (5, 'running'),
+                # (6, 'cycling'),
+                # (7, 'Nordic walking'),
             # (9, 'watching TV'),
             # (10, 'computer work'),
             # (11, 'car driving'),
-            (12, 'ascending stairs'),
-            (13, 'descending stairs'),
-            (16, 'vacuum cleaning'),
-            (17, 'ironing'),
+                # (12, 'ascending stairs'),
+                # (13, 'descending stairs'),
+                # (16, 'vacuum cleaning'),
+                # (17, 'ironing'),
             # (18, 'folding laundry'),
             # (19, 'house cleaning'),
             # (20, 'playing soccer'),
-            (24, 'rope jumping')
+                # (24, 'rope jumping')
         ]
         if not self.include_null:
             self.label_map = self.label_map[1:]
@@ -61,7 +61,7 @@ class PAMAP2(HARDataGenerator):
         self.val_label = data['val']['targets']
         self.test_data = data['test']['inputs']
         self.test_label = data['test']['targets']
-
+        
     def _read_Pamap2_Files(self, datapath, filelist, cols, label2id, overlap, downsample=True):
         data = []
         labels = []
@@ -69,29 +69,91 @@ class PAMAP2(HARDataGenerator):
             print('Reading file %d of %d' % (i + 1, len(filelist)))
             indiv_data = []
             indiv_labels = []
-            with open(datapath.rstrip('/') + '/Protocol/%s' % filename, 'r') as f:
-                reader = csv.reader(f, delimiter=' ')
-                for line in reader:
-                    elem = []
-                    # not including the non related activity
-                    if line[1] not in label2id:
-                        continue
-                    for ind in cols:
-                        elem.append(line[ind])
-                    indiv_data.append([float(x) for x in elem[:]])
-                    indiv_labels.append(label2id[line[1]])
-                # interpolate nan values
-                indiv_data = np.asarray(pd.DataFrame(indiv_data).interpolate(axis=0))
-                indiv_data = butterworth_filter(indiv_data, self.sampling_rate)
-            if len(np.argwhere(np.isnan(indiv_data))) > 0:
-                print('still nan')
-            if downsample:
-                indiv_data = indiv_data[::2]
-                indiv_labels = indiv_labels[::2]
-            split_data, split_labels = self.split_windows(np.asarray(indiv_data), np.asarray(indiv_labels, dtype=int), overlap)
-            data.append(split_data)
-            labels.append(split_labels)
-        return {'inputs': np.concatenate(data, axis=0), 'targets': np.concatenate(labels)}
+            
+            try:
+                with open(datapath.rstrip('/') + '/Protocol/%s' % filename, 'r') as f:
+                    reader = csv.reader(f, delimiter=' ')
+                    for line in reader:
+                        if not line:
+                            continue
+                            
+                        if line[1] not in label2id:
+                            continue
+                            
+                        elem = []
+                        for ind in cols:
+                            if ind < len(line):
+                                elem.append(line[ind])
+                        
+                        if len(elem) == len(cols):
+                            indiv_data.append([float(x) for x in elem])
+                            indiv_labels.append(label2id[line[1]])
+                    
+                    if len(indiv_data) > 0:
+                        indiv_data = np.asarray(pd.DataFrame(indiv_data).interpolate(axis=0))
+                        indiv_data = butterworth_filter(indiv_data, self.sampling_rate)
+                        
+                        if downsample:
+                            indiv_data = indiv_data[::2]
+                            indiv_labels = indiv_labels[::2]
+                        
+                        split_data, split_labels = self.split_windows(
+                            np.asarray(indiv_data), 
+                            np.asarray(indiv_labels, dtype=int), 
+                            overlap
+                        )
+                        
+                        if split_data.size > 0 and split_data.ndim == 3:
+                            data.append(split_data)
+                            labels.append(split_labels)
+                            
+            except Exception as e:
+                print(f"Error processing file {filename}: {str(e)}")
+                continue
+        
+        if not data:
+            raise ValueError("No valid data was loaded from the files")
+            
+        shapes = [d.shape for d in data]
+        if len(set(len(shape) for shape in shapes)) > 1:
+            print("Inconsistent dimensions in data arrays:")
+            for i, shape in enumerate(shapes):
+                print(f"File {filelist[i]}: shape {shape}")
+            raise ValueError("Inconsistent data dimensions")
+        
+        return {'inputs': np.concatenate(data, axis=0), 
+                'targets': np.concatenate(labels)}
+
+    # def _read_Pamap2_Files(self, datapath, filelist, cols, label2id, overlap, downsample=True):
+    #     data = []
+    #     labels = []
+    #     for i, filename in enumerate(filelist):
+    #         print('Reading file %d of %d' % (i + 1, len(filelist)))
+    #         indiv_data = []
+    #         indiv_labels = []
+    #         with open(datapath.rstrip('/') + '/Protocol/%s' % filename, 'r') as f:
+    #             reader = csv.reader(f, delimiter=' ')
+    #             for line in reader:
+    #                 elem = []
+    #                 # not including the non related activity
+    #                 if line[1] not in label2id:
+    #                     continue
+    #                 for ind in cols:
+    #                     elem.append(line[ind])
+    #                 indiv_data.append([float(x) for x in elem[:]])
+    #                 indiv_labels.append(label2id[line[1]])
+    #             # interpolate nan values
+    #             indiv_data = np.asarray(pd.DataFrame(indiv_data).interpolate(axis=0))
+    #             indiv_data = butterworth_filter(indiv_data, self.sampling_rate)
+    #         if len(np.argwhere(np.isnan(indiv_data))) > 0:
+    #             print('still nan')
+    #         if downsample:
+    #             indiv_data = indiv_data[::2]
+    #             indiv_labels = indiv_labels[::2]
+    #         split_data, split_labels = self.split_windows(np.asarray(indiv_data), np.asarray(indiv_labels, dtype=int), overlap)
+    #         data.append(split_data)
+    #         labels.append(split_labels)
+    #     return {'inputs': np.concatenate(data, axis=0), 'targets': np.concatenate(labels)}
 
 
 

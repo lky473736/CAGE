@@ -7,9 +7,9 @@ from dataset.mhealth import MHEALTH
 
 
 if __name__ == "__main__":
-    dataset = UCI_HAR()
-    dataset.dataset_verbose()
-    dataset.save_split()
+    # dataset = UCI_HAR()
+    # dataset.dataset_verbose()
+    # dataset.save_split()
 
     # dataset = MobiAct(clean=True, fall=False)
     # dataset.dataset_verbose()
@@ -18,13 +18,13 @@ if __name__ == "__main__":
     dataset = PAMAP2(clean=False, include_null=True)
     dataset.save_split('splits_Xclean')
 
-    dataset = MHEALTH(clean=False, include_null=True)
-    dataset.dataset_verbose()
-    dataset.save_split('splits_Xclean')
+    # dataset = MHEALTH(clean=False, include_null=True)
+    # dataset.dataset_verbose()
+    # dataset.save_split('splits_Xclean')
 
-    dataset = USC_HAD()
-    dataset.dataset_verbose()
-    dataset.save_split()
+    # dataset = USC_HAD()
+    # dataset.dataset_verbose()
+    # dataset.save_split()
 
 # clean = [True, False]
 # include_null = [True, False]

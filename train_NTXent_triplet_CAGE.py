@@ -87,7 +87,7 @@ def calculate_metrics(predictions, labels)  :
     from sklearn.metrics import classification_report, confusion_matrix
     
     report = classification_report(labels, predictions, 
-                                   output_dict=True)
+                                   output_dict=True, zero_division=True)
     conf_matrix = confusion_matrix(labels, predictions)
     
     return report, conf_matrix
@@ -412,7 +412,7 @@ def train()  :
     result.write(str(test_matrix) + "\n\n")
     
     result.write("Classification Report :\n")
-    result.write(classification_report(test_labels, test_predictions))
+    result.write(classification_report(test_labels, test_predictions, zero_division=True))
     
     result.close()
     writer.close()

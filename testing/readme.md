@@ -3,3 +3,4 @@
 - testing 4 : no classifier, just using embedding value -> KNN, SVM
 - testing 5 : introduce nt_xent_loss and triplet_loss at model
 - testing 6 : will increasing the number of encoders and skip connections lead to better compression of embeddings and improved performance?
+- testing 7 : binary classifying (standing/jumping, standing/running)
