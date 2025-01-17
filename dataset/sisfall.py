@@ -7,7 +7,7 @@ import os
 from collections import Counter
 
 # 1/17
-
+# editing
 
 class SisFall(HARDataGenerator):
     def __init__(self, window_length=128, 
@@ -167,7 +167,7 @@ class SisFall(HARDataGenerator):
                 converted_data = self._convert_sensor_data(raw_data)
                 all_data.append(converted_data)
         
-        if all_data:
+        if all_data == True :
             combined_data = np.concatenate(all_data, axis=0) # all combine
             
             # 200 -> 50
@@ -213,33 +213,38 @@ class SisFall(HARDataGenerator):
                     if windows_data is not None and len(windows_data) > 0:
                         data.append(windows_data)
                         labels.append(windows_labels)
-        
-        if len(data) == 0:
+    
+        if len(data) == 0 : 
+            # if num of data records is NULL here
             raise ValueError(f"No valid data was loaded for subjects {subject_list}")
             
         final_data = np.concatenate(data, axis=0)
         final_labels = np.concatenate(labels)
         
         unique_labels, counts = np.unique(final_labels, return_counts=True)
-        print(f"\nData distribution for subjects {subject_list}:")
-        print(f"Label counts: {list(zip(unique_labels, counts))}\n")
+        print ()
+        print (f"Data distribution for subjects {subject_list}:")
+        print (f"Label counts: {list(zip(unique_labels, counts))}\n")
         
         return final_data, final_labels
 
     def dataset_verbose(self):
-        print(f"\n# train: {len(self.train_data)}")
+        print ()
+        print (f"# train: {len(self.train_data)}")
         n_train = dict(Counter(self.train_label))
-        print(f"ADL (0): {n_train.get(0, 0)}, Fall (1): {n_train.get(1, 0)}")
+        print (f"ADL (0): {n_train.get(0, 0)}, Fall (1): {n_train.get(1, 0)}")
         
-        print(f"\n# val: {len(self.val_data)}")
+        print ()
+        print (f"# val: {len(self.val_data)}")
         n_val = dict(Counter(self.val_label))
-        print(f"ADL (0): {n_val.get(0, 0)}, Fall (1): {n_val.get(1, 0)}")
+        print (f"ADL (0): {n_val.get(0, 0)}, Fall (1): {n_val.get(1, 0)}")
         
-        print(f"\n# test: {len(self.test_data)}")
+        print ()
+        print (f"# test: {len(self.test_data)}")
         n_test = dict(Counter(self.test_label))
-        print(f"ADL (0): {n_test.get(0, 0)}, Fall (1): {n_test.get(1, 0)}")
+        print (f"ADL (0): {n_test.get(0, 0)}, Fall (1): {n_test.get(1, 0)}")
 
-if __name__ == "__main__":
+if __name__ == "__main__" :
     sisfall = SisFall()
     sisfall.dataset_verbose()
     sisfall.save_split()
