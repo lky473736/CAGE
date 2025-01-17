@@ -4,6 +4,8 @@ from dataset.pamap2 import PAMAP2
 from dataset.opportunity import OPPORTUNITY
 from dataset.mhealth import MHEALTH
 # from dataset.mobiact import MobiAct
+from dataset.mobifall import MobiFall
+from dataset.sisfall import SisFall
 
 
 if __name__ == "__main__":
@@ -25,6 +27,14 @@ if __name__ == "__main__":
     # dataset = USC_HAD()
     # dataset.dataset_verbose()
     # dataset.save_split()
+    
+    dataset = MobiFall(clean=False)
+    dataset.dataset_verbose()
+    dataset.save_split('splits_Xclean')
+
+    dataset = SisFall(clean=False)
+    dataset.dataset_verbose()
+    dataset.save_split('splits_Xclean')
 
 # clean = [True, False]
 # include_null = [True, False]

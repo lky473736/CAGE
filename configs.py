@@ -20,7 +20,9 @@ parser.add_argument('--trial', type=str, default='default', help='trial id')
 
 # dataset and model
 parser.add_argument('--model', type=str, default='EarlyFusion', choices=['BaselineCNN', 'DeepConvLSTM', 'LSTMConvNet', 'EarlyFusion', 'CAGE'])
-parser.add_argument('--dataset', type=str, default='UCI_HAR', choices=['UCI_HAR', 'WISDM', 'Opportunity', 'USC_HAD', 'PAMAP2', 'mHealth', 'MobiAct'])
+parser.add_argument('--dataset', type=str, default='UCI_HAR', 
+                    choices=['UCI_HAR', 'WISDM', 'Opportunity', 'USC_HAD', 'PAMAP2', 'mHealth', 'MobiAct', 
+                            'MobiFall', 'SisFall'])
 parser.add_argument('--no_clean', action='store_false', default=False)
 parser.add_argument('--no_null', action='store_false', default=True)
 parser.add_argument('--train_portion', type=float, default=1.0, help='use portion of trainset')
