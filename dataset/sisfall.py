@@ -167,7 +167,7 @@ class SisFall(HARDataGenerator):
                 converted_data = self._convert_sensor_data(raw_data)
                 all_data.append(converted_data)
         
-        if all_data == True :
+        if all_data :     # <-------  not empty list
             combined_data = np.concatenate(all_data, axis=0) # all combine
             
             # 200 -> 50
