@@ -1,7 +1,13 @@
 '''
     classifier delete version
-    embedding -> KNN clustering
+    embedding -> KNN or SVC clustering
 '''
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import roc_curve, auc
+from sklearn.preprocessing import label_binarize
+from sklearn.decomposition import PCA
 
 import os
 from sklearn.manifold import TSNE
@@ -18,7 +24,7 @@ from dataset.HAR_dataset import HARDataset
 from utils.logger import initialize_logger, record_result, create_tensorboard_writer, write_scalar_summary
 from configs import args, dict_to_markdown
 from sklearn.metrics import classification_report
-from models.unsupervised.unsupervised_CAGE import CAGE
+from models.unsupervised_CAGE import CAGE
 
 import matplotlib.pyplot as plt
 
@@ -129,15 +135,19 @@ def get_model(n_feat, n_cls, weights_path=None) :
     
     return model, optimizer, lr_schedule
 
-@tf.function
-def train_step(model, optimizer, x_accel, x_gyro):
     '''
         NO CLASSIFIER. SO THERE IS NOT CLS_LOSS HERE
     '''
-    with tf.GradientTape() as tape :
+def train_step(model, optimizer, x_accel, x_gyro):
+    with tf.GradientTape() as tape:
         ssl_output, (f_accel, f_gyro) = model(x_accel, x_gyro, return_feat=True, training=True)
         
+        # 수치 안정성을 위한 epsilon 추가
+        ssl_output = tf.clip_by_value(ssl_output, 1e-7, 1.0 - 1e-7)
+        
         ssl_labels = tf.range(tf.shape(ssl_output)[0])
+        
+        # NaN 방지를 위한 손실 계산
         ssl_loss_1 = tf.reduce_mean(
             tf.keras.losses.sparse_categorical_crossentropy(
                 ssl_labels, ssl_output, from_logits=True
@@ -150,27 +160,63 @@ def train_step(model, optimizer, x_accel, x_gyro):
             )
         )
         
-        total_loss = (ssl_loss_1 + ssl_loss_2) / 2
-    
+        # NaN 체크 및 대체
+        total_loss = tf.where(
+            tf.math.is_finite(ssl_loss_1 + ssl_loss_2),
+            (ssl_loss_1 + ssl_loss_2) / 2,
+            0.0
+        )
+
+    # NaN 방지를 위한 그라디언트 클리핑
     gradients = tape.gradient(total_loss, model.trainable_variables)
+    gradients = [
+        tf.clip_by_norm(g, 1.0) if g is not None else g 
+        for g in gradients
+    ]
+    
     optimizer.apply_gradients(zip(gradients, model.trainable_variables))
     return total_loss, ssl_output
 
-def get_embeddings(model, dataset, n_device) :
+def get_embeddings(model, dataset, n_device):
     embeddings_list = []
     labels_list = []
-    #
-    #
     
-    for data, labels in dataset :
+    for data, labels in dataset:
         x_accel = data[:, :3 * n_device, :]
         x_gyro = data[:, 3 * n_device:, :]
         _, (f_accel, f_gyro) = model(x_accel, x_gyro, return_feat=True, training=False)
         
-        embeddings_list.append(tf.concat([f_accel, f_gyro], axis=1).numpy())
+        embeddings = tf.concat([f_accel, f_gyro], axis=1).numpy()
+        '''
+            ValueError: Input X contains NaN.
+            KNeighborsClassifier does not accept missing values encoded as NaN natively. For supervised learning, you might want to consider sklearn.ensemble.HistGradientBoostingClassifier and Regressor which accept missing values encoded as NaNs natively. Alternatively, it is possible to preprocess the data, for instance by using an imputer transformer in a pipeline or drop samples with missing values. See https://scikit-learn.org/stable/modules/impute.html You can find a list of all estimators that handle NaN values at the following page: https://scikit-learn.org/stable/modules/impute.html#estimators-that-handle-nan-values
+            
+            
+            -> solve this so that add checking condition if is nan
+        '''
+        if np.any(np.isnan(embeddings)) :
+            print ("WARNING: NaN VALUES DETECTED")
+            embeddings = np.nan_to_num(embeddings, 0)
+        
+        embeddings_list.append(embeddings)
         labels_list.extend(labels.numpy())
     
     return np.concatenate(embeddings_list, axis=0), np.array(labels_list)
+    #     '''
+    #         ValueError: Input X contains NaN.
+    #         KNeighborsClassifier does not accept missing values encoded as NaN natively. For supervised learning, you might want to consider sklearn.ensemble.HistGradientBoostingClassifier and Regressor which accept missing values encoded as NaNs natively. Alternatively, it is possible to preprocess the data, for instance by using an imputer transformer in a pipeline or drop samples with missing values. See https://scikit-learn.org/stable/modules/impute.html You can find a list of all estimators that handle NaN values at the following page: https://scikit-learn.org/stable/modules/impute.html#estimators-that-handle-nan-values
+            
+            
+    #         -> solve this so that add checking condition if is nan
+    #     '''
+    #     if np.any(np.isnan(embeddings)) :
+    #         print ("WARNING: NaN VALUES DETECTED")
+    #         embeddings = np.nan_to_num(embeddings, 0)
+        
+    #     embeddings_list.append(embeddings)
+    #     labels_list.extend(labels.numpy())
+    
+    # return np.concatenate(embeddings_list, axis=0), np.array(labels_list)
 
 def visualize_embeddings(embeddings, labels, save_dir, 
                          prefix='') :
@@ -184,6 +230,88 @@ def visualize_embeddings(embeddings, labels, save_dir,
     plt.title(f'{prefix} Embeddings t-SNE Visualization')
     plt.savefig(os.path.join(save_dir, f'{prefix.lower()}_tsne.jpg'), 
                 dpi=300, bbox_inches='tight')
+    plt.close()
+    
+def plot_training_progress(epoch_losses, epoch_ssl_accuracies, save_path):
+    '''
+    훈련 과정의 손실과 SSL 정확도를 시각화하는 함수
+    '''
+    plt.figure(figsize=(10, 5))
+    plt.subplot(1, 2, 1)
+    plt.plot(epoch_losses)
+    plt.title('Training Loss per Epoch')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+
+    plt.subplot(1, 2, 2)
+    plt.plot(epoch_ssl_accuracies)
+    plt.title('SSL Accuracy per Epoch')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy (%)')
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(save_path, 'training_progress.png'))
+    plt.close()
+
+def plot_roc_curve(test_embeddings, test_labels, knn, save_path):
+    '''
+    ROC 곡선을 그리는 함수 (이진 분류용)
+    '''
+    from sklearn.metrics import roc_curve, auc
+
+    # 테스트 데이터의 확률 예측 (positive 클래스에 대한 확률)
+    test_prob = knn.predict_proba(test_embeddings)[:, 1]
+    
+    # ROC 곡선 계산
+    fpr, tpr, thresholds = roc_curve(test_labels, test_prob)
+    roc_auc = auc(fpr, tpr)
+    
+    plt.figure(figsize=(10, 8))
+    plt.plot(fpr, tpr, color='darkorange', lw=2, 
+             label=f'ROC curve (AUC = {roc_auc:.2f})')
+    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic (ROC)')
+    plt.legend(loc="lower right")
+    plt.savefig(os.path.join(save_path, 'roc_curve.png'))
+    plt.close()
+
+def plot_confusion_matrix_heatmap(conf_matrix, save_path):
+    '''
+    혼동 행렬을 히트맵으로 시각화하는 함수
+    '''
+    import seaborn as sns
+    
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(conf_matrix, annot=True, cmap='Blues', fmt='d')
+    plt.title('Confusion Matrix')
+    plt.xlabel('Predicted Label')
+    plt.ylabel('True Label')
+    plt.tight_layout()
+    plt.savefig(os.path.join(save_path, 'confusion_matrix_heatmap.png'))
+    plt.close()
+
+def plot_embeddings_pca(test_embeddings, test_labels, save_path):
+    '''
+    PCA를 사용하여 임베딩 공간을 시각화하는 함수
+    '''
+    from sklearn.decomposition import PCA
+    
+    pca = PCA(n_components=2)
+    embeddings_pca = pca.fit_transform(test_embeddings)
+    
+    plt.figure(figsize=(10, 8))
+    scatter = plt.scatter(embeddings_pca[:, 0], embeddings_pca[:, 1], 
+                          c=test_labels, cmap='viridis', alpha=0.7)
+    plt.colorbar(scatter)
+    plt.title('PCA of Test Embeddings')
+    plt.xlabel('First Principal Component')
+    plt.ylabel('Second Principal Component')
+    plt.tight_layout()
+    plt.savefig(os.path.join(save_path, 'embeddings_pca.png'))
     plt.close()
 
 # -----------------------------------
@@ -212,6 +340,9 @@ def train() :
     
     writer = create_tensorboard_writer(args.save_folder + '/run')
     
+    epoch_losses = []
+    epoch_ssl_accuracies = []
+    
     # -------------------------
     # only learning embedding, definitly NO CLASSIFIER HERE
     
@@ -233,6 +364,7 @@ def train() :
             ssl_preds = tf.argmax(ssl_output, axis=1)
             ssl_labels_list.append(ssl_labels)
             ssl_preds_list.append(ssl_preds)
+            
         
         if not args.pretrain :
             optimizer.learning_rate = lr_schedule(epoch)
@@ -258,6 +390,9 @@ def train() :
             best_epoch = epoch
             model.save_weights(os.path.join(args.save_folder, 'best.weights.h5'))
             logger.info(f"Best model saved at epoch {epoch}")
+            
+        epoch_losses.append(float(epoch_loss))
+        epoch_ssl_accuracies.append(ssl_acc)
     
     model.save_weights(os.path.join(args.save_folder, 'final.weights.h5'))
         
@@ -268,24 +403,24 @@ def train() :
     test_embeddings, test_labels = get_embeddings(model, test_dataset, n_device)
 
     #  -------------------------- KNN (or SVM kernel cosine) --------------------------------
-    # knn = KNeighborsClassifier(n_neighbors=7, weights='distance', metric='cosine')
+    knn = KNeighborsClassifier(n_neighbors=7, weights='distance', metric='cosine')
     
-    # knn.fit(train_embeddings, train_labels)
+    knn.fit(train_embeddings, train_labels)
     
-    # val_predictions = knn.predict(val_embeddings)
-    # test_predictions = knn.predict(test_embeddings)
+    val_predictions = knn.predict(val_embeddings)
+    test_predictions = knn.predict(test_embeddings)
     
-    from scipy.spatial.distance import cdist
-    from sklearn.svm import SVC
+    # from scipy.spatial.distance import cdist
+    # from sklearn.svm import SVC
     
-    train_sim = 1 - cdist(train_embeddings, train_embeddings, metric='cosine')
-    val_sim = 1 - cdist(val_embeddings, train_embeddings, metric='cosine')
-    test_sim = 1 - cdist(test_embeddings, train_embeddings, metric='cosine')
+    # train_sim = 1 - cdist(train_embeddings, train_embeddings, metric='cosine')
+    # val_sim = 1 - cdist(val_embeddings, train_embeddings, metric='cosine')
+    # test_sim = 1 - cdist(test_embeddings, train_embeddings, metric='cosine')
     
-    svm = SVC(kernel='precomputed')
-    svm.fit(train_sim, train_labels)
-    val_predictions = svm.predict(val_sim)
-    test_predictions = svm.predict(test_sim)
+    # svm = SVC(kernel='precomputed')
+    # svm.fit(train_sim, train_labels)
+    # val_predictions = svm.predict(val_sim)
+    # test_predictions = svm.predict(test_sim)
 
     #  --------------------- visualization tSNE + save log and rst ----------------------------
     save_dir = os.path.join(args.save_folder, 'embedding_analysis')
@@ -294,6 +429,14 @@ def train() :
     visualize_split_embeddings(train_accel, train_gyro, train_labels, save_dir)
     analyze_embeddings(train_embeddings, train_labels, save_dir)
     report, conf_matrix = calculate_metrics(test_predictions, test_labels)
+    
+    
+    # ------------------- visualization ROC, loss fig, confusion matrix, pca -------------
+    
+    plot_training_progress(epoch_losses, epoch_ssl_accuracies, args.save_folder)
+    plot_roc_curve(test_embeddings, test_labels, knn, args.save_folder)
+    plot_confusion_matrix_heatmap(conf_matrix, args.save_folder)
+    plot_embeddings_pca(test_embeddings, test_labels, args.save_folder)
 
     with open(os.path.join(save_dir, 'class_performance.txt'), 'w') as f:
         f.write("Class-wise Performance Metrics\n")

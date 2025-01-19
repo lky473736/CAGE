@@ -70,8 +70,7 @@ class MobiFall(HARDataGenerator):
        self.test_data, self.test_label = self._read_data(test_split)
 
    def _read_sensor_file(self, filepath) :
-       
-       '''
+    '''
         #Acceleration force along the x y z axes (including gravity).
         #timestamp(ns),x,y,z(m/s^2)
         #Datetime: 05/08/2013 11:20:15
@@ -90,25 +89,33 @@ class MobiFall(HARDataGenerator):
         @DATA
         184458554000, 1.2641385, -1.7525556, 9.490616
         184658824000, 1.6950948, -1.733402, 8.992621
-       '''
-       with open(filepath, 'r') as f:
-           lines = f.readlines()
-           data_start = 0
-           for i, line in enumerate(lines):
-               if line.strip() == '@DATA': # @DATA behind -> data
-                   data_start = i + 1
-                   break
-           
-           data_lines = []
-           for line in lines[data_start:]:
-               if line.strip():  # blank line
-                   try:
-                       values = [float(val.strip()) for val in line.strip().split(',')]
-                       data_lines.append(values)
-                   except ValueError:
-                       continue
-           
-           return pd.DataFrame(data_lines)
+        ...
+    '''
+    with open(filepath, 'r') as f:
+        lines = f.readlines()
+        data_start = 0
+        for i, line in enumerate(lines):
+            if line.strip() == '@DATA': 
+                data_start = i + 1
+                break
+        
+        data_lines = []
+        for line in lines[data_start:]:
+            if line.strip():  
+                try:
+                    values = [float(val.strip()) for val in line.strip().split(',')]
+                    # 데이터 유효성 검사 추가
+                    if all(np.isfinite(values)):
+                        data_lines.append(values)
+                except ValueError:
+                    continue
+        
+        # 데이터 프레임 생성 시 추가 처리
+        df = pd.DataFrame(data_lines)
+        # NaN 값 있으면 0으로 대체
+        df = df.fillna(0)
+        
+        return df
 
    def _read_data(self, split):
        data = []
@@ -152,72 +159,76 @@ class MobiFall(HARDataGenerator):
            return np.array([]), np.array([])
    
    def _process_activity_data(self, activity_dir, activity, subject_id, data, labels):
-       acc_pattern = f"{activity}_acc_{subject_id}_*.txt"
-       acc_files = glob.glob(os.path.join(activity_dir, acc_pattern))
-       
-       for acc_file in acc_files:
-           try:
-               trial_num = acc_file.split('_')[-1]
-               gyro_file = os.path.join(activity_dir, f"{activity}_gyro_{subject_id}_{trial_num}") # gyro
-               
-               if not os.path.exists(gyro_file):
-                   print(f"Gyro file not found for: {acc_file}")
-                   continue
+    acc_pattern = f"{activity}_acc_{subject_id}_*.txt"
+    acc_files = glob.glob(os.path.join(activity_dir, acc_pattern))
+    
+    for acc_file in acc_files:
+        try:
+            trial_num = acc_file.split('_')[-1]
+            gyro_file = os.path.join(activity_dir, f"{activity}_gyro_{subject_id}_{trial_num}") # gyro
+            
+            if not os.path.exists(gyro_file):
+                print(f"Gyro file not found for: {acc_file}")
+                continue
 
-               try:
-                   acc_data = self._read_sensor_file(acc_file)
-                   if len(acc_data) == 0:
-                       print(f"Empty accelerometer data in {acc_file}")
-                       continue
-                   acc_data.columns = ['timestamp', 'acc_x', 'acc_y', 'acc_z']
-                   
-                   gyro_data = self._read_sensor_file(gyro_file)
-                   if len(gyro_data) == 0:
-                       print(f"Empty gyroscope data in {gyro_file}")
-                       continue
-                   gyro_data.columns = ['timestamp', 'gyro_x', 'gyro_y', 'gyro_z']
-               except Exception as e:
-                   print(f"Error reading sensor files: {str(e)}")
-                   continue
-               
-               try: # merging gyro and accer
-                   merged_data = pd.merge_asof(acc_data.sort_values('timestamp'),
-                                           gyro_data.sort_values('timestamp'),
-                                           on='timestamp',
-                                           direction='nearest',
-                                           tolerance=1e7)
-                       
-                   sensor_data = merged_data[['acc_x', 'acc_y', 'acc_z',
-                                           'gyro_x', 'gyro_y', 'gyro_z']].values
-               except Exception as e:
-                   print   (f"ERROR merging sensor data: {str(e)}")
-                   continue
-               
-               # downsampling : 87 -> 50
-               downsample_factor = int(self.original_rate / self.sampling_rate)
-               sensor_data = sensor_data[::downsample_factor]
+            try:
+                acc_data = self._read_sensor_file(acc_file)
+                acc_data.columns = ['timestamp', 'acc_x', 'acc_y', 'acc_z']
+                
+                gyro_data = self._read_sensor_file(gyro_file)
+                gyro_data.columns = ['timestamp', 'gyro_x', 'gyro_y', 'gyro_z']
+            except Exception as e:
+                print(f"Error reading sensor files: {str(e)}")
+                continue
+            
+            try:
+                # merge_asof 시 NaN 처리 옵션 추가
+                merged_data = pd.merge_asof(
+                    acc_data.sort_values('timestamp'),
+                    gyro_data.sort_values('timestamp'),
+                    on='timestamp',
+                    direction='nearest',
+                    tolerance=1e7,
+                    allow_exact_matches=True
+                )
+                
+                # NaN 값 0으로 대체
+                merged_data = merged_data.fillna(0)
+                
+                sensor_data = merged_data[['acc_x', 'acc_y', 'acc_z',
+                                        'gyro_x', 'gyro_y', 'gyro_z']].values
+            except Exception as e:
+                print(f"ERROR merging sensor data: {str(e)}")
+                continue
+            
+            # downsampling : 87 -> 50
+            downsample_factor = int(self.original_rate / self.sampling_rate)
+            sensor_data = sensor_data[::downsample_factor]
 
-               try:
-                   filtered_data = butterworth_filter(sensor_data, self.sampling_rate) # <---------- neccessary?????
-               except Exception as e:
-                   print(f"Error applying butterworth filter: {str(e)}")
-                   continue
-               
-               activity_labels = np.full(len(filtered_data), self.label2id[activity])
-               
-               try:
-                   windows_data, windows_labels = self.split_windows(filtered_data, activity_labels) # <- split_seqeunces
-                   
-                   if windows_data is not None and len(windows_data) > 0:
-                       data.append(windows_data)
-                       labels.append(windows_labels)
-               except Exception as e:
-                   print(f"Error splitting windows: {str(e)}")
-                   continue
-                   
-           except Exception as e:
-               print(f"Error processing {acc_file}: {str(e)}")
-               continue
+            # NaN 체크 및 대체
+            sensor_data = np.nan_to_num(sensor_data, 0)
+
+            try:
+                filtered_data = butterworth_filter(sensor_data, self.sampling_rate) # <---------- neccessary?????
+            except Exception as e:
+                print(f"Error applying butterworth filter: {str(e)}")
+                continue
+            
+            activity_labels = np.full(len(filtered_data), self.label2id[activity])
+            
+            try:
+                windows_data, windows_labels = self.split_windows(filtered_data, activity_labels) # <- split_seqeunces
+                
+                if windows_data is not None and len(windows_data) > 0:
+                    data.append(windows_data)
+                    labels.append(windows_labels)
+            except Exception as e:
+                print(f"Error splitting windows: {str(e)}")
+                continue
+                
+        except Exception as e:
+            print(f"Error processing {acc_file}: {str(e)}")
+            continue
 
 if __name__ == "__main__":
    mobifall = MobiFall()

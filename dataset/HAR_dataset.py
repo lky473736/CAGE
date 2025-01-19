@@ -20,10 +20,10 @@ class HARDataset:
         if window_width != 0:
             self.window_width = window_width
         dir_name = 'splits'
-        if dataset == 'MobiAct' and not include_fall:
+        if dataset in ['MobiAct', 'MobiFall', 'SisFall'] and not include_fall:
             dir_name = dir_name + '_Xfall' 
         if not clean:
-            if dataset in ['PAMAP2', 'Opportunity', 'mHealth', 'MobiAct', 'SisFall']: 
+            if dataset in ['PAMAP2', 'Opportunity', 'mHealth']: 
                 dir_name = dir_name + '_Xclean'
         if not include_null:
             dir_name = dir_name + '_Xnull'
@@ -45,14 +45,39 @@ class HARDataset:
         self.zeroone = zeroone
         
     def normalize(self, mean, std):
-        """Z-score normalization
-        Args:
-            mean: mean of each feature
-            std: standard deviation of each feature
-        """
-        self.data = self.data - mean.reshape(1, -1, 1)
-        self.data = self.data / std.reshape(1, -1, 1)
+        # mean과 std에서 NaN 체크 및 처리
+        if np.any(np.isnan(mean)):
+            print("Warning: NaN values found in mean")
+            mean = np.nan_to_num(mean, nan=0)
         
+        if np.any(np.isnan(std)):
+            print("Warning: NaN values found in std")
+            std = np.nan_to_num(std, nan=1.0)  # NaN을 1로 대체
+            
+        # 0에 가까운 std 값 처리
+        std = np.where(std < 1e-7, 1e-7, std)
+        
+        # 정규화 전 데이터에서 NaN 체크
+        if np.any(np.isnan(self.data)):
+            print("Warning: NaN values found in data before normalization")
+            self.data = np.nan_to_num(self.data, nan=0)
+        
+        # 정규화 수행
+        try:
+            self.data = (self.data - mean.reshape(1, -1, 1)) / std.reshape(1, -1, 1)
+        except Exception as e:
+            print(f"Normalization error: {e}")
+            self.data = np.zeros_like(self.data)
+        
+        # 정규화 후 NaN 체크
+        if np.any(np.isnan(self.data)):
+            print("Warning: NaN values found after normalization")
+            self.data = np.nan_to_num(self.data, 0)
+            
+        # 추가 검증
+        if np.any(np.isnan(self.data)) or np.any(np.isinf(self.data)):
+            raise ValueError("Data still contains NaN or Inf values after normalization")
+                
     def _select_dataset(self, dataset):
         """Select dataset and set its parameters
         Args:
@@ -91,6 +116,11 @@ class HARDataset:
         elif dataset == 'SisFall':
             self.ROOT_PATH = "data/SisFall_Dataset"
             self.sampling_rate = 50  # downsampled from 200Hz
+            self.n_actions = 2  # Binary: ADL vs Fall
+            self.window_width = 128
+        elif dataset == 'MobiFall': 
+            self.ROOT_PATH = "data/MobiFall_Dataset"
+            self.sampling_rate = 50  # downsampled from 87Hz
             self.n_actions = 2  # Binary: ADL vs Fall
             self.window_width = 128
         elif dataset == 'mmHAD':

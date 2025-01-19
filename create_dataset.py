@@ -30,11 +30,11 @@ if __name__ == "__main__":
     
     dataset = MobiFall(clean=False)
     dataset.dataset_verbose()
-    dataset.save_split('splits_Xclean')
+    dataset.save_split('splits_Xfall')
 
     dataset = SisFall(clean=False)
     dataset.dataset_verbose()
-    dataset.save_split('splits_Xclean')
+    dataset.save_split('splits_Xfall')
 
 # clean = [True, False]
 # include_null = [True, False]
