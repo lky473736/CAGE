@@ -24,7 +24,7 @@ from dataset.HAR_dataset import HARDataset
 from utils.logger import initialize_logger, record_result, create_tensorboard_writer, write_scalar_summary
 from configs import args, dict_to_markdown
 from sklearn.metrics import classification_report
-from models.unsupervised_CAGE import CAGE
+from models.unsupervised_CAGE import CAGE, nt_xent_loss, triplet_loss, get_hard_negatives
 
 import matplotlib.pyplot as plt
 
@@ -104,7 +104,7 @@ def set_seed(seed) :
     np.random.seed(seed)
     tf.random.set_seed(seed)
 
-def get_model(n_feat, n_cls, weights_path=None) :
+def get_model(n_feat, n_cls, weights_path=None):
     if args.seed:
         set_seed(args.seed)
     
@@ -113,7 +113,12 @@ def get_model(n_feat, n_cls, weights_path=None) :
     else:
         proj_dim = 0
     
-    model = CAGE(n_feat // 2, n_cls, proj_dim, args.num_encoders, args.use_skip)
+    model = CAGE(n_feat // 2,  # 첫 번째 인자: 특징 차원
+                 n_cls,         # 두 번째 인자: 클래스 수 
+                 proj_dim=args.proj_dim,
+                 num_encoders=args.num_encoders,
+                 use_skip=args.use_skip,
+                 loss_type=args.loss_type)
     
     if weights_path:
         model.load_weights(weights_path)
@@ -135,46 +140,44 @@ def get_model(n_feat, n_cls, weights_path=None) :
     
     return model, optimizer, lr_schedule
 
-    '''
-        NO CLASSIFIER. SO THERE IS NOT CLS_LOSS HERE
-    '''
-def train_step(model, optimizer, x_accel, x_gyro):
-    with tf.GradientTape() as tape:
-        ssl_output, (f_accel, f_gyro) = model(x_accel, x_gyro, return_feat=True, training=True)
-        
-        # 수치 안정성을 위한 epsilon 추가
-        ssl_output = tf.clip_by_value(ssl_output, 1e-7, 1.0 - 1e-7)
-        
-        ssl_labels = tf.range(tf.shape(ssl_output)[0])
-        
-        # NaN 방지를 위한 손실 계산
-        ssl_loss_1 = tf.reduce_mean(
-            tf.keras.losses.sparse_categorical_crossentropy(
-                ssl_labels, ssl_output, from_logits=True
-            )
-        )
-        
-        ssl_loss_2 = tf.reduce_mean(
-            tf.keras.losses.sparse_categorical_crossentropy(
-                ssl_labels, tf.transpose(ssl_output), from_logits=True
-            )
-        )
-        
-        # NaN 체크 및 대체
-        total_loss = tf.where(
-            tf.math.is_finite(ssl_loss_1 + ssl_loss_2),
-            (ssl_loss_1 + ssl_loss_2) / 2,
-            0.0
-        )
+'''
+    NO CLASSIFIER. SO THERE IS NOT CLS_LOSS HERE
+'''
 
-    # NaN 방지를 위한 그라디언트 클리핑
-    gradients = tape.gradient(total_loss, model.trainable_variables)
-    gradients = [
-        tf.clip_by_norm(g, 1.0) if g is not None else g 
-        for g in gradients
-    ]
+@tf.function
+def train_step(model, optimizer, x_accel, x_gyro, labels=None):
+    '''
+    Modified train step to use model's compute_loss method
+    '''
+    with tf.GradientTape() as tape:
+        if model.loss_type == 'triplet':
+            # For triplet loss, generate hard negatives
+            batch_size = tf.shape(x_accel)[0]
+            f_anchor, _ = model.call(x_accel, x_accel, training=True)
+            f_positive, _ = model.call(x_accel, x_gyro, training=True)
+            
+            all_features, _ = model.call(x_accel, x_gyro, training=True)
+            hard_neg_idx = get_hard_negatives(f_anchor, all_features)
+            f_negative = tf.gather(all_features, hard_neg_idx[:, 0])
+            
+            # Note: you might want to pass actual labels here if available
+            ssl_output = tf.eye(batch_size)
+            
+            # Use compute_loss method
+            total_loss = model.compute_loss(x_accel, x_gyro, labels=labels, loss_type=model.loss_type)
+        
+        else:
+            # For default and nt_xent losses
+            ssl_output = model(x_accel, x_gyro)
+            
+            # Use compute_loss method
+            total_loss = model.compute_loss(x_accel, x_gyro, loss_type=model.loss_type)
     
+    # Gradient clipping
+    gradients = tape.gradient(total_loss, model.trainable_variables)
+    gradients = [tf.clip_by_norm(g, 1.0) if g is not None else g for g in gradients]
     optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+    
     return total_loss, ssl_output
 
 def get_embeddings(model, dataset, n_device):
@@ -233,9 +236,6 @@ def visualize_embeddings(embeddings, labels, save_dir,
     plt.close()
     
 def plot_training_progress(epoch_losses, epoch_ssl_accuracies, save_path):
-    '''
-    훈련 과정의 손실과 SSL 정확도를 시각화하는 함수
-    '''
     plt.figure(figsize=(10, 5))
     plt.subplot(1, 2, 1)
     plt.plot(epoch_losses)
@@ -254,15 +254,11 @@ def plot_training_progress(epoch_losses, epoch_ssl_accuracies, save_path):
     plt.close()
 
 def plot_roc_curve(test_embeddings, test_labels, knn, save_path):
-    '''
-    ROC 곡선을 그리는 함수 (이진 분류용)
-    '''
+
     from sklearn.metrics import roc_curve, auc
 
-    # 테스트 데이터의 확률 예측 (positive 클래스에 대한 확률)
     test_prob = knn.predict_proba(test_embeddings)[:, 1]
     
-    # ROC 곡선 계산
     fpr, tpr, thresholds = roc_curve(test_labels, test_prob)
     roc_auc = auc(fpr, tpr)
     
@@ -280,9 +276,6 @@ def plot_roc_curve(test_embeddings, test_labels, knn, save_path):
     plt.close()
 
 def plot_confusion_matrix_heatmap(conf_matrix, save_path):
-    '''
-    혼동 행렬을 히트맵으로 시각화하는 함수
-    '''
     import seaborn as sns
     
     plt.figure(figsize=(10, 8))
@@ -295,9 +288,6 @@ def plot_confusion_matrix_heatmap(conf_matrix, save_path):
     plt.close()
 
 def plot_embeddings_pca(test_embeddings, test_labels, save_path):
-    '''
-    PCA를 사용하여 임베딩 공간을 시각화하는 함수
-    '''
     from sklearn.decomposition import PCA
     
     pca = PCA(n_components=2)
@@ -317,6 +307,8 @@ def plot_embeddings_pca(test_embeddings, test_labels, save_path):
 # -----------------------------------
 def train() :
     print (" -------- training... -------- ")
+    print (f"FINAL CHECK : loss type: {args.loss_type}") 
+    
     train_dataset = train_set.make_tf_dataset(
         batch_size=args.batch_size,
         shuffle=True

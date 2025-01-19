@@ -45,36 +45,30 @@ class HARDataset:
         self.zeroone = zeroone
         
     def normalize(self, mean, std):
-        # mean과 std에서 NaN 체크 및 처리
         if np.any(np.isnan(mean)):
             print("Warning: NaN values found in mean")
             mean = np.nan_to_num(mean, nan=0)
         
         if np.any(np.isnan(std)):
             print("Warning: NaN values found in std")
-            std = np.nan_to_num(std, nan=1.0)  # NaN을 1로 대체
+            std = np.nan_to_num(std, nan=1.0) 
             
-        # 0에 가까운 std 값 처리
         std = np.where(std < 1e-7, 1e-7, std)
         
-        # 정규화 전 데이터에서 NaN 체크
         if np.any(np.isnan(self.data)):
             print("Warning: NaN values found in data before normalization")
             self.data = np.nan_to_num(self.data, nan=0)
         
-        # 정규화 수행
         try:
             self.data = (self.data - mean.reshape(1, -1, 1)) / std.reshape(1, -1, 1)
         except Exception as e:
             print(f"Normalization error: {e}")
             self.data = np.zeros_like(self.data)
         
-        # 정규화 후 NaN 체크
         if np.any(np.isnan(self.data)):
             print("Warning: NaN values found after normalization")
             self.data = np.nan_to_num(self.data, 0)
             
-        # 추가 검증
         if np.any(np.isnan(self.data)) or np.any(np.isinf(self.data)):
             raise ValueError("Data still contains NaN or Inf values after normalization")
                 
