@@ -28,7 +28,7 @@ parser.add_argument('--no_null', action='store_false', default=True)
 parser.add_argument('--train_portion', type=float, default=1.0, help='use portion of trainset')
 parser.add_argument('--model_path', type=str, default='save', help='path to save model')
 parser.add_argument('--load_model', type=str, default='', help='load the pretrained model')
-parser.add_argument('--lambda_cls', type=float, default=1.0, help='loss weight for classification loss')
+parser.add_argument('--lambda_cls', type=float, default=0.0, help='loss weight for classification loss')
 parser.add_argument('--lambda_ssl', type=float, default=1.0, help='loss weight for reconstruction loss')
 parser.add_argument('--proj_dim', type=int, default=64)
 

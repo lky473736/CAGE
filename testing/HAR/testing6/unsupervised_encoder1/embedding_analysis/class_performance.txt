@@ -1,0 +1,81 @@
+Class-wise Performance Metrics
+==================================================
+
+Class 0:
+- Precision: 0.4655
+- Recall: 0.5708
+- F1-score: 0.5128
+- Support: 438.0
+
+Class 1:
+- Precision: 1.0000
+- Recall: 0.9341
+- F1-score: 0.9659
+- Support: 91.0
+
+Class 10:
+- Precision: 0.4394
+- Recall: 0.3537
+- F1-score: 0.3919
+- Support: 82.0
+
+Class 11:
+- Precision: 0.7083
+- Recall: 0.5743
+- F1-score: 0.6343
+- Support: 148.0
+
+Class 12:
+- Precision: 0.0000
+- Recall: 0.0000
+- F1-score: 0.0000
+- Support: 1.0
+
+Class 2:
+- Precision: 0.1346
+- Recall: 0.0778
+- F1-score: 0.0986
+- Support: 90.0
+
+Class 3:
+- Precision: 0.1807
+- Recall: 0.1579
+- F1-score: 0.1685
+- Support: 95.0
+
+Class 4:
+- Precision: 0.3394
+- Recall: 0.5600
+- F1-score: 0.4226
+- Support: 100.0
+
+Class 5:
+- Precision: 0.9342
+- Recall: 0.7978
+- F1-score: 0.8606
+- Support: 89.0
+
+Class 6:
+- Precision: 0.8800
+- Recall: 0.8250
+- F1-score: 0.8516
+- Support: 80.0
+
+Class 7:
+- Precision: 0.5366
+- Recall: 0.2115
+- F1-score: 0.3034
+- Support: 104.0
+
+Class 8:
+- Precision: 0.4146
+- Recall: 0.3333
+- F1-score: 0.3696
+- Support: 51.0
+
+Class 9:
+- Precision: 0.3750
+- Recall: 0.4773
+- F1-score: 0.4200
+- Support: 44.0
+

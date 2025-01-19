@@ -337,7 +337,8 @@ def train() :
             x_accel = data[:, :3 * n_device, :]
             x_gyro = data[:, 3 * n_device:, :]
             
-            loss, ssl_output = train_step(model, optimizer, x_accel, x_gyro)
+            loss, ssl_output = train_step(model, optimizer, 
+                                          x_accel, x_gyro)
             
             batch_size = tf.shape(data)[0]
             total_loss += loss * tf.cast(batch_size, tf.float32)

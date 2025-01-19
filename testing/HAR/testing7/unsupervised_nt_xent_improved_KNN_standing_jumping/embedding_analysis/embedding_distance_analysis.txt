@@ -1,0 +1,18 @@
+Embedding Distance Analysis
+==================================================
+
+Label 0 :
+- Intra-class mean distance : 0.9956
+- Inter-class mean distance : 1.0136
+- Ratio (intra/inter) : 0.9823
+
+Label 1 :
+- Intra-class mean distance : 0.9217
+- Inter-class mean distance : 1.0136
+- Ratio (intra/inter) : 0.9094
+
+
+Overall Statistics :
+Mean intra-class distance : 0.9586 (±0.0369)
+Mean inter-class distance : 1.0136 (±0.0000)
+Mean ratio (intra/inter) : 0.9458

@@ -104,15 +104,12 @@ class MobiFall(HARDataGenerator):
             if line.strip():  
                 try:
                     values = [float(val.strip()) for val in line.strip().split(',')]
-                    # 데이터 유효성 검사 추가
                     if all(np.isfinite(values)):
                         data_lines.append(values)
                 except ValueError:
                     continue
         
-        # 데이터 프레임 생성 시 추가 처리
         df = pd.DataFrame(data_lines)
-        # NaN 값 있으면 0으로 대체
         df = df.fillna(0)
         
         return df
@@ -182,7 +179,7 @@ class MobiFall(HARDataGenerator):
                 continue
             
             try:
-                # merge_asof 시 NaN 처리 옵션 추가
+                # NaN
                 merged_data = pd.merge_asof(
                     acc_data.sort_values('timestamp'),
                     gyro_data.sort_values('timestamp'),
@@ -192,7 +189,6 @@ class MobiFall(HARDataGenerator):
                     allow_exact_matches=True
                 )
                 
-                # NaN 값 0으로 대체
                 merged_data = merged_data.fillna(0)
                 
                 sensor_data = merged_data[['acc_x', 'acc_y', 'acc_z',
@@ -205,7 +201,6 @@ class MobiFall(HARDataGenerator):
             downsample_factor = int(self.original_rate / self.sampling_rate)
             sensor_data = sensor_data[::downsample_factor]
 
-            # NaN 체크 및 대체
             sensor_data = np.nan_to_num(sensor_data, 0)
 
             try:
