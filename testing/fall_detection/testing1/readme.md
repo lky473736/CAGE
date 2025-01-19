@@ -62,6 +62,11 @@
             - <img src="./20250119_MobiFall_enc1_default_lr0.001_b64_dim64_ep200/roc_curve.png">
         - SisFall
             - <img src="./20250119_SisFall_enc1_default_lr0.001_b64_dim64_ep200/roc_curve.png">
+    - training progress figure
+        - MobiFall
+            - <img src="./20250119_MobiFall_enc1_default_lr0.001_b64_dim64_ep200/training_progress.png">
+        - SisFall
+            - <img src="./20250119_SisFall_enc1_default_lr0.001_b64_dim64_ep200/training_progress.png">
     - Embeddings visualization using t-SNE
         - MobiFall
             - <img src="./20250119_MobiFall_enc1_default_lr0.001_b64_dim64_ep200/embedding_analysis/split_embeddings.png">
