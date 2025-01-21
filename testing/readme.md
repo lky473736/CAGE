@@ -1,3 +1,8 @@
+<img src="../etc/gyuyeon_lim.png" width="100px">  
+
+**Gyuyeon Lim**  
+lky473736@icloud.com
+
 - **HAR**
     - testing 2 : running only one encoder(EarlyFusion) CAGE with each dataset
     - testing 3 : real CAGE (contrastive learning)
@@ -8,3 +13,4 @@
 
 - **fall_detection**
     - testing 1 : running mobifall and sisfall | default_loss | enc 1 | lr 0.001 | b 64 | dim 64 | ep 200
+    - testing 2 : for each embedding dimensions (8, 16, 32, 64, 128)
