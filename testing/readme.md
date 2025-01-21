@@ -1,4 +1,4 @@
-<img src="../etc/gyuyeon_lim.png" width="100px">  
+<img src="./gyuyeon_lim.png" width="200px">  
 
 **Gyuyeon Lim**  
 lky473736@icloud.com
