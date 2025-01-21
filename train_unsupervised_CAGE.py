@@ -135,9 +135,9 @@ def get_model(n_feat, n_cls, weights_path=None) :
     
     return model, optimizer, lr_schedule
 
-    '''
-        NO CLASSIFIER. SO THERE IS NOT CLS_LOSS HERE
-    '''
+'''
+    NO CLASSIFIER. SO THERE IS NOT CLS_LOSS HERE
+'''
 def train_step(model, optimizer, x_accel, x_gyro):
     with tf.GradientTape() as tape:
         ssl_output, (f_accel, f_gyro) = model(x_accel, x_gyro, return_feat=True, training=True)
@@ -255,9 +255,12 @@ def plot_roc_curve(test_embeddings, test_labels, knn, save_path):
     roc_auc = auc(fpr, tpr)
     
     plt.figure(figsize=(10, 8))
-    plt.plot(fpr, tpr, color='darkorange', lw=2, 
+    plt.plot(fpr, tpr, color='darkorange', 
+             lw=2, 
              label=f'ROC curve (AUC = {roc_auc:.2f})')
-    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+    plt.plot([0, 1], [0, 1], color='navy', 
+             lw=2, 
+             linestyle='--')
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.05])
     plt.xlabel('False Positive Rate')
@@ -267,7 +270,7 @@ def plot_roc_curve(test_embeddings, test_labels, knn, save_path):
     plt.savefig(os.path.join(save_path, 'roc_curve.png'))
     plt.close()
 
-def plot_confusion_matrix_heatmap(conf_matrix, save_path):
+def plot_confusion_matrix_heatmap(conf_matrix, save_path) :
     import seaborn as sns
     
     plt.figure(figsize=(10, 8))
@@ -365,8 +368,10 @@ def train() :
             f'ssl acc: {ssl_acc:.2f}%'
         )
         
-        write_scalar_summary(writer, 'Train/Loss', float(epoch_loss), epoch)
-        write_scalar_summary(writer, 'Train/Accuracy_ssl', ssl_acc, epoch)
+        write_scalar_summary(writer, 'Train/Loss', 
+                             float(epoch_loss), epoch)
+        write_scalar_summary(writer, 'Train/Accuracy_ssl', 
+                             ssl_acc, epoch)
         
         if epoch_loss < best_loss : # best model found
             best_loss = epoch_loss
@@ -416,10 +421,17 @@ def train() :
     
     # ------------------- visualization ROC, loss fig, confusion matrix, pca -------------
     
-    plot_training_progress(epoch_losses, epoch_ssl_accuracies, args.save_folder)
-    plot_roc_curve(test_embeddings, test_labels, knn, args.save_folder)
-    plot_confusion_matrix_heatmap(conf_matrix, args.save_folder)
-    plot_embeddings_pca(test_embeddings, test_labels, args.save_folder)
+    plot_training_progress(epoch_losses, 
+                           epoch_ssl_accuracies, 
+                           args.save_folder)
+    plot_roc_curve(test_embeddings, 
+                   test_labels, knn, 
+                   args.save_folder)
+    plot_confusion_matrix_heatmap(conf_matrix, 
+                                  args.save_folder)
+    plot_embeddings_pca(test_embeddings, 
+                        test_labels, 
+                        args.save_folder)
 
     with open(os.path.join(save_dir, 'class_performance.txt'), 'w') as f:
         f.write("Class-wise Performance Metrics\n")
@@ -441,7 +453,8 @@ def train() :
     test_f1 = f1_score(test_labels, test_predictions, average='weighted')
     test_matrix = confusion_matrix(test_labels, test_predictions)
     
-    result = open(os.path.join(args.save_folder, 'result'), 'w+')
+    result = open(os.path.join(args.save_folder, 'result'), 
+                  'w+')
     result.write(f"Best model found at epoch {best_epoch}\n\n")
     
     result.write(f"Validation Metrics:\n")

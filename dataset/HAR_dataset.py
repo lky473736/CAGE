@@ -135,8 +135,12 @@ class HARDataset:
         """
         if self.zeroone:
             # normalization
-            data_min = np.min(self.data, axis=2, keepdims=True)
-            data_max = np.max(self.data, axis=2, keepdims=True)
+            data_min = np.min(self.data, 
+                              axis=2, 
+                              keepdims=True)
+            data_max = np.max(self.data, 
+                              axis=2, 
+                              keepdims=True)
             normalized_data = (self.data - data_min) / (data_max - data_min + 1e-8)
             dataset = tf.data.Dataset.from_tensor_slices((normalized_data.astype(np.float32), 
                                                         self.label))

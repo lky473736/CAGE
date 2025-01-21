@@ -1,0 +1,80 @@
+=== File: ./20250120_SisFall_enc1_default_lr0.001_b64_dim128_ep200/result ===
+
+
+=== File: ./20250120_SisFall_enc1_default_lr0.001_b64_dim64_ep200/result ===
+
+
+=== File: ./20250120_MobiFall_enc1_default_lr0.001_b64_dim16_ep200/result ===
+
+
+=== File: ./20250120_MobiFall_enc1_default_lr0.001_b64_dim32_ep200/result ===
+
+
+=== File: ./20250120_MobiFall_enc1_default_lr0.001_b64_dim128_ep200/result ===
+
+
+=== File: ./20250120_MobiFall_enc1_default_lr0.001_b64_dim64_ep200/result ===
+
+
+=== File: ./20250120_MobiFall_enc1_default_lr0.001_b64_dim8_ep200/result ===
+
+
+=== File: ./20250120_SisFall_enc1_default_lr0.001_b64_dim8_ep200/result ===
+
+
+=== File: ./20250120_SisFall_enc1_default_lr0.001_b64_dim16_ep200/result ===
+
+
+=== File: ./20250120_SisFall_enc1_default_lr0.001_b64_dim32_ep200/result ===
+
+
+
+=== File: ./20250120_SisFall_enc1_default_lr0.001_b64_dim128_ep200/result ===
+Test Metrics:
+Accuracy: 78.53%
+F1 Score: 0.7810
+
+=== File: ./20250120_SisFall_enc1_default_lr0.001_b64_dim64_ep200/result ===
+Test Metrics:
+Accuracy: 79.20%
+F1 Score: 0.7891
+
+=== File: ./20250120_MobiFall_enc1_default_lr0.001_b64_dim16_ep200/result ===
+Test Metrics:
+Accuracy: 89.82%
+F1 Score: 0.8946
+
+=== File: ./20250120_MobiFall_enc1_default_lr0.001_b64_dim32_ep200/result ===
+Test Metrics:
+Accuracy: 89.88%
+F1 Score: 0.8942
+
+=== File: ./20250120_MobiFall_enc1_default_lr0.001_b64_dim128_ep200/result ===
+Test Metrics:
+Accuracy: 88.84%
+F1 Score: 0.8816
+
+=== File: ./20250120_MobiFall_enc1_default_lr0.001_b64_dim64_ep200/result ===
+Test Metrics:
+Accuracy: 88.73%
+F1 Score: 0.8822
+
+=== File: ./20250120_MobiFall_enc1_default_lr0.001_b64_dim8_ep200/result ===
+Test Metrics:
+Accuracy: 90.22%
+F1 Score: 0.8989
+
+=== File: ./20250120_SisFall_enc1_default_lr0.001_b64_dim8_ep200/result ===
+Test Metrics:
+Accuracy: 78.42%
+F1 Score: 0.7773
+
+=== File: ./20250120_SisFall_enc1_default_lr0.001_b64_dim16_ep200/result ===
+Test Metrics:
+Accuracy: 81.09%
+F1 Score: 0.8085
+
+=== File: ./20250120_SisFall_enc1_default_lr0.001_b64_dim32_ep200/result ===
+Test Metrics:
+Accuracy: 78.34%
+F1 Score: 0.7794
