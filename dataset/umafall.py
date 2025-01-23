@@ -40,7 +40,7 @@ class UMAFall(HARDataGenerator) :
         self.label2id = {act: 0 for act in self.adl_activities}
         self.label2id.update({act: 1 for act in self.fall_activities})
         
-        self.datapath = "./UMAFall_Dataset"
+        self.datapath = "data/UMAFall_Dataset"
 
         self.split_data()
 
@@ -140,53 +140,68 @@ class UMAFall(HARDataGenerator) :
         labels = []
         
         for filepath in files :
+            print (f"Processing file: {filepath}") 
             try:
                 filename = os.path.basename(filepath)
                 info = self._parse_filename(filename)
                 if not info:
+                    print(f"Skipping file: {filename}")
                     continue
                     
                 _, activity_type, activity, _, _ = info
                 
-                sensor_data = self._read_sensor_file(filepath) # sensor data reading
+                sensor_data = self._read_sensor_file(filepath)
                 if sensor_data is None or len(sensor_data) == 0:
+                    print(f"Skipping file: {filename} - No sensor data")
                     continue
                 
-                '''
-                % TimeStamp; Sample No; X-Axis; Y-Axis; Z-Axis; Sensor Type; Sensor ID;  
-                '''          
-                acc_data = sensor_data[sensor_data[:, -1] == 0][:, :3] # split 
-                gyro_data = sensor_data[sensor_data[:, -1] == 1][:, :3] # split
+                acc_data = sensor_data[sensor_data[:, -1] == 0][:, :3]
+                gyro_data = sensor_data[sensor_data[:, -1] == 1][:, :3]
                 
                 if len(acc_data) == 0 or len(gyro_data) == 0:
+                    print (f"Skipping file: {filename} - Insufficient acc or gyro data")
                     continue
                     
-                merged_data = np.column_stack((acc_data, gyro_data)) # merge acc + gyro
+                merged_data = np.column_stack((acc_data, gyro_data))
                 
-                if activity in self.fall_activities :
+                if activity in self.fall_activities:
                     label = 1
                 else:
                     label = 0
-                
-                filtered_data = butterworth_filter(merged_data, self.sampling_rate) # <- butterworth
 
-                windows_data, windows_labels = self.split_windows(filtered_data, 
-                                                                np.full(len(filtered_data), label))
+                windows_data, windows_labels = self.split_windows(merged_data, 
+                                                                np.full(len(merged_data), label))
                 
-                if windows_data is not None and len(windows_data) > 0 :
+                if windows_data is not None and len(windows_data) > 0:
                     data.append(windows_data)
                     labels.append(windows_labels)
+                    print(f"Successfully processed file: {filename}")
+                else:
+                    print(f"Skipping file: {filename} - No windows created")
                     
             except Exception as e:
                 print(f"Error processing {filepath}: {str(e)}")
+                import traceback
+                traceback.print_exc() 
                 continue
-                
-        if len(data) == 0 :
+        
+        if len(data) == 0:
+            print("No valid data was loaded at all!")
             raise ValueError("No valid data was loaded")
-            
-        return np.concatenate(data, axis=0), np.concatenate(labels)
+        
+        final_data = np.concatenate(data, axis=0)
+        final_labels = np.concatenate(labels)
+        unique_labels, counts = np.unique(final_labels, return_counts=True)
+        
+        print ()
+        print ("Final Data Distribution:")
+        
+        for label, count in zip(unique_labels, counts) :
+            print(f"Label {label}: {count} samples")
+        
+        return final_data, final_labels
 
-if __name__ == "__main__":
+if __name__ == "__main__" :
     umafall = UMAFall()
     umafall.dataset_verbose()
     umafall.save_split()

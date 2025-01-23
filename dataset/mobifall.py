@@ -199,27 +199,24 @@ class MobiFall(HARDataGenerator):
             # Removed downsampling
             sensor_data = np.nan_to_num(sensor_data, 0)
 
-            try:
-                filtered_data = butterworth_filter(sensor_data, self.sampling_rate) # <---------- neccessary?????
-            except Exception as e:
-                print(f"Error applying butterworth filter: {str(e)}")
-                continue
+            # try:
+            #     filtered_data = butterworth_filter(sensor_data, self.sampling_rate) # <---------- neccessary?????
+            # except Exception as e:
+            #     print(f"Error applying butterworth filter: {str(e)}")
+            #     continue
             
-            activity_labels = np.full(len(filtered_data), self.label2id[activity])
-            
+            activity_labels = np.full(len(sensor_data), self.label2id[activity])
+
             try:
-                windows_data, windows_labels = self.split_windows(filtered_data, activity_labels) # <- split_seqeunces
+                windows_data, windows_labels = self.split_windows(sensor_data, activity_labels) # <- split_sequences
                 
                 if windows_data is not None and len(windows_data) > 0:
                     data.append(windows_data)
                     labels.append(windows_labels)
+                    
             except Exception as e:
-                print(f"Error splitting windows: {str(e)}")
+                print(f"Error processing {acc_file}: {str(e)}")
                 continue
-                
-        except Exception as e:
-            print(f"Error processing {acc_file}: {str(e)}")
-            continue
 
 if __name__ == "__main__":
    mobifall = MobiFall()

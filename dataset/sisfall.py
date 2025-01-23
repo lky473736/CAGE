@@ -192,10 +192,9 @@ class SisFall(HARDataGenerator):
             if not (is_elderly and subject != 'SE06'): # you old? but not SE06? (SE06 )
                 adl_data = self._process_subject_files(subject_path, 'D')
                 if adl_data is not None:
-                    filtered_adl = butterworth_filter(adl_data, self.sampling_rate)
-                    adl_labels = np.zeros(len(filtered_adl)) # <--------- neccessary??
+                    adl_labels = np.zeros(len(adl_data)) # <--------- neccessary??
                     
-                    windows_data, windows_labels = self.split_windows(filtered_adl, adl_labels) # split_sequences()
+                    windows_data, windows_labels = self.split_windows(adl_data, adl_labels) # split_sequences()
                     if windows_data is not None and len(windows_data) > 0:
                         data.append(windows_data)
                         labels.append(windows_labels)
@@ -203,10 +202,9 @@ class SisFall(HARDataGenerator):
             if not is_elderly or subject == 'SE06':
                 fall_data = self._process_subject_files(subject_path, 'F')
                 if fall_data is not None:
-                    filtered_fall = butterworth_filter(fall_data, self.sampling_rate)
-                    fall_labels = np.ones(len(filtered_fall))
+                    fall_labels = np.ones(len(fall_data))
                     
-                    windows_data, windows_labels = self.split_windows(filtered_fall, fall_labels) # split_sequences
+                    windows_data, windows_labels = self.split_windows(fall_data, fall_labels) # split_sequences
                     if windows_data is not None and len(windows_data) > 0:
                         data.append(windows_data)
                         labels.append(windows_labels)
