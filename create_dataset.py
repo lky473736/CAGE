@@ -6,6 +6,7 @@ from dataset.mhealth import MHEALTH
 # from dataset.mobiact import MobiAct
 from dataset.mobifall import MobiFall
 from dataset.sisfall import SisFall
+from dataset.umafall import UMAFall
 
 
 if __name__ == "__main__":
@@ -33,6 +34,10 @@ if __name__ == "__main__":
     dataset.save_split('splits_Xfall')
 
     dataset = SisFall(clean=False)
+    dataset.dataset_verbose()
+    dataset.save_split('splits_Xfall')
+    
+    dataset = UMAFall(clean=False)
     dataset.dataset_verbose()
     dataset.save_split('splits_Xfall')
 

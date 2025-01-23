@@ -16,7 +16,7 @@ class SisFall(HARDataGenerator):
         super(SisFall, self).__init__()
         self.clean = clean
         self.fall = fall
-        self.sampling_rate = 50  # 200 -> 50
+        self.sampling_rate = 200  # RESTORE to original sampling rate
         self.original_rate = 200
         self.WINDOW_LENGTH = window_length
         self.STRIDE = self.WINDOW_LENGTH // 2
@@ -170,11 +170,8 @@ class SisFall(HARDataGenerator):
         if all_data :     # <-------  not empty list
             combined_data = np.concatenate(all_data, axis=0) # all combine
             
-            # 200 -> 50
-            downsample_factor = int(self.original_rate / self.sampling_rate)
-            downsampled_data = combined_data[::downsample_factor]
-            
-            return downsampled_data
+            # Removed downsampling
+            return combined_data
         
         return None
 

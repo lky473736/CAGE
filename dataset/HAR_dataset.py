@@ -84,7 +84,7 @@ class HARDataset:
             self.window_width = 128
         elif dataset == 'USC_HAD':
             self.ROOT_PATH = "data/USC-HAD"
-            self.sampling_rate = 50  # downsampled from 100
+            self.sampling_rate = 50 
             self.n_actions = 12
             self.window_width = 128
         elif dataset == 'Opportunity':
@@ -94,29 +94,39 @@ class HARDataset:
             self.ROOT_PATH = "data/OpportunityUCIDataset"
         elif dataset == 'PAMAP2':
             self.ROOT_PATH = "data/PAMAP2_Dataset"
-            self.sampling_rate = 50  # downsampled from 100
+            self.sampling_rate = 100  
             self.n_actions = 2  # standing and running only
             self.window_width = 128
         elif dataset == 'mHealth':
             self.ROOT_PATH = "data/MHEALTHDATASET"
-            self.sampling_rate = 50  # downsampled from 100
+            self.sampling_rate = 100
             self.n_actions = 13
             self.window_width = 128
         elif dataset == 'MobiAct':
             self.ROOT_PATH = "data/MobiAct_Dataset_v2.0"
-            self.sampling_rate = 50  # downsampled from 87Hz
+            self.sampling_rate = 87
             self.n_actions = 2  # Binary: ADL vs Fall
             self.window_width = 128
+            
+        ######################################################################
+        ####################### fall detection ###############################
         elif dataset == 'SisFall':
             self.ROOT_PATH = "data/SisFall_Dataset"
-            self.sampling_rate = 50  # downsampled from 200Hz
+            self.sampling_rate = 200
             self.n_actions = 2  # Binary: ADL vs Fall
             self.window_width = 128
         elif dataset == 'MobiFall': 
             self.ROOT_PATH = "data/MobiFall_Dataset"
-            self.sampling_rate = 50  # downsampled from 87Hz
+            self.sampling_rate = 87
             self.n_actions = 2  # Binary: ADL vs Fall
             self.window_width = 128
+        elif dataset == 'UMAFall': 
+            self.ROOT_PATH = "data/UMAFall_Dataset"
+            self.sampling_rate = 20
+            self.n_actions = 2  # Binary: ADL vs Fall
+            self.window_width = 128
+        ######################################################################
+        
         elif dataset == 'mmHAD':
             self.ROOT_PATH = "data/multi_modal_sensor_hardness_dataset/data_annotated"
             self.sampling_rate = 20

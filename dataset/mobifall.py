@@ -10,7 +10,7 @@ class MobiFall(HARDataGenerator):
        super(MobiFall, self).__init__()
        self.clean = clean
        self.fall = fall
-       self.sampling_rate = 50  # downsampled from 87Hz
+       self.sampling_rate = 87  # RESTORE to original sampling rate
        self.original_rate = 87  # original sampling rate
        self.WINDOW_LENGTH = window_length
        self.STRIDE = self.WINDOW_LENGTH // 2
@@ -145,8 +145,7 @@ class MobiFall(HARDataGenerator):
        try:
            concat_data = np.concatenate(data, axis=0)
            concat_labels = np.concatenate(labels)
-# 
-# 
+
            unique_labels, counts = np.unique(concat_labels, return_counts=True)
            dist = list(zip(unique_labels, counts))
            print(f"Data distribution for split {split}: {dist}")
@@ -197,10 +196,7 @@ class MobiFall(HARDataGenerator):
                 print(f"ERROR merging sensor data: {str(e)}")
                 continue
             
-            # downsampling : 87 -> 50
-            downsample_factor = int(self.original_rate / self.sampling_rate)
-            sensor_data = sensor_data[::downsample_factor]
-
+            # Removed downsampling
             sensor_data = np.nan_to_num(sensor_data, 0)
 
             try:
