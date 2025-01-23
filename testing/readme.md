@@ -13,4 +13,4 @@ lky473736@icloud.com
 
 - **fall_detection**
     - testing 1 : running mobifall and sisfall | default_loss | enc 1 | lr 0.001 | b 64 | dim 64 | ep 200
-    - testing 2 : for each embedding dimensions (8, 16, 32, 64, 128)
+    - testing 2 : for each embedding dimensions (8, 16, 32, 64, 128) : MobiFall, SisFall, UMAFall, KFall

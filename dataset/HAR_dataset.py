@@ -20,7 +20,7 @@ class HARDataset:
         if window_width != 0:
             self.window_width = window_width
         dir_name = 'splits'
-        if dataset in ['MobiAct', 'MobiFall', 'SisFall'] and not include_fall:
+        if dataset in ['MobiAct', 'MobiFall', 'SisFall', 'UMAFall', 'KFall'] and not include_fall:
             dir_name = dir_name + '_Xfall' 
         if not clean:
             if dataset in ['PAMAP2', 'Opportunity', 'mHealth']: 

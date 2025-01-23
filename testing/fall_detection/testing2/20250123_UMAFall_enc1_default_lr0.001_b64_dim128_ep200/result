@@ -1,0 +1,25 @@
+Best model found at epoch 192
+
+Validation Metrics:
+Accuracy: 92.51%
+F1 Score: 0.9257
+Confusion Matrix:
+[[134  12]
+ [  5  76]]
+
+Test Metrics:
+Accuracy: 90.43%
+F1 Score: 0.9052
+Confusion Matrix:
+[[471  48]
+ [ 26 228]]
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.95      0.91      0.93       519
+           1       0.83      0.90      0.86       254
+
+    accuracy                           0.90       773
+   macro avg       0.89      0.90      0.89       773
+weighted avg       0.91      0.90      0.91       773

@@ -217,6 +217,10 @@ class MobiFall(HARDataGenerator):
             except Exception as e:
                 print(f"Error processing {acc_file}: {str(e)}")
                 continue
+            
+        except Exception as e:
+            print(f"Error processing {acc_file}: {str(e)}")
+            continue
 
 if __name__ == "__main__":
    mobifall = MobiFall()

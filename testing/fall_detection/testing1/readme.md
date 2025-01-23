@@ -4,7 +4,6 @@
     - In MobiFall, unexpected missing values, like NaN values, were replaced with 0. When dividing the train, val, and test datasets, efforts were made to avoid class imbalance by keeping the FALL and ADL class ratios consistent and ensuring an even distribution of subjects across the splits.
     - Similarly, for SisFall, care was taken to prevent SA and SE from being overly concentrated in just one of the train, val, or test datasets.
     - Both datasets were structured using a sliding window, and only gyroscope and accelerometer sensor data were used.
-    - Both datasets were downsampled to 50.
     - A Butterworth filter was applied to both datasets, but its necessity is still unclear.
 
 - (2) Basic experimental setup (6-core i7 Intel / 32GB DDR4 / internal graphics (CPU))
