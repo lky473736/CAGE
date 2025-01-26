@@ -18,6 +18,27 @@ parser.add_argument('--weight_decay', type=float, default=1e-7, help='weight dec
 parser.add_argument('--momentum', type=float, default=0.9, help='momentum')
 parser.add_argument('--trial', type=str, default='default', help='trial id')
 
+# PCA arguments
+parser.add_argument('--use_pca', action='store_true', default=False,
+                    help='Whether to use PCA for dimension reduction')
+parser.add_argument('--pca_components', type=int, default=64,
+                    help='Number of PCA components (should be less than embedding dim)')ㄴ
+
+# Encoder selection arguments
+parser.add_argument('--encoder_type', type=str, default='default',
+                    choices=['default', 'transformer', 'unet'],
+                    help='Type of encoder to use')
+
+# Transformer encoder specific arguments
+parser.add_argument('--num_heads', type=int, default=8,
+                    help='Number of attention heads for transformer')
+parser.add_argument('--ff_dim', type=int, default=256,
+                    help='Feed-forward dimension in transformer')
+parser.add_argument('--num_transformer_blocks', type=int, default=3,
+                    help='Number of transformer blocks')
+parser.add_argument('--transformer_dropout', type=float, default=0.1,
+                    help='Dropout rate for transformer')
+
 # dataset and model
 parser.add_argument('--model', type=str, default='EarlyFusion', choices=['BaselineCNN', 'DeepConvLSTM', 'LSTMConvNet', 'EarlyFusion', 'CAGE'])
 parser.add_argument('--dataset', type=str, default='UCI_HAR', 

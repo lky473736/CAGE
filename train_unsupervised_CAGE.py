@@ -113,7 +113,16 @@ def get_model(n_feat, n_cls, weights_path=None) :
     else:
         proj_dim = 0
     
-    model = CAGE(n_feat // 2, n_cls, proj_dim, args.num_encoders, args.use_skip)
+    # model = CAGE(n_feat // 2, n_cls, proj_dim, args.num_encoders, args.use_skip)
+    model = CAGE(
+        n_feat // 2, 
+        n_cls, 
+        proj_dim=proj_dim,
+        encoder_type=args.encoder_type,
+        num_heads=args.num_heads if args.encoder_type == 'transformer' else None,
+        num_encoders=args.num_encoders if args.encoder_type == 'default' else None,
+        use_skip=args.use_skip if args.encoder_type == 'default' else None
+    )
     
     if weights_path:
         model.load_weights(weights_path)
@@ -197,7 +206,20 @@ def get_embeddings(model, dataset, n_device):
         embeddings_list.append(embeddings)
         labels_list.extend(labels.numpy())
     
-    return np.concatenate(embeddings_list, axis=0), np.array(labels_list)
+    embeddings = np.concatenate(embeddings_list, axis=0)
+    
+    if args.use_pca : # YOU USE PCA?
+        if not hasattr(get_embeddings, 'pca') : 
+            n_components = min(args.pca_components, 
+                               embeddings.shape[1]) # PCA dimensionss
+            get_embeddings.pca = PCA(n_components=n_components)
+            embeddings = get_embeddings.pca.fit_transform(embeddings)
+            print (f"{n_components} components: {np.sum(get_embeddings.pca.explained_variance_ratio_):.4f}")
+        else :
+            embeddings = get_embeddings.pca.transform(embeddings)
+    
+    return embeddings, np.array(labels_list)
+
     #     '''
     #         ValueError: Input X contains NaN.
     #         KNeighborsClassifier does not accept missing values encoded as NaN natively. For supervised learning, you might want to consider sklearn.ensemble.HistGradientBoostingClassifier and Regressor which accept missing values encoded as NaNs natively. Alternatively, it is possible to preprocess the data, for instance by using an imputer transformer in a pipeline or drop samples with missing values. See https://scikit-learn.org/stable/modules/impute.html You can find a list of all estimators that handle NaN values at the following page: https://scikit-learn.org/stable/modules/impute.html#estimators-that-handle-nan-values
