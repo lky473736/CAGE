@@ -3,6 +3,35 @@ from tensorflow.keras import layers, Model
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 
+class DefaultEncoder(Model):
+    def __init__(self, in_feat, out_feat, num_encoders=1, use_skip=True):
+        super(DefaultEncoder, self).__init__()
+        self.use_skip = use_skip
+        self.num_encoders = num_encoders
+        
+        for i in range(num_encoders) :
+            setattr(self, f'conv1_{i}', layers.Conv1D(filters=out_feat, kernel_size=3, padding='same', activation='relu'))
+            setattr(self, f'maxpool1_{i}', layers.MaxPooling1D(pool_size=2, padding='same'))
+            setattr(self, f'conv2_{i}', layers.Conv1D(filters=out_feat, kernel_size=3, padding='same', activation='relu'))
+            setattr(self, f'maxpool2_{i}', layers.MaxPooling1D(pool_size=2, padding='same'))
+            setattr(self, f'conv3_{i}', layers.Conv1D(filters=out_feat, kernel_size=3, padding='same', activation='relu'))
+    
+    def call (self, x, training=False) :
+        for i in range (self.num_encoders) :
+            if self.use_skip and i > 0:
+                identity = x
+            
+            x = getattr(self, f'conv1_{i}')(x)
+            x = getattr(self, f'maxpool1_{i}')(x)
+            x = getattr(self, f'conv2_{i}')(x)
+            x = getattr(self, f'maxpool2_{i}')(x)
+            x = getattr(self, f'conv3_{i}')(x)
+            
+            if self.use_skip and i > 0:
+                x = x + identity
+        
+        return tf.reduce_mean(x, axis=1)
+
 def transformer_encoder(inputs, head_size, num_heads, ff_dim, dropout=0):
     x = layers.MultiHeadAttention(
         key_dim=head_size, num_heads=num_heads, dropout=dropout
@@ -17,35 +46,6 @@ def transformer_encoder(inputs, head_size, num_heads, ff_dim, dropout=0):
     x = layers.Dropout(dropout)(x)
     x = layers.LayerNormalization(epsilon=1e-6)(x)
     return x + res
-
-class DefaultEncoder(Model):
-    def __init__(self, in_feat, out_feat, num_encoders=1, use_skip=True):
-        super(DefaultEncoder, self).__init__()
-        self.use_skip = use_skip
-        self.num_encoders = num_encoders
-        
-        for i in range(num_encoders):
-            setattr(self, f'conv1_{i}', layers.Conv1D(filters=out_feat, kernel_size=3, padding='same', activation='relu'))
-            setattr(self, f'maxpool1_{i}', layers.MaxPooling1D(pool_size=2, padding='same'))
-            setattr(self, f'conv2_{i}', layers.Conv1D(filters=out_feat, kernel_size=3, padding='same', activation='relu'))
-            setattr(self, f'maxpool2_{i}', layers.MaxPooling1D(pool_size=2, padding='same'))
-            setattr(self, f'conv3_{i}', layers.Conv1D(filters=out_feat, kernel_size=3, padding='same', activation='relu'))
-    
-    def call(self, x, training=False):
-        for i in range(self.num_encoders):
-            if self.use_skip and i > 0:
-                identity = x
-            
-            x = getattr(self, f'conv1_{i}')(x)
-            x = getattr(self, f'maxpool1_{i}')(x)
-            x = getattr(self, f'conv2_{i}')(x)
-            x = getattr(self, f'maxpool2_{i}')(x)
-            x = getattr(self, f'conv3_{i}')(x)
-            
-            if self.use_skip and i > 0:
-                x = x + identity
-        
-        return tf.reduce_mean(x, axis=1)
 
 class TransformerEncoder(Model):
     def __init__(self, in_feat, out_feat, num_heads=8, ff_dim=None, num_blocks=3, dropout=0.1):
@@ -78,7 +78,7 @@ class TransformerEncoder(Model):
                 self.head_size,
                 self.num_heads,
                 self.ff_dim,
-                self.dropout
+                self.dropout if training else 0
             )
         
         x = tf.reduce_mean(x, axis=1)
@@ -88,28 +88,28 @@ class UNetEncoder(Model):
     def __init__(self, in_feat, out_feat):
         super(UNetEncoder, self).__init__()
         
-        # encoder path
+        #### encoder
         self.enc1 = layers.Conv1D(32, 3, activation='relu', padding='same')
         self.pool1 = layers.MaxPooling1D(2)
         self.enc2 = layers.Conv1D(64, 3, activation='relu', padding='same')
         self.pool2 = layers.MaxPooling1D(2)
         self.enc3 = layers.Conv1D(128, 3, activation='relu', padding='same')
         
-        # decoder path
+        #### decoder
         self.up2 = layers.UpSampling1D(2)
         self.dec2 = layers.Conv1D(64, 3, activation='relu', padding='same')
         self.up1 = layers.UpSampling1D(2)
         self.dec1 = layers.Conv1D(out_feat, 3, activation='relu', padding='same')
     
-    def call(self, x, training=False):
-        # encoder
+    def call(self, x, training=False) :
+        # encoder path
         e1 = self.enc1(x)
         p1 = self.pool1(e1)
         e2 = self.enc2(p1)
         p2 = self.pool2(e2)
         e3 = self.enc3(p2)
         
-        # decoder + skip connections
+        # decoder path
         d2 = self.up2(e3)
         d2 = tf.concat([d2, e2], axis=-1)
         d2 = self.dec2(d2)
@@ -120,17 +120,21 @@ class UNetEncoder(Model):
         return tf.reduce_mean(d1, axis=1)
 
 class CAGE(Model):
-    def __init__(self, n_feat, n_cls, proj_dim=0, encoder_type='default', **kwargs):
+    def __init__(self, n_feat, n_cls, proj_dim=0, encoder_type='default', num_encoders=1, use_skip=True, **kwargs):
         super(CAGE, self).__init__()
         self.proj_dim = proj_dim
         
-        if encoder_type == 'default' :
-            self.enc_A = DefaultEncoder(n_feat, 64, **kwargs)
-            self.enc_G = DefaultEncoder(n_feat, 64, **kwargs)
-        elif encoder_type == 'transformer' :
-            self.enc_A = TransformerEncoder(n_feat, 64, **kwargs)
-            self.enc_G = TransformerEncoder(n_feat, 64, **kwargs)
-        elif encoder_type == 'unet' :
+        if encoder_type == 'default':
+            self.enc_A = DefaultEncoder(n_feat, 64, num_encoders, use_skip)
+            self.enc_G = DefaultEncoder(n_feat, 64, num_encoders, use_skip)
+        elif encoder_type == 'transformer':
+            num_heads = kwargs.get('num_heads', 8)
+            num_blocks = kwargs.get('num_transformer_blocks', 3)
+            ff_dim = kwargs.get('ff_dim', 256)
+            dropout = kwargs.get('transformer_dropout', 0.1)
+            self.enc_A = TransformerEncoder(n_feat, 64, num_heads, ff_dim, num_blocks, dropout)
+            self.enc_G = TransformerEncoder(n_feat, 64, num_heads, ff_dim, num_blocks, dropout)
+        elif encoder_type == 'unet':
             self.enc_A = UNetEncoder(n_feat, 64)
             self.enc_G = UNetEncoder(n_feat, 64)
         else:
@@ -162,7 +166,6 @@ class CAGE(Model):
             return logits, (f_accel, f_gyro)
         
         return logits
-
 
 ###########################################################################3
 # below, ver 1, ver 2

@@ -147,11 +147,12 @@ def get_model(n_feat, n_cls, weights_path=None) :
 '''
     NO CLASSIFIER. SO THERE IS NOT CLS_LOSS HERE
 '''
+@tf.function
 def train_step(model, optimizer, x_accel, x_gyro):
     with tf.GradientTape() as tape:
         ssl_output, (f_accel, f_gyro) = model(x_accel, x_gyro, return_feat=True, training=True)
         
-        ssl_output = tf.clip_by_value(ssl_output, 1e-7, 1.0 - 1e-7)
+        ssl_output = tf.math.log_softmax(ssl_output, axis=-1)
         
         ssl_labels = tf.range(tf.shape(ssl_output)[0])
         

@@ -22,7 +22,7 @@ parser.add_argument('--trial', type=str, default='default', help='trial id')
 parser.add_argument('--use_pca', action='store_true', default=False,
                     help='Whether to use PCA for dimension reduction')
 parser.add_argument('--pca_components', type=int, default=64,
-                    help='Number of PCA components (should be less than embedding dim)')ㄴ
+                    help='Number of PCA components (should be less than embedding dim)')
 
 # Encoder selection arguments
 parser.add_argument('--encoder_type', type=str, default='default',
@@ -40,7 +40,7 @@ parser.add_argument('--transformer_dropout', type=float, default=0.1,
                     help='Dropout rate for transformer')
 
 # dataset and model
-parser.add_argument('--model', type=str, default='EarlyFusion', choices=['BaselineCNN', 'DeepConvLSTM', 'LSTMConvNet', 'EarlyFusion', 'CAGE'])
+parser.add_argument('--model', type=str, default='CAGE', choices=['BaselineCNN', 'DeepConvLSTM', 'LSTMConvNet', 'EarlyFusion', 'CAGE'])
 parser.add_argument('--dataset', type=str, default='UCI_HAR', 
                     choices=['UCI_HAR', 'WISDM', 'Opportunity', 'USC_HAD', 'PAMAP2', 'mHealth', 'MobiAct', 
                             'MobiFall', 'SisFall', 'UMAFall'])
@@ -57,7 +57,7 @@ parser.add_argument('--proj_dim', type=int, default=64)
 parser.add_argument('--loss_type', type=str, default='default',
                     choices=['default', 'nt_xent', 'triplet'],
                     help='Type of contrastive loss to use')
-parser.add_argument('--temperature', type=float, default=0.00,
+parser.add_argument('--temperature', type=float, default=0.07,
                     help='Temperature parameter for NT-Xent loss')
 parser.add_argument('--margin', type=float, default=0.00,
                     help='Margin for triplet loss')
