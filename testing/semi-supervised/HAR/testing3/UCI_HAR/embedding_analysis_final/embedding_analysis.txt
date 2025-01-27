@@ -1,0 +1,39 @@
+Embedding Analysis Results
+==================================================
+
+Overall Statistics:
+Mean Intra-class Distance: 4.5191 (±4.0917)
+Mean Inter-class Distance: 5.7930 (±2.3011)
+Mean Ratio (Intra/Inter): 0.6291
+
+Per-label Statistics:
+
+Label 0.0:
+  Intra-class Distance: 7.0122
+  Inter-class Distance: 5.8131
+  Ratio: 1.2063
+
+Label 1.0:
+  Intra-class Distance: 8.6161
+  Inter-class Distance: 7.3030
+  Ratio: 1.1798
+
+Label 2.0:
+  Intra-class Distance: 9.9386
+  Inter-class Distance: 10.0662
+  Ratio: 0.9873
+
+Label 3.0:
+  Intra-class Distance: 0.4866
+  Inter-class Distance: 3.8156
+  Ratio: 0.1275
+
+Label 4.0:
+  Intra-class Distance: 0.5422
+  Inter-class Distance: 3.8540
+  Ratio: 0.1407
+
+Label 5.0:
+  Intra-class Distance: 0.5188
+  Inter-class Distance: 3.9060
+  Ratio: 0.1328

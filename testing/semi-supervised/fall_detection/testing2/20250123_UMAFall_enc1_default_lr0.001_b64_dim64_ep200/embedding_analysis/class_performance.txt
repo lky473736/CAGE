@@ -1,0 +1,15 @@
+Class-wise Performance Metrics
+==================================================
+
+Class 0:
+- Precision: 0.9038
+- Recall: 0.9229
+- F1-score: 0.9133
+- Support: 519.0
+
+Class 1:
+- Precision: 0.8354
+- Recall: 0.7992
+- F1-score: 0.8169
+- Support: 254.0
+
