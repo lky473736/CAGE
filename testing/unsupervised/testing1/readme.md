@@ -23,7 +23,7 @@
 | **Embedding Dimension** | **MobiFall** |  | **SisFall** |  | **UMAFall** | | **KFall** | |
 |--------------------|----------|----------|----------|----------|----------|----------|----------|----------|
 |  test score of best model | F1 Score | Accuracy | F1 Score | Accuracy | F1 Score | Accuracy | F1 Score | Accuracy |
-| 64                        | 0.6613   |  76.37%  |  0.7891  |  79.20%  | 0.8816   | 88.23%   |          |          |
+| 64                        | 0.6613   |  76.37%  |  0.4142  |  57.02%  | 0.5394   | 67.14%   |          |          |
 
 - **(2) Confusion Matrix Analysis : Visualization of Confusion Matrices for Each Experiment**
 
