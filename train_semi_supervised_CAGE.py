@@ -1,9 +1,6 @@
 '''
-    FOR UNSUPERVISED AND SEMI-SUPERVISED
     classifier delete version
-    
-    embedding training 
-    -> K-Means or KNN or SVC clustering
+    embedding -> KNN or SVC clustering
 '''
 
 import matplotlib.pyplot as plt
@@ -27,18 +24,46 @@ from dataset.HAR_dataset import HARDataset
 from utils.logger import initialize_logger, record_result, create_tensorboard_writer, write_scalar_summary
 from configs import args, dict_to_markdown
 from sklearn.metrics import classification_report
-from models.embeddings.unsupervised_CAGE import CAGE
+from models.embeddings.embedding_CAGE import CAGE
 
 import matplotlib.pyplot as plt
 
-plt.rcParams.update({
-   'font.size': 12,
-   'axes.titlesize': 14,
-   'axes.labelsize': 12,
-   'xtick.labelsize': 11,
-   'ytick.labelsize': 11,
-   'legend.fontsize': 11,
-})
+def analyze_embeddings(embeddings, labels, save_dir):
+    from scipy.spatial.distance import cdist
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from sklearn.manifold import TSNE
+    
+    distances = cdist(embeddings, embeddings, metric='cosine')
+    
+    with open(os.path.join(save_dir, 'embedding_distance_analysis.txt'), 'w') as f:
+        f.write ("Embedding Distance Analysis\n")
+        f.write("=" * 50 + "\n\n")
+        
+        intra_distances = []
+        inter_distances = []
+        
+        for label in np.unique(labels):
+            mask = labels == label
+            intra_dist = distances[mask][:, mask].mean()
+            inter_dist = distances[mask][:, ~mask].mean()
+            ratio = intra_dist / inter_dist
+            
+            f.write(f"Label {label}:\n")
+            f.write(f"- Intra-class mean distance: {intra_dist:.4f}\n")
+            f.write(f"- Inter-class mean distance: {inter_dist:.4f}\n")
+            f.write(f"- Ratio (intra/inter): {ratio:.4f}\n\n")
+            
+            intra_distances.append(intra_dist)
+            inter_distances.append(inter_dist)
+        
+        intra_distances = np.array(intra_distances)
+        inter_distances = np.array(inter_distances)
+        
+        f.write("\nOverall Statistics:\n")
+        f.write(f"Mean intra-class distance: {intra_distances.mean():.4f} (±{intra_distances.std():.4f})\n")
+        f.write(f"Mean inter-class distance: {inter_distances.mean():.4f} (±{inter_distances.std():.4f})\n")
+        f.write(f"Mean ratio (intra/inter): {(intra_distances/inter_distances).mean():.4f}\n")
 
 def visualize_split_embeddings(accel_embeddings, 
                                gyro_embeddings, 
@@ -120,7 +145,6 @@ def get_model(n_feat, n_cls, weights_path=None) :
     return model, optimizer, lr_schedule
 
 '''
-    CAUTION!
     NO CLASSIFIER. SO THERE IS NOT CLS_LOSS HERE
 '''
 @tf.function
@@ -388,37 +412,14 @@ def train() :
     train_gyro = train_embeddings[:, 64:]    # 64 dim
     val_embeddings, val_labels = get_embeddings(model, val_dataset, n_device)
     test_embeddings, test_labels = get_embeddings(model, test_dataset, n_device)
-    
-    # --------------------------- K-Means ---------------------------
-    
-    from sklearn.cluster import KMeans
-    from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score
-
-    n_clusters = n_cls 
-    kmeans = KMeans(n_clusters=n_clusters)
-    kmeans.fit(train_embeddings)
-
-    val_predictions = kmeans.predict(val_embeddings)
-    test_predictions = kmeans.predict(test_embeddings)
-
-    def get_cluster_labels(true_labels, pred_labels):
-        from scipy.stats import mode
-        cluster_labels = np.zeros_like(pred_labels)
-        for cluster in range(len(np.unique(pred_labels))):
-            mask = (pred_labels == cluster)
-            cluster_labels[mask] = mode(true_labels[mask])[0]
-        return cluster_labels
-
-    val_mapped_predictions = get_cluster_labels(val_labels, val_predictions)
-    test_mapped_predictions = get_cluster_labels(test_labels, test_predictions)
 
     #  -------------------------- KNN (or SVM kernel cosine) --------------------------------
-    # knn = KNeighborsClassifier(n_neighbors=7, weights='distance', metric='cosine')
+    knn = KNeighborsClassifier(n_neighbors=7, weights='distance', metric='cosine')
     
-    # knn.fit(train_embeddings, train_labels)
+    knn.fit(train_embeddings, train_labels)
     
-    # val_predictions = knn.predict(val_embeddings)
-    # test_predictions = knn.predict(test_embeddings)
+    val_predictions = knn.predict(val_embeddings)
+    test_predictions = knn.predict(test_embeddings)
     
     # from scipy.spatial.distance import cdist
     # from sklearn.svm import SVC
@@ -437,7 +438,7 @@ def train() :
     os.makedirs(save_dir, exist_ok=True)
 
     visualize_split_embeddings(train_accel, train_gyro, train_labels, save_dir)
-    # analyze_embeddings(train_embeddings, train_labels, save_dir)
+    analyze_embeddings(train_embeddings, train_labels, save_dir)
     report, conf_matrix = calculate_metrics(test_predictions, test_labels)
     
     
@@ -446,11 +447,11 @@ def train() :
     plot_training_progress(epoch_losses, 
                            epoch_ssl_accuracies, 
                            args.save_folder)
-    # plot_roc_curve(test_embeddings, 
-    #                test_labels, knn, 
-    #                args.save_folder)
-    plot_confusion_matrix_heatmap(confusion_matrix(test_labels, test_mapped_predictions), 
-                            args.save_folder)
+    plot_roc_curve(test_embeddings, 
+                   test_labels, knn, 
+                   args.save_folder)
+    plot_confusion_matrix_heatmap(conf_matrix, 
+                                  args.save_folder)
     plot_embeddings_pca(test_embeddings, 
                         test_labels, 
                         args.save_folder)
@@ -467,23 +468,13 @@ def train() :
                 f.write(f"- F1-score: {metrics['f1-score']:.4f}\n")
                 f.write(f"- Support: {metrics['support']}\n\n")
 
-    ######################### KNN, SVM
-    # val_acc = np.mean(val_predictions == val_labels) * 100
-    # val_f1 = f1_score(val_labels, val_predictions, average='weighted')
-    # val_matrix = confusion_matrix(val_labels, val_predictions)
+    val_acc = np.mean(val_predictions == val_labels) * 100
+    val_f1 = f1_score(val_labels, val_predictions, average='weighted')
+    val_matrix = confusion_matrix(val_labels, val_predictions)
     
-    # test_acc = np.mean(test_predictions == test_labels) * 100
-    # test_f1 = f1_score(test_labels, test_predictions, average='weighted')
-    # test_matrix = confusion_matrix(test_labels, test_predictions)
-    
-    ######################### K-Means
-    val_acc = np.mean(val_mapped_predictions == val_labels) * 100
-    val_f1 = f1_score(val_labels, val_mapped_predictions, average='weighted')
-    val_matrix = confusion_matrix(val_labels, val_mapped_predictions)
-    
-    test_acc = np.mean(test_mapped_predictions == test_labels) * 100
-    test_f1 = f1_score(test_labels, test_mapped_predictions, average='weighted')
-    test_matrix = confusion_matrix(test_labels, test_mapped_predictions)
+    test_acc = np.mean(test_predictions == test_labels) * 100
+    test_f1 = f1_score(test_labels, test_predictions, average='weighted')
+    test_matrix = confusion_matrix(test_labels, test_predictions)
     
     result = open(os.path.join(args.save_folder, 'result'), 
                   'w+')

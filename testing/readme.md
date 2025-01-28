@@ -31,5 +31,5 @@ lky473736@icloud.com
     - -> using K-Means 
 - **fall_detection**
     - testing 1 : running sample (default encoder at original CAGE) : MobiFall, SisFall, UMAFall (enc1, default loss, lr0.001, b64, dim64, ep200)
-    - testing 2 : 
+    - testing 2 : progress for improving model's performance : UMAFall
     - testing 3 : 

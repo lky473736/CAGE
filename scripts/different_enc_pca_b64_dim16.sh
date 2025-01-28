@@ -4,7 +4,7 @@ DATASETS=("MobiFall")
 ENCODER_TYPES=("default" "transformer" "unet")
 NUM_ENCODERS=(2 4 8)
 BATCH_SIZES=(64)
-EMBEDDING_DIMS=(16)
+EMBEDDING_DIMS=(64)
 PCA_COMPONENTS=(2 4 8 16) 
 DATE=$(date +%Y%m%d)
 
@@ -26,27 +26,28 @@ DATE=$(date +%Y%m%d)
 #         --num_encoders $num_encoder \
 #         --loss_type $loss_type \
 #         --trial $TRIAL_NAME
+# fi
 
 for dataset in "${DATASETS[@]}"; do
-    # for num_encoder in "${NUM_ENCODERS[@]}"; do
-    #     TRIAL_NAME="${DATE}_${dataset}_enc_default${num_encoder}_use_skip_loss_default_lr0.001_b64_dim16_ep200"
-    #     python3 train_unsupervised_CAGE.py \
-    #         --model CAGE \
-    #         --dataset $dataset \
-    #         --encoder_type default \
-    #         --num_encoders $num_encoder \
-    #         --use_skip \
-    #         --batch_size 64 \
-    #         --epochs 200 \
-    #         --window_width 128 \
-    #         --train_portion 0.6 \
-    #         --learning_rate 0.001 \
-    #         --weight_decay 1e-7 \
-    #         --momentum 0.9 \
-    #         --normalize \
-    #         --proj_dim 16 \
-    #         --trial $TRIAL_NAME
-    # done
+    for num_encoder in "${NUM_ENCODERS[@]}"; do
+        TRIAL_NAME="${DATE}_${dataset}_enc_default${num_encoder}_use_skip_loss_default_lr0.001_b64_dim16_ep200"
+        python3 train_unsupervised_CAGE.py \
+            --model CAGE \
+            --dataset $dataset \
+            --encoder_type default \
+            --num_encoders $num_encoder \
+            --use_skip \
+            --batch_size 64 \
+            --epochs 200 \
+            --window_width 128 \
+            --train_portion 0.6 \
+            --learning_rate 0.001 \
+            --weight_decay 1e-7 \
+            --momentum 0.9 \
+            --normalize \
+            --proj_dim 16 \
+            --trial $TRIAL_NAME
+    done
 
     TRIAL_NAME="${DATE}_${dataset}_enc_transformer_loss_default_lr0.001_b64_dim16_ep200"
     python3 train_unsupervised_CAGE.py \
@@ -82,23 +83,23 @@ for dataset in "${DATASETS[@]}"; do
         --proj_dim 16 \
         --trial $TRIAL_NAME
 
-    for pca_comp in "${PCA_COMPONENTS[@]}"; do
-        TRIAL_NAME="${DATE}_${dataset}_pca${pca_comp}_enc_default1_loss_default_lr0.001_b64_dim16_ep200"
-        python3 train_unsupervised_CAGE.py \
-            --model CAGE \
-            --dataset $dataset \
-            --encoder_type default \
-            --use_pca \
-            --pca_components $pca_comp \
-            --batch_size 64 \
-            --epochs 200 \
-            --window_width 128 \
-            --train_portion 0.6 \
-            --learning_rate 0.001 \
-            --weight_decay 1e-7 \
-            --momentum 0.9 \
-            --normalize \
-            --proj_dim 16 \
-            --trial $TRIAL_NAME
-    done
+    # for pca_comp in "${PCA_COMPONENTS[@]}"; do
+    #     TRIAL_NAME="${DATE}_${dataset}_pca${pca_comp}_enc_default1_loss_default_lr0.001_b64_dim16_ep200"
+    #     python3 train_unsupervised_CAGE.py \
+    #         --model CAGE \
+    #         --dataset $dataset \
+    #         --encoder_type default \
+    #         --use_pca \
+    #         --pca_components $pca_comp \
+    #         --batch_size 64 \
+    #         --epochs 200 \
+    #         --window_width 128 \
+    #         --train_portion 0.6 \
+    #         --learning_rate 0.001 \
+    #         --weight_decay 1e-7 \
+    #         --momentum 0.9 \
+    #         --normalize \
+    #         --proj_dim 16 \
+    #         --trial $TRIAL_NAME
+    # done
 done

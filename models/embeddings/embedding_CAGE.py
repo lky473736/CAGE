@@ -32,20 +32,20 @@ class DefaultEncoder(Model):
         
         return tf.reduce_mean(x, axis=1)
 
-def transformer_encoder(inputs, head_size, num_heads, ff_dim, dropout=0):
-    x = layers.MultiHeadAttention(
-        key_dim=head_size, num_heads=num_heads, dropout=dropout
-    )(inputs, inputs)
-    x = layers.Dropout(dropout)(x)
-    x = layers.LayerNormalization(epsilon=1e-6)(x)
-    res = x + inputs
+# def transformer_encoder(inputs, head_size, num_heads, ff_dim, dropout=0):
+#     x = layers.MultiHeadAttention(
+#         key_dim=head_size, num_heads=num_heads, dropout=dropout
+#     )(inputs, inputs)
+#     x = layers.Dropout(dropout)(x)
+#     x = layers.LayerNormalization(epsilon=1e-6)(x)
+#     res = x + inputs
 
-    x = layers.Conv1D(filters=ff_dim, kernel_size=1, activation="relu")(res)
-    x = layers.Dropout(dropout)(x)
-    x = layers.Conv1D(filters=inputs.shape[-1], kernel_size=1)(x)
-    x = layers.Dropout(dropout)(x)
-    x = layers.LayerNormalization(epsilon=1e-6)(x)
-    return x + res
+#     x = layers.Conv1D(filters=ff_dim, kernel_size=1, activation="relu")(res)
+#     x = layers.Dropout(dropout)(x)
+#     x = layers.Conv1D(filters=inputs.shape[-1], kernel_size=1)(x)
+#     x = layers.Dropout(dropout)(x)
+#     x = layers.LayerNormalization(epsilon=1e-6)(x)
+#     return x + res
 
 class TransformerEncoder(Model):
     def __init__(self, in_feat, out_feat, num_heads=8, ff_dim=None, num_blocks=3, dropout=0.1):
@@ -56,12 +56,26 @@ class TransformerEncoder(Model):
         self.input_proj = layers.Dense(out_feat)
         self.pos_encoding = layers.Dense(out_feat)
         
-        self.num_blocks = num_blocks
-        self.head_size = out_feat // num_heads
-        self.num_heads = num_heads
-        self.ff_dim = ff_dim
-        self.dropout = dropout
+        self.attention_layers = [
+            layers.MultiHeadAttention(
+                key_dim=out_feat // num_heads,
+                num_heads=num_heads,
+                dropout=dropout
+            ) for _ in range(num_blocks)
+        ]
         
+        self.ff_layers = [
+            [
+                layers.Conv1D(filters=ff_dim, kernel_size=1, activation="relu"),
+                layers.Conv1D(filters=out_feat, kernel_size=1)
+            ] for _ in range(num_blocks)
+        ]
+        
+        self.layer_norms1 = [layers.LayerNormalization(epsilon=1e-6) for _ in range(num_blocks)]
+        self.layer_norms2 = [layers.LayerNormalization(epsilon=1e-6) for _ in range(num_blocks)]
+        self.dropouts = [layers.Dropout(dropout) for _ in range(num_blocks)]
+        
+        self.num_blocks = num_blocks
         self.output_proj = layers.Dense(out_feat)
     
     def call(self, x, training=False):
@@ -72,14 +86,16 @@ class TransformerEncoder(Model):
         pos_encoding = self.pos_encoding(tf.cast(positions, tf.float32))
         x = x + pos_encoding
         
-        for _ in range(self.num_blocks):
-            x = transformer_encoder(
-                x,
-                self.head_size,
-                self.num_heads,
-                self.ff_dim,
-                self.dropout if training else 0
-            )
+        for i in range(self.num_blocks):
+            attention_output = self.attention_layers[i](x, x)
+            attention_output = self.dropouts[i](attention_output)
+            x1 = self.layer_norms1[i](attention_output + x)
+            
+            ff_output = self.ff_layers[i][0](x1)
+            ff_output = self.dropouts[i](ff_output)
+            ff_output = self.ff_layers[i][1](ff_output)
+            ff_output = self.dropouts[i](ff_output)
+            x = self.layer_norms2[i](ff_output + x1)
         
         x = tf.reduce_mean(x, axis=1)
         return self.output_proj(x)
@@ -88,28 +104,31 @@ class UNetEncoder(Model):
     def __init__(self, in_feat, out_feat):
         super(UNetEncoder, self).__init__()
         
-        #### encoder
-        self.enc1 = layers.Conv1D(32, 3, activation='relu', padding='same')
-        self.pool1 = layers.MaxPooling1D(2)
-        self.enc2 = layers.Conv1D(64, 3, activation='relu', padding='same')
-        self.pool2 = layers.MaxPooling1D(2)
-        self.enc3 = layers.Conv1D(128, 3, activation='relu', padding='same')
+        # 인코더 - stride를 1로 설정하여 크기 감소를 줄임
+        self.enc1 = layers.Conv1D(out_feat//4, 3, strides=1, activation='relu', padding='same')
+        self.pool1 = layers.MaxPooling1D(pool_size=2, strides=1, padding='same')
+        self.enc2 = layers.Conv1D(out_feat//2, 3, strides=1, activation='relu', padding='same')
+        self.pool2 = layers.MaxPooling1D(pool_size=2, strides=1, padding='same')
+        self.enc3 = layers.Conv1D(out_feat, 3, strides=1, activation='relu', padding='same')
         
-        #### decoder
-        self.up2 = layers.UpSampling1D(2)
-        self.dec2 = layers.Conv1D(64, 3, activation='relu', padding='same')
-        self.up1 = layers.UpSampling1D(2)
-        self.dec1 = layers.Conv1D(out_feat, 3, activation='relu', padding='same')
+        # 디코더
+        self.up2 = layers.UpSampling1D(size=1)  # 크기 유지
+        self.dec2 = layers.Conv1D(out_feat//2, 3, strides=1, activation='relu', padding='same')
+        self.up1 = layers.UpSampling1D(size=1)  # 크기 유지
+        self.dec1 = layers.Conv1D(out_feat//4, 3, strides=1, activation='relu', padding='same')
+        
+        # 최종 출력
+        self.final = layers.Conv1D(out_feat, 1, activation='relu')
     
-    def call(self, x, training=False) :
-        # encoder path
-        e1 = self.enc1(x)
+    def call(self, x, training=False):
+        # 인코더 패스
+        e1 = self.enc1(x)  # shape 유지
         p1 = self.pool1(e1)
         e2 = self.enc2(p1)
         p2 = self.pool2(e2)
         e3 = self.enc3(p2)
         
-        # decoder path
+        # 디코더 패스
         d2 = self.up2(e3)
         d2 = tf.concat([d2, e2], axis=-1)
         d2 = self.dec2(d2)
@@ -117,7 +136,8 @@ class UNetEncoder(Model):
         d1 = tf.concat([d1, e1], axis=-1)
         d1 = self.dec1(d1)
         
-        return tf.reduce_mean(d1, axis=1)
+        x = self.final(d1)
+        return tf.reduce_mean(x, axis=1)
 
 class CAGE(Model):
     def __init__(self, n_feat, n_cls, proj_dim=0, encoder_type='default', num_encoders=1, use_skip=True, **kwargs):

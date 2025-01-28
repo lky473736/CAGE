@@ -15,7 +15,7 @@ for dataset in "${DATASETS[@]}"; do
                     TRIAL_NAME="${DATE}_${dataset}_enc${num_encoder}_${loss_type}_lr0.001_b${batch_size}_dim${proj_dim}_ep200"
                     
                     if [ "$loss_type" == "default" ]; then
-                        python3 train_unsupervised_CAGE.py \
+                        python3 train_CAGE_edited.py \
                             --dataset $dataset \
                             --model CAGE \
                             --batch_size $batch_size \
