@@ -3,8 +3,14 @@
     classifier delete version
     
     embedding training 
-    -> K-Means 
+    -> K-Means, DBSCAN, fastcluster, gmm, birch
 '''
+
+from sklearn.cluster import KMeans, DBSCAN, SpectralClustering, Birch, AgglomerativeClustering
+from sklearn.decomposition import PCA
+from sklearn.mixture import GaussianMixture
+from tensorflow.keras import layers, Model
+import tensorflow as tf
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -32,13 +38,112 @@ from models.embeddings.embedding_CAGE import CAGE
 import matplotlib.pyplot as plt
 
 plt.rcParams.update({
-   'font.size': 12,
-   'axes.titlesize': 14,
-   'axes.labelsize': 12,
-   'xtick.labelsize': 11,
-   'ytick.labelsize': 11,
-   'legend.fontsize': 11,
+   'font.size': 15,
+   'axes.titlesize': 17,
+   'axes.labelsize': 14,
+   'xtick.labelsize': 13,
+   'ytick.labelsize': 13,
+   'legend.fontsize': 13,
 })
+
+def visualize_similarities(train_embeddings, train_labels, save_dir):
+    from scipy.spatial.distance import cdist
+    similarities = 1 - cdist(train_embeddings, train_embeddings, metric='cosine')
+    
+    unique_labels = np.unique(train_labels)
+    class_similarities = np.zeros((len(unique_labels), len(unique_labels)))
+    
+    for i, label1 in enumerate(unique_labels):
+        for j, label2 in enumerate(unique_labels):
+            mask1 = (train_labels == label1)
+            mask2 = (train_labels == label2)
+            class_similarities[i,j] = np.mean(similarities[mask1][:,mask2]) # <-- mean value of cosine simularity
+    
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(class_similarities, 
+                xticklabels=unique_labels,
+                yticklabels=unique_labels,
+                annot=True, fmt='.2f', cmap='YlOrRd')
+    plt.title('Class-wise Average Similarities') # <---- heatmap of simularity
+    plt.xlabel('Class')
+    plt.ylabel('Class')
+    plt.tight_layout()
+    plt.savefig(os.path.join(save_dir, 'class_similarities.png'))
+    plt.close()
+    
+    plt.figure(figsize=(12, 5))
+    
+    intra_similarities = [] # <------- same class simularity
+    for label in unique_labels:
+        mask = (train_labels == label)
+        class_sim = similarities[mask][:,mask]
+        intra_similarities.extend(class_sim[np.triu_indices(np.sum(mask), k=1)])
+    
+    inter_similarities = [] # <-------- other class simularity
+    for i, label1 in enumerate(unique_labels):
+        for label2 in unique_labels[i+1:]:
+            mask1 = (train_labels == label1)
+            mask2 = (train_labels == label2)
+            inter_similarities.extend(similarities[mask1][:,mask2].flatten())
+    
+    plt.subplot(1, 2, 1)
+    plt.hist(intra_similarities, bins=50, alpha=0.5, label='Intra-class')
+    plt.hist(inter_similarities, bins=50, alpha=0.5, label='Inter-class')
+    plt.xlabel('Cosine Similarity')
+    plt.ylabel('Count')
+    plt.title('Similarity Distribution')
+    plt.legend()
+    
+    plt.subplot(1, 2, 2)
+    distances = cdist(train_embeddings, train_embeddings, metric='euclidean')
+    plt.scatter(distances.flatten(), similarities.flatten(), alpha=0.1)
+    plt.xlabel('Euclidean Distance')
+    plt.ylabel('Cosine Similarity')
+    plt.title('Distance vs Similarity')
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(save_dir, 'similarity_analysis.png'))
+    plt.close()
+
+def visualize_similarity_embedding_relation(train_embeddings, train_labels, save_dir):
+    from scipy.spatial.distance import cdist
+    
+    tsne = TSNE(n_components=2, random_state=42) # 2D
+    embeddings_2d = tsne.fit_transform(train_embeddings)
+    
+    similarities = 1 - cdist(train_embeddings, train_embeddings, metric='cosine')
+    
+    plt.figure(figsize=(15, 5))
+    
+    plt.subplot(1, 3, 1)
+    scatter = plt.scatter(embeddings_2d[:, 0], embeddings_2d[:, 1],
+                         c=train_labels, cmap='tab10', alpha=0.6)
+    plt.colorbar(scatter)
+    plt.title('t-SNE Embedding')
+    
+    plt.subplot(1, 3, 2)
+    tsne_distances = cdist(embeddings_2d, embeddings_2d, metric='euclidean')
+    plt.scatter(tsne_distances.flatten(), similarities.flatten(), alpha=0.1)
+    plt.xlabel('t-SNE Distance')
+    plt.ylabel('Original Cosine Similarity')
+    plt.title('t-SNE Distance vs Similarity')
+    
+    #### neighbor's relationship of cosine simularity
+    plt.subplot(1, 3, 3)
+    k = 5   # <-------- what num of neigh?
+    for i in range (len(train_embeddings)) :
+        nearest = np.argsort(similarities[i])[-k-1:-1]
+        for j in nearest:
+            plt.plot([embeddings_2d[i,0], embeddings_2d[j,0]],
+                    [embeddings_2d[i,1], embeddings_2d[j,1]],
+                    'gray', alpha=0.1)
+    scatter = plt.scatter(embeddings_2d[:, 0], embeddings_2d[:, 1],
+                         c=train_labels, cmap='tab10', alpha=0.6)
+    plt.title(f'Top {k} Similar Connections')
+    
+    plt.tight_layout()
+    plt.savefig(os.path.join(save_dir, 'embedding_similarity_relation.png'))
+    plt.close()
 
 def visualize_split_embeddings(accel_embeddings, 
                                gyro_embeddings, 
@@ -299,6 +404,59 @@ def plot_embeddings_pca(test_embeddings, test_labels, save_path):
     plt.close()
 
 # -----------------------------------
+
+def apply_clustering(embeddings, cluster_type='kmeans', **kwargs):
+    if cluster_type == 'kmeans':
+        clusterer = KMeans(n_clusters=kwargs.get('n_clusters', 2))
+    elif cluster_type == 'dbscan':
+        clusterer = DBSCAN(
+            eps=kwargs.get('eps', 0.5),
+            min_samples=kwargs.get('min_samples', 5)
+        )
+    # elif cluster_type == 'spectral':
+    #     clusterer = SpectralClustering(
+    #         n_clusters=kwargs.get('n_clusters', 2),
+    #         affinity=kwargs.get('affinity', 'rbf')
+    #     )
+    elif cluster_type == 'birch':
+        clusterer = Birch(
+            n_clusters=kwargs.get('n_clusters', 2),
+            threshold=kwargs.get('threshold', 0.5)
+        )
+    elif cluster_type == 'gmm':
+        clusterer = GaussianMixture(
+            n_components=kwargs.get('n_clusters', 2),
+            max_iter=50
+        )
+    elif cluster_type == 'fastcluster':
+        try:
+            batch_size = 1000
+            n_samples = len(embeddings)
+            predictions = np.zeros(n_samples)
+            
+            for i in range(0, n_samples, batch_size):
+                batch_end = min(i + batch_size, n_samples)
+                batch_embeddings = embeddings[i:batch_end]
+                
+                clusterer = AgglomerativeClustering(
+                    n_clusters=kwargs.get('n_clusters', 2),
+                    linkage=kwargs.get('linkage', 'average')
+                )
+                predictions[i:batch_end] = clusterer.fit_predict(batch_embeddings)
+                
+            return predictions
+        except Exception as e:
+            print(f"FastCluster error: {e}")
+            exit()
+            # fallback to K-means
+    
+    if hasattr(clusterer, 'fit_predict'):
+        return clusterer.fit_predict(embeddings)
+    else:
+        clusterer.fit(embeddings)
+        return clusterer.predict(embeddings)
+
+# --------------------------------
 def train() :
     print (" -------- training... -------- ")
     train_dataset = train_set.make_tf_dataset(
@@ -389,26 +547,56 @@ def train() :
     val_embeddings, val_labels = get_embeddings(model, val_dataset, n_device)
     test_embeddings, test_labels = get_embeddings(model, test_dataset, n_device)
     
-    # --------------------------- K-Means ---------------------------
+    save_dir = os.path.join(args.save_folder, 'embedding_analysis')
+    os.makedirs(save_dir, exist_ok=True)
     
-    from sklearn.cluster import KMeans
-    from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score
+    # visualization embeddings
+    visualize_similarities(train_embeddings, train_labels, save_dir)
+    visualize_similarity_embedding_relation(train_embeddings, train_labels, save_dir)
 
-    n_clusters = n_cls 
-    kmeans = KMeans(n_clusters=n_clusters)
-    kmeans.fit(train_embeddings)
-
-    val_predictions = kmeans.predict(val_embeddings)
-    test_predictions = kmeans.predict(test_embeddings)
-
-    def get_cluster_labels(true_labels, pred_labels):
+    
+    # ------------------- K-Means, DBSCAN, spectral clustering ---------------------------
+    
+    def get_cluster_labels(true_labels, pred_labels) :
         from scipy.stats import mode
         cluster_labels = np.zeros_like(pred_labels)
         for cluster in range(len(np.unique(pred_labels))):
             mask = (pred_labels == cluster)
-            cluster_labels[mask] = mode(true_labels[mask])[0]
+            if np.sum(mask) > 0: 
+                cluster_labels[mask] = mode(true_labels[mask])[0]
         return cluster_labels
 
+    # for training 
+    train_predictions = apply_clustering(
+        train_embeddings, 
+        cluster_type=args.clustering_method,
+        n_clusters=n_cls,
+        eps=args.dbscan_eps,
+        min_samples=args.dbscan_min_samples,
+        affinity=args.spectral_affinity
+    )
+
+    # for val
+    val_predictions = apply_clustering(
+        val_embeddings, 
+        cluster_type=args.clustering_method,
+        n_clusters=n_cls,
+        eps=args.dbscan_eps,
+        min_samples=args.dbscan_min_samples,
+        affinity=args.spectral_affinity
+    )
+
+    # for test
+    test_predictions = apply_clustering(
+        test_embeddings, 
+        cluster_type=args.clustering_method,
+        n_clusters=n_cls,
+        eps=args.dbscan_eps,
+        min_samples=args.dbscan_min_samples,
+        affinity=args.spectral_affinity
+    )
+
+    train_mapped_predictions = get_cluster_labels(train_labels, train_predictions)
     val_mapped_predictions = get_cluster_labels(val_labels, val_predictions)
     test_mapped_predictions = get_cluster_labels(test_labels, test_predictions)
 
@@ -433,13 +621,13 @@ def train() :
     # test_predictions = svm.predict(test_sim)
 
     #  --------------------- visualization tSNE + save log and rst ----------------------------
-    save_dir = os.path.join(args.save_folder, 'embedding_analysis')
-    os.makedirs(save_dir, exist_ok=True)
 
     visualize_split_embeddings(train_accel, train_gyro, train_labels, save_dir)
     # analyze_embeddings(train_embeddings, train_labels, save_dir)
-    report, conf_matrix = calculate_metrics(test_predictions, test_labels)
+    # report, conf_matrix = calculate_metrics(test_predictions, test_labels)
     
+    report, conf_matrix = calculate_metrics(train_mapped_predictions, train_labels)
+
     
     # ------------------- visualization ROC, loss fig, confusion matrix, pca -------------
     
@@ -502,9 +690,8 @@ def train() :
     result.write(str(test_matrix) + "\n\n")
     
     result.write("Classification Report:\n")
-    result.write(classification_report(test_labels, test_predictions,
-                                   zero_division=1))
-    
+    result.write(classification_report(test_labels, 
+                                       test_mapped_predictions, zero_division=1))
     result.close()
     writer.close()
     

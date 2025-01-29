@@ -28,8 +28,8 @@ lky473736@icloud.com
 ### unsupervised 
 - **about way of learning and getting performance**
     - training each encoder(accel, gyro) for reducing ssl_loss (similar behavior must be close and have similar embedding value inside)
-    - -> using K-Means 
+    - -> using K-Means, spectral clustering, DBSCAN for unsupervised learning (clustering with no label)
 - **fall_detection**
     - testing 1 : running sample (default encoder at original CAGE) : MobiFall, SisFall, UMAFall (enc1, default loss, lr0.001, b64, dim64, ep200)
-    - testing 2 : progress for improving model's performance : UMAFall
+    - testing 2 : progress for improving model's performance : MobiFall
     - testing 3 : 

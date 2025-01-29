@@ -3,6 +3,39 @@ import argparse
 import pandas as pd
 
 parser = argparse.ArgumentParser()
+
+
+######## clustering
+parser.add_argument('--clustering_method', type=str, default='kmeans',
+                    choices=['kmeans', 'dbscan', 'spectral', 'gmm', 'fastcluster', 'birch'],
+                    help='Clustering method to use')
+
+parser.add_argument('--gmm_components', type=int, default=2,
+                    help='Number of components for Gaussian Mixture Model')
+
+parser.add_argument('--fastcluster_linkage', type=str, default='average',
+                    choices=['ward', 'complete', 'average', 'single'],
+                    help='Linkage method for hierarchical clustering')
+
+parser.add_argument('--birch_threshold', type=float, default=0.5,
+                    help='Threshold for Birch clustering')
+
+parser.add_argument('--dbscan_eps', type=float, default=0.5,
+                    help='DBSCAN eps parameter')
+parser.add_argument('--dbscan_min_samples', type=int, default=5,
+                    help='DBSCAN min_samples parameter')
+
+parser.add_argument('--spectral_affinity', type=str, default='rbf',
+                    choices=['rbf', 'nearest_neighbors'],
+                    help='Affinity type for spectral clustering')
+
+####### ResNet - transformer-encoder
+parser.add_argument('--num_resnet_blocks', type=int, default=3,
+                    help='Number of ResNet blocks')
+parser.add_argument('--resnet_channels', type=int, default=64,
+                    help='Number of channels in ResNet blocks')
+
+
 parser.add_argument('--seed', type=int, default=42, metavar='S',
                     help='random seed (default: 42). if seed=0, seed is not fixed.')
 parser.add_argument('--batch_size', type=int, default=64, help='batch_size')
@@ -26,8 +59,15 @@ parser.add_argument('--pca_components', type=int, default=64,
 
 # Encoder selection arguments
 parser.add_argument('--encoder_type', type=str, default='default',
-                    choices=['default', 'transformer', 'unet'],
-                    help='Type of encoder to use')
+                   choices=['default', 'transformer', 
+                            'unet', 'resnet_transformer', 
+                            'se', 'se_transformer'],
+                   help='Type of encoder to use')
+
+parser.add_argument('--se_reduction', type=int, default=4,
+                    help='Reduction ratio for SE block')
+parser.add_argument('--multi_scale_kernels', type=str, default='3,5,7',
+                    help='Comma separated kernel sizes for multi-scale convolution')
 
 # Transformer encoder specific arguments
 parser.add_argument('--num_heads', type=int, default=8,

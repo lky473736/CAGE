@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DATASETS=("MobiFall" "SisFall" "UMAFall")
+DATASETS=("MobiFall")
 LOSS_TYPES=("default")
 NUM_ENCODERS=(1)
 BATCH_SIZES=(64)
