@@ -421,7 +421,8 @@ def apply_clustering(embeddings, cluster_type='kmeans', **kwargs):
     elif cluster_type == 'birch':
         clusterer = Birch(
             n_clusters=kwargs.get('n_clusters', 2),
-            threshold=kwargs.get('threshold', 0.5)
+            threshold=kwargs.get('threshold', 0.5),
+            branching_factor=kwargs.get('branching_factor', 50)  
         )
     elif cluster_type == 'gmm':
         clusterer = GaussianMixture(

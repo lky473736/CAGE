@@ -236,12 +236,14 @@ class ResNetTransformerEncoder(Model):
         super(ResNetTransformerEncoder, self).__init__()
         self.out_feat = out_feat
         
-        if num_heads is None:
-            num_heads = 8
-            
+        self.input_proj = layers.Conv1D(out_feat, kernel_size=1, padding='same')
+        self.input_bn = layers.BatchNormalization()
+        
         # ResNet blocks
-        self.input_conv = layers.Conv1D(out_feat, 1, padding='same')
-        self.resnet_blocks = [ResNetBlock(out_feat) for _ in range(3)]
+        self.resnet_blocks = []
+        channels = [out_feat, out_feat*2, out_feat]
+        for ch in channels:
+            self.resnet_blocks.append(ResNetBlock(ch))
         
         # Transformer blocks
         self.pos_encoding = layers.Dense(out_feat)

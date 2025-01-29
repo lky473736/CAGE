@@ -13,7 +13,6 @@ for dataset in "${DATASETS[@]}"; do
             for batch_size in "${BATCH_SIZES[@]}"; do
                 for proj_dim in "${EMBEDDING_DIMS[@]}"; do
                     if [ "$clustering_method" = "dbscan" ]; then
-                        # DBSCAN - eps만 변경
                         for eps in 0.3 0.7; do
                             TRIAL_NAME="${DATE}_${dataset}_${encoder}_${clustering_method}_eps${eps}_b${batch_size}_dim${proj_dim}"
                             
@@ -22,7 +21,7 @@ for dataset in "${DATASETS[@]}"; do
                                 --model CAGE \
                                 --encoder_type $encoder \
                                 --clustering_method $clustering_method \
-                                --dbscan_eps $eps \
+                                --dbscan_ps $eps \
                                 --dbscan_min_samples 5 \
                                 --batch_size $batch_size \
                                 --proj_dim $proj_dim \
@@ -37,7 +36,6 @@ for dataset in "${DATASETS[@]}"; do
                         done
 
                     elif [ "$clustering_method" = "birch" ]; then
-                        # BIRCH - threshold만 변경
                         for threshold in 0.3 0.7; do
                             TRIAL_NAME="${DATE}_${dataset}_${encoder}_${clustering_method}_th${threshold}_b${batch_size}_dim${proj_dim}"
                             
@@ -61,7 +59,6 @@ for dataset in "${DATASETS[@]}"; do
                         done
                     
                     elif [ "$clustering_method" = "fastcluster" ]; then
-                        # fastcluster - ward와 average만
                         for linkage in "ward" "average"; do
                             TRIAL_NAME="${DATE}_${dataset}_${encoder}_${clustering_method}_${linkage}_b${batch_size}_dim${proj_dim}"
                             

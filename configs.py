@@ -20,6 +20,9 @@ parser.add_argument('--fastcluster_linkage', type=str, default='average',
 parser.add_argument('--birch_threshold', type=float, default=0.5,
                     help='Threshold for Birch clustering')
 
+parser.add_argument('--birch_branching_factor', type=int, default=50,
+                    help='Branching factor for BIRCH clustering')
+
 parser.add_argument('--dbscan_eps', type=float, default=0.5,
                     help='DBSCAN eps parameter')
 parser.add_argument('--dbscan_min_samples', type=int, default=5,
