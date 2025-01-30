@@ -63,9 +63,16 @@ parser.add_argument('--pca_components', type=int, default=64,
 # Encoder selection arguments
 parser.add_argument('--encoder_type', type=str, default='default',
                    choices=['default', 'transformer', 
-                            'unet', 'resnet_transformer', 
-                            'se', 'se_transformer'],
+                           'unet', 'resnet_transformer', 
+                           'se', 'se_transformer',
+                           'improved_default', 
+                           'deep_default'],   
                    help='Type of encoder to use')
+
+parser.add_argument('--enhanced_channels', type=int, default=64,
+                    help='Number of channels in enhanced encoder')
+parser.add_argument('--deep_layers', type=int, default=3,
+                    help='Number of deep layers in deep encoder')
 
 parser.add_argument('--se_reduction', type=int, default=4,
                     help='Reduction ratio for SE block')

@@ -32,6 +32,206 @@ class DefaultEncoder(Model):
         
         return tf.reduce_mean(x, axis=1)
     
+class ImprovedDefaultEncoder(Model):
+    def __init__(self, in_feat, out_feat, num_encoders=1, use_skip=True):
+        super(ImprovedDefaultEncoder, self).__init__()
+        self.use_skip = use_skip
+        self.num_encoders = num_encoders
+        
+        self.input_proj = layers.Conv1D(out_feat, 1, padding='same')
+        self.input_norm = layers.BatchNormalization()
+        
+        self.multi_scale_convs = []
+        for i in range(num_encoders):
+            scale_convs = []
+            for k in [3, 5]:  
+                scale_convs.append({
+                    'conv': layers.Conv1D(out_feat//2, kernel_size=k, padding='same'),
+                    'bn': layers.BatchNormalization()
+                })
+            self.multi_scale_convs.append(scale_convs)
+        
+        for i in range(num_encoders):
+            setattr(self, f'conv1_{i}', layers.Conv1D(
+                filters=out_feat, 
+                kernel_size=3, 
+                padding='same',
+                activation=None  
+            ))
+            setattr(self, f'bn1_{i}', layers.BatchNormalization())
+            setattr(self, f'maxpool1_{i}', layers.MaxPooling1D(pool_size=2, padding='same'))
+            
+            setattr(self, f'conv2_{i}', layers.Conv1D(
+                filters=out_feat, 
+                kernel_size=3, 
+                padding='same',
+                activation=None
+            ))
+            setattr(self, f'bn2_{i}', layers.BatchNormalization())
+            setattr(self, f'maxpool2_{i}', layers.MaxPooling1D(pool_size=2, padding='same'))
+            
+            setattr(self, f'gap_{i}', layers.GlobalAveragePooling1D())
+            setattr(self, f'channel_dense1_{i}', layers.Dense(out_feat // 4))
+            setattr(self, f'channel_dense2_{i}', layers.Dense(out_feat))
+            
+            setattr(self, f'conv3_{i}', layers.Conv1D(
+                filters=out_feat, 
+                kernel_size=3, 
+                padding='same',
+                activation=None
+            ))
+            setattr(self, f'bn3_{i}', layers.BatchNormalization())
+        
+        self.feature_pool = layers.GlobalAveragePooling1D()
+        self.feature_dense = layers.Dense(out_feat)
+        
+    def call(self, x, training=False):
+        x = self.input_proj(x)
+        x = self.input_norm(x, training=training)
+        x = tf.nn.relu(x)
+        
+        for i in range(self.num_encoders):
+            if self.use_skip and i > 0:
+                identity = x
+            
+            scale_outputs = []
+            for conv_block in self.multi_scale_convs[i]:
+                scale_x = conv_block['conv'](x)
+                scale_x = conv_block['bn'](scale_x, training=training)
+                scale_x = tf.nn.relu(scale_x)
+                scale_outputs.append(scale_x)
+            
+            x = tf.concat(scale_outputs, axis=-1)
+            
+            x = getattr(self, f'conv1_{i}')(x)
+            x = getattr(self, f'bn1_{i}')(x, training=training)
+            x = tf.nn.relu(x)
+            x = getattr(self, f'maxpool1_{i}')(x)
+            
+            x = getattr(self, f'conv2_{i}')(x)
+            x = getattr(self, f'bn2_{i}')(x, training=training)
+            x = tf.nn.relu(x)
+            x = getattr(self, f'maxpool2_{i}')(x)
+            
+            gap = getattr(self, f'gap_{i}')(x)
+            ch_att = getattr(self, f'channel_dense1_{i}')(gap)
+            ch_att = tf.nn.relu(ch_att)
+            ch_att = getattr(self, f'channel_dense2_{i}')(ch_att)
+            ch_att = tf.nn.sigmoid(ch_att)
+            x = x * tf.expand_dims(ch_att, 1)
+            
+            x = getattr(self, f'conv3_{i}')(x)
+            x = getattr(self, f'bn3_{i}')(x, training=training)
+            
+            if self.use_skip and i > 0:
+                x = x + identity
+            x = tf.nn.relu(x)
+        
+        x = self.feature_pool(x)
+        x = self.feature_dense(x)
+        return x
+    
+class DeepDefaultEncoder(Model):
+    def __init__(self, in_feat, out_feat, num_encoders=1, use_skip=True):
+        super(DeepDefaultEncoder, self).__init__()
+        self.use_skip = use_skip
+        self.num_encoders = num_encoders
+        
+        self.input_proj = layers.Conv1D(out_feat, 1, padding='same')
+        self.input_norm = layers.BatchNormalization()
+        
+        for i in range(num_encoders):
+            setattr(self, f'conv1_1_{i}', layers.Conv1D(out_feat, 3, padding='same'))
+            setattr(self, f'bn1_1_{i}', layers.BatchNormalization())
+            setattr(self, f'conv1_2_{i}', layers.Conv1D(out_feat, 3, padding='same'))
+            setattr(self, f'bn1_2_{i}', layers.BatchNormalization())
+            setattr(self, f'maxpool1_{i}', layers.MaxPooling1D(pool_size=2, padding='same'))
+            
+            setattr(self, f'conv2_1_{i}', layers.Conv1D(out_feat*2, 3, padding='same'))
+            setattr(self, f'bn2_1_{i}', layers.BatchNormalization())
+            setattr(self, f'conv2_2_{i}', layers.Conv1D(out_feat*2, 3, padding='same'))
+            setattr(self, f'bn2_2_{i}', layers.BatchNormalization())
+            setattr(self, f'conv2_3_{i}', layers.Conv1D(out_feat*2, 3, padding='same'))
+            setattr(self, f'bn2_3_{i}', layers.BatchNormalization())
+            setattr(self, f'maxpool2_{i}', layers.MaxPooling1D(pool_size=2, padding='same'))
+            
+            setattr(self, f'conv3_1_{i}', layers.Conv1D(out_feat*4, 3, padding='same'))
+            setattr(self, f'bn3_1_{i}', layers.BatchNormalization())
+            setattr(self, f'conv3_2_{i}', layers.Conv1D(out_feat*4, 3, padding='same'))
+            setattr(self, f'bn3_2_{i}', layers.BatchNormalization())
+            setattr(self, f'conv3_3_{i}', layers.Conv1D(out_feat*4, 3, padding='same'))
+            setattr(self, f'bn3_3_{i}', layers.BatchNormalization())
+            
+            setattr(self, f'conv4_1_{i}', layers.Conv1D(out_feat*2, 1, padding='same'))
+            setattr(self, f'bn4_1_{i}', layers.BatchNormalization())
+            setattr(self, f'conv4_2_{i}', layers.Conv1D(out_feat, 1, padding='same'))
+            setattr(self, f'bn4_2_{i}', layers.BatchNormalization())
+            
+            setattr(self, f'gap_{i}', layers.GlobalAveragePooling1D())
+            setattr(self, f'channel_dense1_{i}', layers.Dense(out_feat // 4))
+            setattr(self, f'channel_dense2_{i}', layers.Dense(out_feat))
+    
+    def call(self, x, training=False):
+        x = self.input_proj(x)
+        x = self.input_norm(x, training=training)
+        x = tf.nn.relu(x)
+        
+        for i in range(self.num_encoders):
+            if self.use_skip and i > 0:
+                identity = x
+                
+            local_input = x
+            x = getattr(self, f'conv1_1_{i}')(x)
+            x = getattr(self, f'bn1_1_{i}')(x, training=training)
+            x = tf.nn.relu(x)
+            x = getattr(self, f'conv1_2_{i}')(x)
+            x = getattr(self, f'bn1_2_{i}')(x, training=training)
+            x = x + local_input 
+            x = tf.nn.relu(x)
+            x = getattr(self, f'maxpool1_{i}')(x)
+            
+            local_input = getattr(self, f'conv2_1_{i}')(x)  
+            local_input = getattr(self, f'bn2_1_{i}')(local_input, training=training)
+            x = tf.nn.relu(local_input)
+            x = getattr(self, f'conv2_2_{i}')(x)
+            x = getattr(self, f'bn2_2_{i}')(x, training=training)
+            x = tf.nn.relu(x)
+            x = getattr(self, f'conv2_3_{i}')(x)
+            x = getattr(self, f'bn2_3_{i}')(x, training=training)
+            x = x + local_input 
+            x = tf.nn.relu(x)
+            x = getattr(self, f'maxpool2_{i}')(x)
+            
+            local_input = getattr(self, f'conv3_1_{i}')(x)  # Match dimensions
+            local_input = getattr(self, f'bn3_1_{i}')(local_input, training=training)
+            x = tf.nn.relu(local_input)
+            x = getattr(self, f'conv3_2_{i}')(x)
+            x = getattr(self, f'bn3_2_{i}')(x, training=training)
+            x = tf.nn.relu(x)
+            x = getattr(self, f'conv3_3_{i}')(x)
+            x = getattr(self, f'bn3_3_{i}')(x, training=training)
+            x = x + local_input  # Local skip connection
+            x = tf.nn.relu(x)
+            
+            x = getattr(self, f'conv4_1_{i}')(x)
+            x = getattr(self, f'bn4_1_{i}')(x, training=training)
+            x = tf.nn.relu(x)
+            x = getattr(self, f'conv4_2_{i}')(x)
+            x = getattr(self, f'bn4_2_{i}')(x, training=training)
+            
+            gap = getattr(self, f'gap_{i}')(x)
+            ch_att = getattr(self, f'channel_dense1_{i}')(gap)
+            ch_att = tf.nn.relu(ch_att)
+            ch_att = getattr(self, f'channel_dense2_{i}')(ch_att)
+            ch_att = tf.nn.sigmoid(ch_att)
+            x = x * tf.expand_dims(ch_att, 1)
+            
+            if self.use_skip and i > 0:
+                x = x + identity
+            x = tf.nn.relu(x)
+        
+        return tf.reduce_mean(x, axis=1)
+    
 class SEEncoder(Model) :
     '''
         this is the enhanced version than DefaultEncoder (use deep archi + SE block for better information squeeze)
@@ -413,6 +613,23 @@ class CAGE(Model):
         if encoder_type == 'default' : ### <- encoder selection
             self.enc_A = DefaultEncoder(n_feat, 64, kwargs.get('num_encoders', 1), kwargs.get('use_skip', True))
             self.enc_G = DefaultEncoder(n_feat, 64, kwargs.get('num_encoders', 1), kwargs.get('use_skip', True))
+        elif encoder_type == 'improved_default':
+            num_encoders = kwargs.get('num_encoders')
+            use_skip = kwargs.get('use_skip')
+            if num_encoders is None or use_skip is None:
+                num_encoders = 1
+                use_skip = True
+            self.enc_A = ImprovedDefaultEncoder(n_feat, 64, num_encoders=num_encoders, use_skip=use_skip)
+            self.enc_G = ImprovedDefaultEncoder(n_feat, 64, num_encoders=num_encoders, use_skip=use_skip)
+
+        elif encoder_type == 'deep_default':
+            num_encoders = kwargs.get('num_encoders')
+            use_skip = kwargs.get('use_skip')
+            if num_encoders is None or use_skip is None:
+                num_encoders = 1
+                use_skip = True
+            self.enc_A = DeepDefaultEncoder(n_feat, 64, num_encoders=num_encoders, use_skip=use_skip)
+            self.enc_G = DeepDefaultEncoder(n_feat, 64, num_encoders=num_encoders, use_skip=use_skip)
         elif encoder_type == 'transformer':
             self.enc_A = TransformerEncoder(n_feat, 64, num_heads=kwargs['num_heads'])
             self.enc_G = TransformerEncoder(n_feat, 64, num_heads=kwargs['num_heads'])
@@ -424,8 +641,13 @@ class CAGE(Model):
             self.enc_A = UNetEncoder(n_feat, 64)
             self.enc_G = UNetEncoder(n_feat, 64)
         elif encoder_type == 'se':
-            self.enc_A = SEEncoder(n_feat, 64, kwargs.get('num_encoders', 1), kwargs.get('use_skip', True))
-            self.enc_G = SEEncoder(n_feat, 64, kwargs.get('num_encoders', 1), kwargs.get('use_skip', True))
+            num_encoders = kwargs.get('num_encoders')
+            use_skip = kwargs.get('use_skip')
+            if num_encoders is None or use_skip is None:  
+                num_encoders = 1
+                use_skip = True
+            self.enc_A = SEEncoder(n_feat, 64, num_encoders=num_encoders, use_skip=use_skip)
+            self.enc_G = SEEncoder(n_feat, 64, num_encoders=num_encoders, use_skip=use_skip)
         
         if self.proj_dim > 0:
             self.proj_A = layers.Dense(proj_dim, use_bias=False)
