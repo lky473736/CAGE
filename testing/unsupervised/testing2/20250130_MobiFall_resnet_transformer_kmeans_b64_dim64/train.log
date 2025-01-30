@@ -1,0 +1,283 @@
+2025-01-30 05:33:36 - Epoch: [0/200] - loss:3.5340, ssl acc: 6.00%
+2025-01-30 05:33:36 - Best model saved at epoch 0
+2025-01-30 05:33:41 - Epoch: [1/200] - loss:3.3508, ssl acc: 8.09%
+2025-01-30 05:33:41 - Best model saved at epoch 1
+2025-01-30 05:33:47 - Epoch: [2/200] - loss:3.2401, ssl acc: 8.88%
+2025-01-30 05:33:47 - Best model saved at epoch 2
+2025-01-30 05:33:53 - Epoch: [3/200] - loss:3.1155, ssl acc: 10.75%
+2025-01-30 05:33:53 - Best model saved at epoch 3
+2025-01-30 05:33:59 - Epoch: [4/200] - loss:2.9820, ssl acc: 13.92%
+2025-01-30 05:33:59 - Best model saved at epoch 4
+2025-01-30 05:34:04 - Epoch: [5/200] - loss:2.8267, ssl acc: 18.89%
+2025-01-30 05:34:04 - Best model saved at epoch 5
+2025-01-30 05:34:10 - Epoch: [6/200] - loss:2.6334, ssl acc: 24.77%
+2025-01-30 05:34:10 - Best model saved at epoch 6
+2025-01-30 05:34:16 - Epoch: [7/200] - loss:2.4229, ssl acc: 32.57%
+2025-01-30 05:34:16 - Best model saved at epoch 7
+2025-01-30 05:34:22 - Epoch: [8/200] - loss:2.2539, ssl acc: 37.26%
+2025-01-30 05:34:22 - Best model saved at epoch 8
+2025-01-30 05:34:27 - Epoch: [9/200] - loss:2.0665, ssl acc: 41.45%
+2025-01-30 05:34:27 - Best model saved at epoch 9
+2025-01-30 05:34:32 - Epoch: [10/200] - loss:1.9426, ssl acc: 44.09%
+2025-01-30 05:34:32 - Best model saved at epoch 10
+2025-01-30 05:34:38 - Epoch: [11/200] - loss:1.8236, ssl acc: 47.45%
+2025-01-30 05:34:38 - Best model saved at epoch 11
+2025-01-30 05:34:44 - Epoch: [12/200] - loss:1.7388, ssl acc: 48.66%
+2025-01-30 05:34:44 - Best model saved at epoch 12
+2025-01-30 05:34:50 - Epoch: [13/200] - loss:1.6278, ssl acc: 51.55%
+2025-01-30 05:34:50 - Best model saved at epoch 13
+2025-01-30 05:34:55 - Epoch: [14/200] - loss:1.5505, ssl acc: 52.77%
+2025-01-30 05:34:55 - Best model saved at epoch 14
+2025-01-30 05:35:01 - Epoch: [15/200] - loss:1.4746, ssl acc: 55.19%
+2025-01-30 05:35:01 - Best model saved at epoch 15
+2025-01-30 05:35:07 - Epoch: [16/200] - loss:1.4281, ssl acc: 55.60%
+2025-01-30 05:35:07 - Best model saved at epoch 16
+2025-01-30 05:35:12 - Epoch: [17/200] - loss:1.3701, ssl acc: 56.94%
+2025-01-30 05:35:13 - Best model saved at epoch 17
+2025-01-30 05:35:18 - Epoch: [18/200] - loss:1.3238, ssl acc: 57.53%
+2025-01-30 05:35:18 - Best model saved at epoch 18
+2025-01-30 05:35:24 - Epoch: [19/200] - loss:1.2858, ssl acc: 58.50%
+2025-01-30 05:35:24 - Best model saved at epoch 19
+2025-01-30 05:35:28 - Epoch: [20/200] - loss:1.2720, ssl acc: 59.04%
+2025-01-30 05:35:29 - Best model saved at epoch 20
+2025-01-30 05:35:34 - Epoch: [21/200] - loss:1.1045, ssl acc: 64.55%
+2025-01-30 05:35:34 - Best model saved at epoch 21
+2025-01-30 05:35:39 - Epoch: [22/200] - loss:1.0515, ssl acc: 65.43%
+2025-01-30 05:35:39 - Best model saved at epoch 22
+2025-01-30 05:35:45 - Epoch: [23/200] - loss:1.0393, ssl acc: 66.17%
+2025-01-30 05:35:45 - Best model saved at epoch 23
+2025-01-30 05:35:50 - Epoch: [24/200] - loss:1.0118, ssl acc: 66.63%
+2025-01-30 05:35:50 - Best model saved at epoch 24
+2025-01-30 05:35:55 - Epoch: [25/200] - loss:0.9928, ssl acc: 67.49%
+2025-01-30 05:35:55 - Best model saved at epoch 25
+2025-01-30 05:36:00 - Epoch: [26/200] - loss:0.9709, ssl acc: 68.21%
+2025-01-30 05:36:00 - Best model saved at epoch 26
+2025-01-30 05:36:05 - Epoch: [27/200] - loss:0.9596, ssl acc: 68.22%
+2025-01-30 05:36:06 - Best model saved at epoch 27
+2025-01-30 05:36:11 - Epoch: [28/200] - loss:0.9414, ssl acc: 68.60%
+2025-01-30 05:36:11 - Best model saved at epoch 28
+2025-01-30 05:36:16 - Epoch: [29/200] - loss:0.9250, ssl acc: 69.11%
+2025-01-30 05:36:17 - Best model saved at epoch 29
+2025-01-30 05:36:21 - Epoch: [30/200] - loss:0.8966, ssl acc: 69.72%
+2025-01-30 05:36:22 - Best model saved at epoch 30
+2025-01-30 05:36:26 - Epoch: [31/200] - loss:0.9042, ssl acc: 69.08%
+2025-01-30 05:36:32 - Epoch: [32/200] - loss:0.8966, ssl acc: 69.49%
+2025-01-30 05:36:38 - Epoch: [33/200] - loss:0.8638, ssl acc: 70.33%
+2025-01-30 05:36:38 - Best model saved at epoch 33
+2025-01-30 05:36:44 - Epoch: [34/200] - loss:0.8598, ssl acc: 70.14%
+2025-01-30 05:36:44 - Best model saved at epoch 34
+2025-01-30 05:36:49 - Epoch: [35/200] - loss:0.8460, ssl acc: 70.66%
+2025-01-30 05:36:49 - Best model saved at epoch 35
+2025-01-30 05:36:55 - Epoch: [36/200] - loss:0.8492, ssl acc: 71.01%
+2025-01-30 05:36:59 - Epoch: [37/200] - loss:0.8265, ssl acc: 70.93%
+2025-01-30 05:36:59 - Best model saved at epoch 37
+2025-01-30 05:37:04 - Epoch: [38/200] - loss:0.8433, ssl acc: 70.87%
+2025-01-30 05:37:09 - Epoch: [39/200] - loss:0.8216, ssl acc: 71.68%
+2025-01-30 05:37:10 - Best model saved at epoch 39
+2025-01-30 05:37:15 - Epoch: [40/200] - loss:0.7937, ssl acc: 71.97%
+2025-01-30 05:37:16 - Best model saved at epoch 40
+2025-01-30 05:37:21 - Epoch: [41/200] - loss:0.7355, ssl acc: 74.01%
+2025-01-30 05:37:21 - Best model saved at epoch 41
+2025-01-30 05:37:27 - Epoch: [42/200] - loss:0.7200, ssl acc: 74.45%
+2025-01-30 05:37:27 - Best model saved at epoch 42
+2025-01-30 05:37:33 - Epoch: [43/200] - loss:0.6995, ssl acc: 75.48%
+2025-01-30 05:37:33 - Best model saved at epoch 43
+2025-01-30 05:37:38 - Epoch: [44/200] - loss:0.6978, ssl acc: 75.40%
+2025-01-30 05:37:38 - Best model saved at epoch 44
+2025-01-30 05:37:44 - Epoch: [45/200] - loss:0.6893, ssl acc: 75.57%
+2025-01-30 05:37:44 - Best model saved at epoch 45
+2025-01-30 05:37:49 - Epoch: [46/200] - loss:0.6822, ssl acc: 76.10%
+2025-01-30 05:37:49 - Best model saved at epoch 46
+2025-01-30 05:37:54 - Epoch: [47/200] - loss:0.6977, ssl acc: 75.32%
+2025-01-30 05:37:59 - Epoch: [48/200] - loss:0.6967, ssl acc: 74.99%
+2025-01-30 05:38:04 - Epoch: [49/200] - loss:0.6772, ssl acc: 75.82%
+2025-01-30 05:38:05 - Best model saved at epoch 49
+2025-01-30 05:38:10 - Epoch: [50/200] - loss:0.6666, ssl acc: 75.56%
+2025-01-30 05:38:10 - Best model saved at epoch 50
+2025-01-30 05:38:16 - Epoch: [51/200] - loss:0.6638, ssl acc: 76.01%
+2025-01-30 05:38:16 - Best model saved at epoch 51
+2025-01-30 05:38:21 - Epoch: [52/200] - loss:0.6675, ssl acc: 76.10%
+2025-01-30 05:38:26 - Epoch: [53/200] - loss:0.6606, ssl acc: 76.54%
+2025-01-30 05:38:27 - Best model saved at epoch 53
+2025-01-30 05:38:33 - Epoch: [54/200] - loss:0.6577, ssl acc: 76.62%
+2025-01-30 05:38:33 - Best model saved at epoch 54
+2025-01-30 05:38:39 - Epoch: [55/200] - loss:0.6570, ssl acc: 76.20%
+2025-01-30 05:38:39 - Best model saved at epoch 55
+2025-01-30 05:38:44 - Epoch: [56/200] - loss:0.6525, ssl acc: 76.28%
+2025-01-30 05:38:44 - Best model saved at epoch 56
+2025-01-30 05:38:49 - Epoch: [57/200] - loss:0.6391, ssl acc: 76.65%
+2025-01-30 05:38:50 - Best model saved at epoch 57
+2025-01-30 05:38:55 - Epoch: [58/200] - loss:0.6348, ssl acc: 77.18%
+2025-01-30 05:38:55 - Best model saved at epoch 58
+2025-01-30 05:39:00 - Epoch: [59/200] - loss:0.6316, ssl acc: 77.10%
+2025-01-30 05:39:01 - Best model saved at epoch 59
+2025-01-30 05:39:06 - Epoch: [60/200] - loss:0.6342, ssl acc: 77.00%
+2025-01-30 05:39:11 - Epoch: [61/200] - loss:0.6098, ssl acc: 77.89%
+2025-01-30 05:39:11 - Best model saved at epoch 61
+2025-01-30 05:39:16 - Epoch: [62/200] - loss:0.5854, ssl acc: 78.31%
+2025-01-30 05:39:16 - Best model saved at epoch 62
+2025-01-30 05:39:22 - Epoch: [63/200] - loss:0.5918, ssl acc: 78.66%
+2025-01-30 05:39:28 - Epoch: [64/200] - loss:0.5739, ssl acc: 79.11%
+2025-01-30 05:39:28 - Best model saved at epoch 64
+2025-01-30 05:39:33 - Epoch: [65/200] - loss:0.5821, ssl acc: 78.34%
+2025-01-30 05:39:39 - Epoch: [66/200] - loss:0.5723, ssl acc: 78.56%
+2025-01-30 05:39:39 - Best model saved at epoch 66
+2025-01-30 05:39:45 - Epoch: [67/200] - loss:0.5613, ssl acc: 78.97%
+2025-01-30 05:39:45 - Best model saved at epoch 67
+2025-01-30 05:39:51 - Epoch: [68/200] - loss:0.5507, ssl acc: 79.88%
+2025-01-30 05:39:51 - Best model saved at epoch 68
+2025-01-30 05:39:56 - Epoch: [69/200] - loss:0.5662, ssl acc: 78.72%
+2025-01-30 05:40:03 - Epoch: [70/200] - loss:0.5557, ssl acc: 79.77%
+2025-01-30 05:40:08 - Epoch: [71/200] - loss:0.5539, ssl acc: 79.41%
+2025-01-30 05:40:14 - Epoch: [72/200] - loss:0.5608, ssl acc: 79.35%
+2025-01-30 05:40:20 - Epoch: [73/200] - loss:0.5479, ssl acc: 79.63%
+2025-01-30 05:40:20 - Best model saved at epoch 73
+2025-01-30 05:40:25 - Epoch: [74/200] - loss:0.5541, ssl acc: 79.43%
+2025-01-30 05:40:30 - Epoch: [75/200] - loss:0.5333, ssl acc: 80.63%
+2025-01-30 05:40:30 - Best model saved at epoch 75
+2025-01-30 05:40:36 - Epoch: [76/200] - loss:0.5486, ssl acc: 79.84%
+2025-01-30 05:40:42 - Epoch: [77/200] - loss:0.5528, ssl acc: 79.68%
+2025-01-30 05:40:47 - Epoch: [78/200] - loss:0.5447, ssl acc: 79.67%
+2025-01-30 05:40:53 - Epoch: [79/200] - loss:0.5353, ssl acc: 80.24%
+2025-01-30 05:40:58 - Epoch: [80/200] - loss:0.5391, ssl acc: 79.77%
+2025-01-30 05:41:03 - Epoch: [81/200] - loss:0.5387, ssl acc: 79.94%
+2025-01-30 05:41:08 - Epoch: [82/200] - loss:0.5238, ssl acc: 80.45%
+2025-01-30 05:41:08 - Best model saved at epoch 82
+2025-01-30 05:41:14 - Epoch: [83/200] - loss:0.5160, ssl acc: 80.19%
+2025-01-30 05:41:14 - Best model saved at epoch 83
+2025-01-30 05:41:20 - Epoch: [84/200] - loss:0.5209, ssl acc: 80.65%
+2025-01-30 05:41:26 - Epoch: [85/200] - loss:0.5101, ssl acc: 80.82%
+2025-01-30 05:41:26 - Best model saved at epoch 85
+2025-01-30 05:41:32 - Epoch: [86/200] - loss:0.5087, ssl acc: 81.25%
+2025-01-30 05:41:32 - Best model saved at epoch 86
+2025-01-30 05:41:38 - Epoch: [87/200] - loss:0.5027, ssl acc: 81.40%
+2025-01-30 05:41:38 - Best model saved at epoch 87
+2025-01-30 05:41:44 - Epoch: [88/200] - loss:0.5067, ssl acc: 81.02%
+2025-01-30 05:41:49 - Epoch: [89/200] - loss:0.5054, ssl acc: 81.52%
+2025-01-30 05:41:55 - Epoch: [90/200] - loss:0.5007, ssl acc: 80.98%
+2025-01-30 05:41:55 - Best model saved at epoch 90
+2025-01-30 05:42:01 - Epoch: [91/200] - loss:0.5013, ssl acc: 81.17%
+2025-01-30 05:42:06 - Epoch: [92/200] - loss:0.4973, ssl acc: 81.52%
+2025-01-30 05:42:06 - Best model saved at epoch 92
+2025-01-30 05:42:12 - Epoch: [93/200] - loss:0.5009, ssl acc: 81.56%
+2025-01-30 05:42:18 - Epoch: [94/200] - loss:0.4914, ssl acc: 81.09%
+2025-01-30 05:42:18 - Best model saved at epoch 94
+2025-01-30 05:42:24 - Epoch: [95/200] - loss:0.4887, ssl acc: 81.76%
+2025-01-30 05:42:25 - Best model saved at epoch 95
+2025-01-30 05:42:30 - Epoch: [96/200] - loss:0.5025, ssl acc: 81.01%
+2025-01-30 05:42:35 - Epoch: [97/200] - loss:0.4933, ssl acc: 81.81%
+2025-01-30 05:42:41 - Epoch: [98/200] - loss:0.4992, ssl acc: 81.50%
+2025-01-30 05:42:46 - Epoch: [99/200] - loss:0.4884, ssl acc: 81.76%
+2025-01-30 05:42:47 - Best model saved at epoch 99
+2025-01-30 05:42:52 - Epoch: [100/200] - loss:0.4945, ssl acc: 81.07%
+2025-01-30 05:42:57 - Epoch: [101/200] - loss:0.4797, ssl acc: 82.00%
+2025-01-30 05:42:57 - Best model saved at epoch 101
+2025-01-30 05:43:02 - Epoch: [102/200] - loss:0.4829, ssl acc: 81.69%
+2025-01-30 05:43:08 - Epoch: [103/200] - loss:0.4842, ssl acc: 81.79%
+2025-01-30 05:43:13 - Epoch: [104/200] - loss:0.4776, ssl acc: 82.12%
+2025-01-30 05:43:14 - Best model saved at epoch 104
+2025-01-30 05:43:19 - Epoch: [105/200] - loss:0.4872, ssl acc: 81.51%
+2025-01-30 05:43:25 - Epoch: [106/200] - loss:0.4667, ssl acc: 82.42%
+2025-01-30 05:43:25 - Best model saved at epoch 106
+2025-01-30 05:43:30 - Epoch: [107/200] - loss:0.4870, ssl acc: 81.59%
+2025-01-30 05:43:36 - Epoch: [108/200] - loss:0.4786, ssl acc: 82.15%
+2025-01-30 05:43:41 - Epoch: [109/200] - loss:0.4755, ssl acc: 82.11%
+2025-01-30 05:43:46 - Epoch: [110/200] - loss:0.4805, ssl acc: 82.01%
+2025-01-30 05:43:52 - Epoch: [111/200] - loss:0.4765, ssl acc: 82.04%
+2025-01-30 05:43:58 - Epoch: [112/200] - loss:0.4681, ssl acc: 82.13%
+2025-01-30 05:44:03 - Epoch: [113/200] - loss:0.4734, ssl acc: 82.53%
+2025-01-30 05:44:08 - Epoch: [114/200] - loss:0.4683, ssl acc: 82.35%
+2025-01-30 05:44:14 - Epoch: [115/200] - loss:0.4763, ssl acc: 81.74%
+2025-01-30 05:44:19 - Epoch: [116/200] - loss:0.4619, ssl acc: 82.33%
+2025-01-30 05:44:19 - Best model saved at epoch 116
+2025-01-30 05:44:25 - Epoch: [117/200] - loss:0.4722, ssl acc: 81.97%
+2025-01-30 05:44:30 - Epoch: [118/200] - loss:0.4692, ssl acc: 82.51%
+2025-01-30 05:44:36 - Epoch: [119/200] - loss:0.4689, ssl acc: 82.40%
+2025-01-30 05:44:41 - Epoch: [120/200] - loss:0.4534, ssl acc: 82.82%
+2025-01-30 05:44:41 - Best model saved at epoch 120
+2025-01-30 05:44:47 - Epoch: [121/200] - loss:0.4755, ssl acc: 81.56%
+2025-01-30 05:44:52 - Epoch: [122/200] - loss:0.4571, ssl acc: 82.85%
+2025-01-30 05:44:57 - Epoch: [123/200] - loss:0.4674, ssl acc: 82.39%
+2025-01-30 05:45:03 - Epoch: [124/200] - loss:0.4673, ssl acc: 82.08%
+2025-01-30 05:45:08 - Epoch: [125/200] - loss:0.4668, ssl acc: 82.14%
+2025-01-30 05:45:13 - Epoch: [126/200] - loss:0.4520, ssl acc: 82.87%
+2025-01-30 05:45:13 - Best model saved at epoch 126
+2025-01-30 05:45:19 - Epoch: [127/200] - loss:0.4682, ssl acc: 82.04%
+2025-01-30 05:45:25 - Epoch: [128/200] - loss:0.4601, ssl acc: 82.50%
+2025-01-30 05:45:30 - Epoch: [129/200] - loss:0.4581, ssl acc: 82.28%
+2025-01-30 05:45:36 - Epoch: [130/200] - loss:0.4545, ssl acc: 82.50%
+2025-01-30 05:45:42 - Epoch: [131/200] - loss:0.4522, ssl acc: 82.47%
+2025-01-30 05:45:47 - Epoch: [132/200] - loss:0.4561, ssl acc: 82.78%
+2025-01-30 05:45:53 - Epoch: [133/200] - loss:0.4578, ssl acc: 82.67%
+2025-01-30 05:45:59 - Epoch: [134/200] - loss:0.4630, ssl acc: 82.30%
+2025-01-30 05:46:04 - Epoch: [135/200] - loss:0.4512, ssl acc: 82.78%
+2025-01-30 05:46:04 - Best model saved at epoch 135
+2025-01-30 05:46:09 - Epoch: [136/200] - loss:0.4566, ssl acc: 82.72%
+2025-01-30 05:46:15 - Epoch: [137/200] - loss:0.4513, ssl acc: 82.99%
+2025-01-30 05:46:20 - Epoch: [138/200] - loss:0.4606, ssl acc: 82.79%
+2025-01-30 05:46:26 - Epoch: [139/200] - loss:0.4529, ssl acc: 82.94%
+2025-01-30 05:46:31 - Epoch: [140/200] - loss:0.4452, ssl acc: 83.05%
+2025-01-30 05:46:31 - Best model saved at epoch 140
+2025-01-30 05:46:37 - Epoch: [141/200] - loss:0.4479, ssl acc: 82.79%
+2025-01-30 05:46:43 - Epoch: [142/200] - loss:0.4562, ssl acc: 82.79%
+2025-01-30 05:46:49 - Epoch: [143/200] - loss:0.4495, ssl acc: 82.96%
+2025-01-30 05:46:55 - Epoch: [144/200] - loss:0.4501, ssl acc: 82.84%
+2025-01-30 05:47:01 - Epoch: [145/200] - loss:0.4448, ssl acc: 83.26%
+2025-01-30 05:47:01 - Best model saved at epoch 145
+2025-01-30 05:47:06 - Epoch: [146/200] - loss:0.4502, ssl acc: 82.77%
+2025-01-30 05:47:12 - Epoch: [147/200] - loss:0.4397, ssl acc: 83.27%
+2025-01-30 05:47:12 - Best model saved at epoch 147
+2025-01-30 05:47:18 - Epoch: [148/200] - loss:0.4377, ssl acc: 83.33%
+2025-01-30 05:47:18 - Best model saved at epoch 148
+2025-01-30 05:47:23 - Epoch: [149/200] - loss:0.4539, ssl acc: 82.70%
+2025-01-30 05:47:30 - Epoch: [150/200] - loss:0.4447, ssl acc: 83.17%
+2025-01-30 05:47:36 - Epoch: [151/200] - loss:0.4394, ssl acc: 83.41%
+2025-01-30 05:47:41 - Epoch: [152/200] - loss:0.4449, ssl acc: 82.72%
+2025-01-30 05:47:46 - Epoch: [153/200] - loss:0.4427, ssl acc: 83.58%
+2025-01-30 05:47:52 - Epoch: [154/200] - loss:0.4495, ssl acc: 82.64%
+2025-01-30 05:47:57 - Epoch: [155/200] - loss:0.4413, ssl acc: 82.93%
+2025-01-30 05:48:03 - Epoch: [156/200] - loss:0.4497, ssl acc: 82.96%
+2025-01-30 05:48:08 - Epoch: [157/200] - loss:0.4502, ssl acc: 82.80%
+2025-01-30 05:48:13 - Epoch: [158/200] - loss:0.4488, ssl acc: 82.56%
+2025-01-30 05:48:19 - Epoch: [159/200] - loss:0.4441, ssl acc: 82.78%
+2025-01-30 05:48:24 - Epoch: [160/200] - loss:0.4530, ssl acc: 83.29%
+2025-01-30 05:48:29 - Epoch: [161/200] - loss:0.4477, ssl acc: 82.65%
+2025-01-30 05:48:35 - Epoch: [162/200] - loss:0.4465, ssl acc: 82.63%
+2025-01-30 05:48:41 - Epoch: [163/200] - loss:0.4395, ssl acc: 83.32%
+2025-01-30 05:48:46 - Epoch: [164/200] - loss:0.4471, ssl acc: 83.08%
+2025-01-30 05:48:51 - Epoch: [165/200] - loss:0.4484, ssl acc: 82.67%
+2025-01-30 05:48:57 - Epoch: [166/200] - loss:0.4392, ssl acc: 83.36%
+2025-01-30 05:49:03 - Epoch: [167/200] - loss:0.4505, ssl acc: 83.05%
+2025-01-30 05:49:08 - Epoch: [168/200] - loss:0.4407, ssl acc: 83.38%
+2025-01-30 05:49:14 - Epoch: [169/200] - loss:0.4594, ssl acc: 82.67%
+2025-01-30 05:49:20 - Epoch: [170/200] - loss:0.4501, ssl acc: 82.80%
+2025-01-30 05:49:25 - Epoch: [171/200] - loss:0.4399, ssl acc: 83.51%
+2025-01-30 05:49:30 - Epoch: [172/200] - loss:0.4398, ssl acc: 83.15%
+2025-01-30 05:49:36 - Epoch: [173/200] - loss:0.4432, ssl acc: 82.98%
+2025-01-30 05:49:41 - Epoch: [174/200] - loss:0.4412, ssl acc: 83.08%
+2025-01-30 05:49:47 - Epoch: [175/200] - loss:0.4546, ssl acc: 82.85%
+2025-01-30 05:49:52 - Epoch: [176/200] - loss:0.4505, ssl acc: 83.16%
+2025-01-30 05:49:58 - Epoch: [177/200] - loss:0.4580, ssl acc: 82.57%
+2025-01-30 05:50:03 - Epoch: [178/200] - loss:0.4438, ssl acc: 83.33%
+2025-01-30 05:50:09 - Epoch: [179/200] - loss:0.4540, ssl acc: 82.90%
+2025-01-30 05:50:14 - Epoch: [180/200] - loss:0.4507, ssl acc: 82.95%
+2025-01-30 05:50:20 - Epoch: [181/200] - loss:0.4391, ssl acc: 83.23%
+2025-01-30 05:50:26 - Epoch: [182/200] - loss:0.4490, ssl acc: 82.96%
+2025-01-30 05:50:31 - Epoch: [183/200] - loss:0.4420, ssl acc: 83.10%
+2025-01-30 05:50:37 - Epoch: [184/200] - loss:0.4427, ssl acc: 82.99%
+2025-01-30 05:50:42 - Epoch: [185/200] - loss:0.4411, ssl acc: 83.05%
+2025-01-30 05:50:47 - Epoch: [186/200] - loss:0.4537, ssl acc: 82.82%
+2025-01-30 05:50:53 - Epoch: [187/200] - loss:0.4478, ssl acc: 83.06%
+2025-01-30 05:50:59 - Epoch: [188/200] - loss:0.4388, ssl acc: 83.20%
+2025-01-30 05:51:04 - Epoch: [189/200] - loss:0.4418, ssl acc: 83.18%
+2025-01-30 05:51:09 - Epoch: [190/200] - loss:0.4473, ssl acc: 83.25%
+2025-01-30 05:51:15 - Epoch: [191/200] - loss:0.4464, ssl acc: 82.55%
+2025-01-30 05:51:22 - Epoch: [192/200] - loss:0.4451, ssl acc: 82.97%
+2025-01-30 05:51:28 - Epoch: [193/200] - loss:0.4506, ssl acc: 82.82%
+2025-01-30 05:51:35 - Epoch: [194/200] - loss:0.4506, ssl acc: 83.07%
+2025-01-30 05:51:42 - Epoch: [195/200] - loss:0.4363, ssl acc: 83.13%
+2025-01-30 05:51:42 - Best model saved at epoch 195
+2025-01-30 05:51:49 - Epoch: [196/200] - loss:0.4408, ssl acc: 82.85%
+2025-01-30 05:51:55 - Epoch: [197/200] - loss:0.4454, ssl acc: 83.00%
+2025-01-30 05:52:02 - Epoch: [198/200] - loss:0.4451, ssl acc: 82.86%
+2025-01-30 05:52:10 - Epoch: [199/200] - loss:0.4459, ssl acc: 83.33%

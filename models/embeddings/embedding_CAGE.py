@@ -32,7 +32,10 @@ class DefaultEncoder(Model):
         
         return tf.reduce_mean(x, axis=1)
     
-class SEEncoder(Model):
+class SEEncoder(Model) :
+    '''
+        this is the enhanced version than DefaultEncoder (use deep archi + SE block for better information squeeze)
+    '''
     def __init__(self, in_feat, out_feat, num_encoders=1, use_skip=True):
         super(SEEncoder, self).__init__()
         self.use_skip = use_skip
@@ -55,7 +58,7 @@ class SEEncoder(Model):
             setattr(self, f'conv3_{i}', layers.Conv1D(filters=out_feat, kernel_size=1, padding='same'))
             setattr(self, f'bn3_{i}', layers.BatchNormalization())
             
-            # Squeeze-and-Excitation block
+            ################### SE BLOCK ##################
             setattr(self, f'se_pool_{i}', layers.GlobalAveragePooling1D())
             setattr(self, f'se_dense1_{i}', layers.Dense(out_feat // 4))
             setattr(self, f'se_dense2_{i}', layers.Dense(out_feat))
@@ -71,7 +74,6 @@ class SEEncoder(Model):
             if self.use_skip and i > 0:
                 identity = x
             
-            # Multi-scale convolution
             conv3 = getattr(self, f'conv1_{i}')(x)
             conv5 = getattr(self, f'conv1_5_{i}')(x)
             conv7 = getattr(self, f'conv1_7_{i}')(x)
@@ -88,7 +90,6 @@ class SEEncoder(Model):
             x = getattr(self, f'conv3_{i}')(x)
             x = getattr(self, f'bn3_{i}')(x)
             
-            # Squeeze-and-Excitation
             se = getattr(self, f'se_pool_{i}')(x)
             se = getattr(self, f'se_dense1_{i}')(se)
             se = tf.nn.relu(se)
@@ -97,7 +98,7 @@ class SEEncoder(Model):
             se = tf.expand_dims(se, axis=1)
             x = x * se
             
-            if self.use_skip and i > 0:
+            if self.use_skip and i > 0: # <-skip connection
                 x = x + identity
             
             x = tf.nn.relu(x)
@@ -184,12 +185,14 @@ class UNetEncoder(Model):
     def __init__(self, in_feat, out_feat):
         super(UNetEncoder, self).__init__()
         
+        # en
         self.enc1 = layers.Conv1D(out_feat//4, 3, strides=1, activation='relu', padding='same')
         self.pool1 = layers.MaxPooling1D(pool_size=2, strides=1, padding='same')
         self.enc2 = layers.Conv1D(out_feat//2, 3, strides=1, activation='relu', padding='same')
         self.pool2 = layers.MaxPooling1D(pool_size=2, strides=1, padding='same')
         self.enc3 = layers.Conv1D(out_feat, 3, strides=1, activation='relu', padding='same')
         
+        # de
         self.up2 = layers.UpSampling1D(size=1)  
         self.dec2 = layers.Conv1D(out_feat//2, 3, strides=1, activation='relu', padding='same')
         self.up1 = layers.UpSampling1D(size=1)  
@@ -218,85 +221,101 @@ class UNetEncoder(Model):
 class ResNetBlock(layers.Layer):
     def __init__(self, filters, kernel_size=3):
         super(ResNetBlock, self).__init__()
+        self.filters = filters
         self.conv1 = layers.Conv1D(filters, kernel_size, padding='same')
         self.bn1 = layers.BatchNormalization()
         self.conv2 = layers.Conv1D(filters, kernel_size, padding='same')
         self.bn2 = layers.BatchNormalization()
         
-    def call(self, inputs):
+        self.projection = None
+        
+    def build(self, input_shape):
+        if input_shape[-1] != self.filters:
+            self.projection = layers.Conv1D(self.filters, kernel_size=1, padding='same')
+        super().build(input_shape)
+        
+    def call(self, inputs, training=False):
+        identity = inputs
+        
         x = self.conv1(inputs)
-        x = self.bn1(x)
+        x = self.bn1(x, training=training)
         x = tf.nn.relu(x)
         x = self.conv2(x)
-        x = self.bn2(x)
-        return tf.nn.relu(x + inputs)
+        x = self.bn2(x, training=training)
+        
+        if self.projection is not None:
+            identity = self.projection(identity)
+            
+        x = x + identity ### skip connection
+        return tf.nn.relu(x)
 
 class ResNetTransformerEncoder(Model):
     def __init__(self, in_feat, out_feat, num_heads=8):
         super(ResNetTransformerEncoder, self).__init__()
         self.out_feat = out_feat
         
+        if num_heads is None:
+            num_heads = 8
+            
         self.input_proj = layers.Conv1D(out_feat, kernel_size=1, padding='same')
         self.input_bn = layers.BatchNormalization()
         
-        # ResNet blocks
-        self.resnet_blocks = []
+        self.resnet_blocks = [] # <- resnet
         channels = [out_feat, out_feat*2, out_feat]
         for ch in channels:
             self.resnet_blocks.append(ResNetBlock(ch))
         
-        # Transformer blocks
-        self.pos_encoding = layers.Dense(out_feat)
-        self.attention_layers = [
-            layers.MultiHeadAttention(
-                key_dim=out_feat // num_heads, 
-                num_heads=num_heads,
-                dropout=0.1
-            ) for _ in range(2)
-        ]
-        ...
+        self.pos_encoding = layers.Dense(out_feat) # for transformer
         
-        self.layer_norms = [layers.LayerNormalization(epsilon=1e-6) for _ in range(2)]
-        self.ffn_layers = [
-            [
-                layers.Dense(out_feat * 4, activation='relu'),
-                layers.Dense(out_feat)
-            ] for _ in range(2)
-        ]
+        num_transformer_blocks = 2
+        self.attention_blocks = []
+        for _ in range(num_transformer_blocks):
+            self.attention_blocks.append({
+                'attn': layers.MultiHeadAttention(
+                    key_dim=out_feat // num_heads, 
+                    num_heads=num_heads,
+                    dropout=0.1
+                ),
+                'norm1': layers.LayerNormalization(epsilon=1e-6),
+                'ffn1': layers.Dense(out_feat * 4, activation='relu'),
+                'ffn2': layers.Dense(out_feat),
+                'norm2': layers.LayerNormalization(epsilon=1e-6),
+                'dropout': layers.Dropout(0.1)
+            })
         
+        self.final_norm = layers.LayerNormalization(epsilon=1e-6)
         self.output_layer = layers.Dense(out_feat)
         
     def call(self, x, training=False):
-        # Input shaping
-        batch_size = tf.shape(x)[0]
-        seq_length = tf.shape(x)[1]
+        x = self.input_proj(x)
+        x = self.input_bn(x, training=training)
+        x = tf.nn.relu(x)
         
-        # ResNet path with proper reshaping
-        x = self.input_conv(x)  # [batch, seq_len, channels]
-        x = tf.reshape(x, [-1, seq_length, self.out_feat])
-        # ResNet path
-        x = self.input_conv(x)
-        for block in self.resnet_blocks:
-            x = block(x)
+        for block in self.resnet_blocks: ### loopstation for resnet
+            x = block(x, training=training)
             
-        # Positional encoding
-        positions = tf.range(start=0, limit=tf.shape(x)[1], delta=1)
+        seq_len = tf.shape(x)[1]
+        positions = tf.range(start=0, limit=seq_len, delta=1)
         positions = tf.expand_dims(positions, 0)
         pos_encoding = self.pos_encoding(tf.cast(positions, tf.float32))
-        x = x + pos_encoding
+        x = x + pos_encoding # <- pos encoding here
         
-        # Transformer path
-        for i in range(len(self.attention_layers)):
-            attn_output = self.attention_layers[i](x, x)
-            x = self.layer_norms[i](x + attn_output)
+        for block in self.attention_blocks: # transformer
+            ##### self attentions
+            attn_output = block['attn'](x, x)
+            attn_output = block['dropout'](attn_output, training=training)
+            x1 = block['norm1'](x + attn_output)
             
-            ffn_output = self.ffn_layers[i][0](x)
-            ffn_output = self.ffn_layers[i][1](ffn_output)
-            x = self.layer_norms[i](x + ffn_output)
-            
-        # Global pooling and output
+            ##### feed forward net
+            ffn_output = block['ffn1'](x1)
+            ffn_output = block['dropout'](ffn_output, training=training)
+            ffn_output = block['ffn2'](ffn_output)
+            x = block['norm2'](x1 + ffn_output)
+        
+        x = self.final_norm(x)
         x = tf.reduce_mean(x, axis=1)
-        return self.output_layer(x)
+        x = self.output_layer(x)
+        return x
     
 class SETransformerEncoder(Model):
     def __init__(self, in_feat, out_feat, num_heads=8, ff_dim=None, num_blocks=3, dropout=0.1):
@@ -304,23 +323,19 @@ class SETransformerEncoder(Model):
         if ff_dim is None:
             ff_dim = out_feat * 4
             
-        # SE-style input processing
         self.input_proj = layers.Conv1D(out_feat, 1, padding='same')
         self.input_norm = layers.BatchNormalization()
         
-        # Multi-scale convolutions like SE
         self.conv_layers = [
             layers.Conv1D(out_feat, kernel_size=k, padding='same')
             for k in [3, 5, 7]
         ]
         self.conv_norm = layers.BatchNormalization()
         
-        # SE blocks
         self.se_pool = layers.GlobalAveragePooling1D()
         self.se_dense1 = layers.Dense(out_feat // 4)
         self.se_dense2 = layers.Dense(out_feat)
         
-        # Transformer blocks with position encoding
         self.pos_encoding = self._create_sinusoidal_positional_encoding(1000, out_feat)
         
         self.attention_blocks = []
@@ -338,7 +353,6 @@ class SETransformerEncoder(Model):
                 'dropout': layers.Dropout(dropout)
             })
         
-        # Final processing
         self.final_norm = layers.LayerNormalization(epsilon=1e-6)
         self.output_dense = layers.Dense(out_feat)
     
@@ -352,11 +366,9 @@ class SETransformerEncoder(Model):
         return tf.constant(pos_encoding, dtype=tf.float32)
 
     def call(self, x, training=False):
-        # Initial processing
         x = self.input_proj(x)
         x = self.input_norm(x)
         
-        # Multi-scale convolution
         conv_outputs = []
         for conv in self.conv_layers:
             conv_outputs.append(conv(x))
@@ -364,7 +376,6 @@ class SETransformerEncoder(Model):
         x = self.conv_norm(x)
         x = tf.nn.relu(x)
         
-        # SE block
         se = self.se_pool(x)
         se = self.se_dense1(se)
         se = tf.nn.relu(se)
@@ -373,24 +384,19 @@ class SETransformerEncoder(Model):
         se = tf.expand_dims(se, axis=1)
         x = x * se
         
-        # Add positional encoding
         seq_len = tf.shape(x)[1]
         x = x + self.pos_encoding[:seq_len, :]
         
-        # Transformer blocks
         for block in self.attention_blocks:
-            # Self-attention
             attn_output = block['attn'](x, x)
             attn_output = block['dropout'](attn_output, training=training)
             x1 = block['norm1'](x + attn_output)
             
-            # Feed-forward
             ffn_output = block['ffn1'](x1)
             ffn_output = block['dropout'](ffn_output, training=training)
             ffn_output = block['ffn2'](ffn_output)
             x = block['norm2'](x1 + ffn_output)
         
-        # Final processing
         x = self.final_norm(x)
         x = tf.reduce_mean(x, axis=1)
         x = self.output_dense(x)
@@ -401,19 +407,23 @@ class CAGE(Model):
         super(CAGE, self).__init__()
         self.proj_dim = proj_dim
         
-        if encoder_type == 'default': # <------ ENCODER selection
+        if 'num_heads' not in kwargs:
+            kwargs['num_heads'] = 8
+            
+        if encoder_type == 'default' : ### <- encoder selection
             self.enc_A = DefaultEncoder(n_feat, 64, kwargs.get('num_encoders', 1), kwargs.get('use_skip', True))
             self.enc_G = DefaultEncoder(n_feat, 64, kwargs.get('num_encoders', 1), kwargs.get('use_skip', True))
         elif encoder_type == 'transformer':
-            self.enc_A = TransformerEncoder(n_feat, 64, kwargs.get('num_heads', 8))
-            self.enc_G = TransformerEncoder(n_feat, 64, kwargs.get('num_heads', 8))
+            self.enc_A = TransformerEncoder(n_feat, 64, num_heads=kwargs['num_heads'])
+            self.enc_G = TransformerEncoder(n_feat, 64, num_heads=kwargs['num_heads'])
         elif encoder_type == 'resnet_transformer':
-            self.enc_A = ResNetTransformerEncoder(n_feat, 64, kwargs.get('num_heads', 8))
-            self.enc_G = ResNetTransformerEncoder(n_feat, 64, kwargs.get('num_heads', 8))
+            num_heads = kwargs.get('num_heads', 8) 
+            self.enc_A = ResNetTransformerEncoder(n_feat, 64, num_heads=num_heads)
+            self.enc_G = ResNetTransformerEncoder(n_feat, 64, num_heads=num_heads)
         elif encoder_type == 'unet':
             self.enc_A = UNetEncoder(n_feat, 64)
             self.enc_G = UNetEncoder(n_feat, 64)
-        elif encoder_type == 'se':  
+        elif encoder_type == 'se':
             self.enc_A = SEEncoder(n_feat, 64, kwargs.get('num_encoders', 1), kwargs.get('use_skip', True))
             self.enc_G = SEEncoder(n_feat, 64, kwargs.get('num_encoders', 1), kwargs.get('use_skip', True))
         
