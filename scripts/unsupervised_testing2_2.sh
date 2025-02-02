@@ -220,12 +220,33 @@ PROJ_DIM=64
 
 # 6. deep_default with DBSCAN
 # 6.1 DBSCAN with different eps
-for eps in 0.3 0.7; do
-    TRIAL_NAME="${DATE}_${DATASETS[0]}_deep_default_dbscan_eps${eps}_b${BATCH_SIZE}_dim${PROJ_DIM}"
+# for eps in 0.3 0.7; do
+#     TRIAL_NAME="${DATE}_${DATASETS[0]}_deep_default_dbscan_eps${eps}_b${BATCH_SIZE}_dim${PROJ_DIM}"
+#     python3 train_unsupervised_CAGE.py \
+#         --dataset ${DATASETS[0]} \
+#         --model CAGE \
+#         --encoder_type deep_default \
+#         --clustering_method dbscan \
+#         --dbscan_eps $eps \
+#         --dbscan_min_samples 5 \
+#         --batch_size $BATCH_SIZE \
+#         --proj_dim $PROJ_DIM \
+#         --epochs 200 \
+#         --window_width 128 \
+#         --train_portion 1.0 \
+#         --learning_rate 0.001 \
+#         --weight_decay 1e-7 \
+#         --momentum 0.9 \
+#         --normalize \
+#         --trial $TRIAL_NAME
+# done
+
+for eps in 0.7; do
+    TRIAL_NAME="${DATE}_${DATASETS[0]}_default_dbscan_eps${eps}_b${BATCH_SIZE}_dim${PROJ_DIM}"
     python3 train_unsupervised_CAGE.py \
         --dataset ${DATASETS[0]} \
         --model CAGE \
-        --encoder_type deep_default \
+        --encoder_type default \
         --clustering_method dbscan \
         --dbscan_eps $eps \
         --dbscan_min_samples 5 \
